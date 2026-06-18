@@ -25,7 +25,7 @@ const Auth = () => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/onboarding` },
+      options: { emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}onboarding` },
     });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -49,7 +49,7 @@ const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}${import.meta.env.BASE_URL}`,
     });
     if (result?.error) {
       toast({ title: "Error", description: String(result.error), variant: "destructive" });
@@ -62,7 +62,7 @@ const Auth = () => {
       return;
     }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}reset-password`,
     });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
