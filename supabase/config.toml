@@ -1,0 +1,4 @@
+project_id = "gfsdxeqamsssaukgqesp"
+
+[functions.event-share]
+verify_jwt = false

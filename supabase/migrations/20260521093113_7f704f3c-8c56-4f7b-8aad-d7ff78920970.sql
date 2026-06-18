@@ -1,0 +1,35 @@
+CREATE OR REPLACE FUNCTION public.set_account_mode(_mode public.account_type)
+RETURNS public.account_type
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public
+AS $$
+DECLARE
+  _uid uuid := auth.uid();
+BEGIN
+  IF _uid IS NULL THEN
+    RAISE EXCEPTION 'Not authenticated';
+  END IF;
+
+  PERFORM set_config('app.allow_profile_mode_switch', 'true', true);
+
+  UPDATE public.profiles
+  SET
+    active_mode = _mode,
+    account_type = CASE
+      WHEN _mode = 'organizer'::public.account_type THEN 'organizer'::public.account_type
+      ELSE account_type
+    END,
+    updated_at = now()
+  WHERE user_id = _uid;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Profile not found';
+  END IF;
+
+  RETURN _mode;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.set_account_mode(public.account_type) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.set_account_mode(public.account_type) TO authenticated;
