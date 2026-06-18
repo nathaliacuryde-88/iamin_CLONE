@@ -1,0 +1,1 @@
+DELETE FROM public.user_birthdays WHERE birthday > CURRENT_DATE OR birthday = (created_at AT TIME ZONE 'UTC')::date;
