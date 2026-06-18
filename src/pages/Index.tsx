@@ -174,12 +174,16 @@ const PersonFeed = () => {
 
   return (
     <AppLayout>
-      <div className="max-w-lg mx-auto">
-        {/* Sticky tab strip — Inner Circle / City Pulse + Filter pill */}
-        <div
-          className="sticky z-30 -mx-4 px-4 pt-3 pb-3"
-          style={{ top: "calc(3.5rem + env(safe-area-inset-top))" }}
-        >
+      {/* Feed column sized to the visible area below the top bar. A flex column
+          (instead of a hard-coded dvh height on the inner scroller) lets the
+          WalletStack fill exactly the leftover space, so cards never get
+          clipped or pushed under the floating nav — the iOS standalone bug. */}
+      <div
+        className="max-w-lg mx-auto flex flex-col"
+        style={{ height: "calc(100dvh - 3.5rem - env(safe-area-inset-top))" }}
+      >
+        {/* Tab strip — Inner Circle / City Pulse + Filter pill */}
+        <div className="shrink-0 relative z-30 -mx-4 px-4 pt-3 pb-3">
           {/* Gradient mask sits BEHIND the tab labels so cards fade as they scroll under the strip */}
           <div
             className="pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+24px)]"
@@ -235,6 +239,7 @@ const PersonFeed = () => {
           </div>
         </div>
 
+        <div className="flex-1 min-h-0">
         {loading ? (
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -242,7 +247,7 @@ const PersonFeed = () => {
             ))}
           </div>
         ) : visibleEvents && visibleEvents.length > 0 ? (
-          <div className="-mt-6">
+          <div className="h-full">
             <WalletStack
               cardHeight={440}
               gap={-32}
@@ -310,6 +315,7 @@ const PersonFeed = () => {
             <EmptyFeedSuggestions />
           )
         )}
+        </div>
 
         <FilterSheet liveCount={innerEvents.length} getLiveCount={(draft) => filterAndSortEvents(draft).length} />
         <Roulette open={rouletteOpen} onOpenChange={setRouletteOpen} />

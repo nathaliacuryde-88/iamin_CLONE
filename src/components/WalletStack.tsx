@@ -387,9 +387,12 @@ const WalletStack = ({ children, cardHeight = 320, gap = -20, header, onRefresh,
       ref={containerRef}
       className="overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide relative"
       style={{
-        // Full screen under the top bar — the deck visually flows behind the
-        // floating bottom nav (which doesn't reserve any layout space).
-        height: "calc(100dvh - 3.5rem - env(safe-area-inset-top))",
+        // Fill the flex parent exactly (Index.tsx sizes the feed column to the
+        // visible area below the top bar). Don't hard-code 100dvh math here — it
+        // broke on iOS standalone: the sticky tab strip offset this container,
+        // making it taller than the screen and pushing focused cards (and their
+        // action buttons) down under the floating nav.
+        height: "100%",
         perspective: "1200px",
         perspectiveOrigin: "center center",
         WebkitOverflowScrolling: "touch",
