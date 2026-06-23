@@ -1,0 +1,874 @@
+{
+  "generated_at": "2026-06-23T13:34:24.881140Z",
+  "scope": "colors + sheets + cards (buttons & typography intentionally left undecided)",
+  "summary": {
+    "sheet": {
+      "keep": 10,
+      "migrate": 17,
+      "remove": 0,
+      "reference": "sheet:12",
+      "notes": [
+        {
+          "id": "sheet:0",
+          "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+        },
+        {
+          "id": "sheet:1",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:2",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:3",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:4",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:5",
+          "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+        },
+        {
+          "id": "sheet:6",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:7",
+          "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+        },
+        {
+          "id": "sheet:8",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:9",
+          "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+        },
+        {
+          "id": "sheet:10",
+          "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+        },
+        {
+          "id": "sheet:11",
+          "note": "vaul Drawer (handle + swipe) \u2014 correct for a browse/menu panel. Keep."
+        },
+        {
+          "id": "sheet:12",
+          "note": "REFERENCE: rounded-t-2xl top + safe-area bottom padding. Every bottom sheet should match this visual contract."
+        },
+        {
+          "id": "sheet:13",
+          "note": "vaul Drawer is fine, but add safe-area bottom padding + ensure rounded-t-2xl to match the standard."
+        },
+        {
+          "id": "sheet:14",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:15",
+          "note": "vaul Drawer (handle + swipe) \u2014 correct for a browse/menu panel. Keep."
+        },
+        {
+          "id": "sheet:16",
+          "note": "vaul Drawer (handle + swipe) \u2014 correct for a browse/menu panel. Keep."
+        },
+        {
+          "id": "sheet:17",
+          "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+        },
+        {
+          "id": "sheet:18",
+          "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+        },
+        {
+          "id": "sheet:19",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:20",
+          "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+        },
+        {
+          "id": "sheet:21",
+          "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+        },
+        {
+          "id": "sheet:22",
+          "note": "vaul Drawer is fine, but add safe-area bottom padding + ensure rounded-t-2xl to match the standard."
+        },
+        {
+          "id": "sheet:23",
+          "note": "vaul Drawer is fine, but add safe-area bottom padding + ensure rounded-t-2xl to match the standard."
+        },
+        {
+          "id": "sheet:24",
+          "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+        },
+        {
+          "id": "sheet:25",
+          "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+        },
+        {
+          "id": "sheet:26",
+          "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+        }
+      ]
+    },
+    "card": {
+      "keep": 9,
+      "migrate": 12,
+      "remove": 0,
+      "reference": "card:2",
+      "notes": [
+        {
+          "id": "card:0",
+          "note": "Default radius card-like container -> standardize to rounded-2xl + card-surface border."
+        },
+        {
+          "id": "card:1",
+          "note": "rounded-xl -> rounded-2xl to match the card standard."
+        },
+        {
+          "id": "card:2",
+          "note": "REFERENCE: rounded-2xl + border, token-driven (card-surface). All real cards match this."
+        },
+        {
+          "id": "card:3",
+          "note": "rounded-xl -> rounded-2xl."
+        },
+        {
+          "id": "card:4",
+          "note": "rounded-2xl, no border \u2014 acceptable variant; add card-surface border where it reads as a card."
+        },
+        {
+          "id": "card:5",
+          "note": "Default radius -> rounded-2xl."
+        },
+        {
+          "id": "card:6",
+          "note": "rounded-xl -> rounded-2xl; keep glass only if it's a floating/overlay surface."
+        },
+        {
+          "id": "card:7",
+          "note": "Pill / floating control (e.g. nav) \u2014 NOT a card. Exclude from the card system."
+        },
+        {
+          "id": "card:8",
+          "note": "Default radius -> rounded-2xl."
+        },
+        {
+          "id": "card:9",
+          "note": "Pill/avatar \u2014 not a card. Exclude."
+        },
+        {
+          "id": "card:10",
+          "note": "rounded-2xl floating/glass card \u2014 acceptable variant of the standard."
+        },
+        {
+          "id": "card:11",
+          "note": "rounded-xl -> rounded-2xl."
+        },
+        {
+          "id": "card:12",
+          "note": "Pill/chip \u2014 not a card. Exclude."
+        },
+        {
+          "id": "card:13",
+          "note": "Default radius -> rounded-2xl."
+        },
+        {
+          "id": "card:14",
+          "note": "Avatar/dot \u2014 not a card. Exclude."
+        },
+        {
+          "id": "card:15",
+          "note": "One-off rounded-xl+shadow -> rounded-2xl + standard card-shadow token."
+        },
+        {
+          "id": "card:16",
+          "note": "One-off rounded-3xl -> rounded-2xl to match standard."
+        },
+        {
+          "id": "card:17",
+          "note": "rounded-2xl glass \u2014 acceptable floating variant."
+        },
+        {
+          "id": "card:18",
+          "note": "Floating pill \u2014 not a card. Exclude."
+        },
+        {
+          "id": "card:19",
+          "note": "rounded-lg -> rounded-2xl."
+        },
+        {
+          "id": "card:20",
+          "note": "One-off rounded-3xl -> rounded-2xl."
+        }
+      ]
+    },
+    "hex": {
+      "keep": 10,
+      "migrate": 1,
+      "remove": 0,
+      "reference": null,
+      "notes": [
+        {
+          "id": "hex:#7c3aed",
+          "note": "Hardcoded brand purple = your --primary (262 83% 58%). Replace with hsl(var(--primary)) / text-primary etc. THE genuine leak."
+        },
+        {
+          "id": "hex:#a78bfa",
+          "note": "Lighter purple used in avatarEmoji procedural palette \u2014 intentional generated color, exempt. (Optional: derive from --primary.)"
+        },
+        {
+          "id": "hex:#ec4899",
+          "note": "Pink used in decorative gradients/birthday art \u2014 intentional brand accent, exempt from theme tokens."
+        },
+        {
+          "id": "hex:#fff",
+          "note": "In shadcn chart.tsx (3rd-party defaults) + birthday artwork. Exempt; not a theme surface."
+        },
+        {
+          "id": "hex:#ccc",
+          "note": "shadcn chart.tsx default grid/axis color (3rd-party). Exempt."
+        },
+        {
+          "id": "hex:#000",
+          "note": "NightReceipt skeuomorphic 'paper receipt' artwork \u2014 intentional fixed design, exempt."
+        },
+        {
+          "id": "hex:#f6f3ea",
+          "note": "NightReceipt paper background \u2014 intentional themed artwork, exempt."
+        },
+        {
+          "id": "hex:#3a2f00",
+          "note": "CapsuleMessageCard 'paper/ink' artwork color \u2014 intentional, exempt."
+        },
+        {
+          "id": "hex:#e6d262",
+          "note": "CapsuleMessageCard gold accent \u2014 intentional artwork, exempt."
+        },
+        {
+          "id": "hex:#1a1a1a",
+          "note": "LiveRadarMapSheet Leaflet map marker styling \u2014 map needs literal colors, exempt."
+        },
+        {
+          "id": "hex:#fbbf24",
+          "note": "LiveRadarMapSheet map marker (amber) \u2014 literal needed for Leaflet, exempt."
+        }
+      ]
+    },
+    "pal": {
+      "keep": 20,
+      "migrate": 25,
+      "remove": 0,
+      "reference": null,
+      "notes": [
+        {
+          "id": "pal:bg-white",
+          "note": "-> bg-card / bg-background (breaks light mode as raw white)."
+        },
+        {
+          "id": "pal:text-white",
+          "note": "-> text-foreground (or text-card-foreground on colored surfaces)."
+        },
+        {
+          "id": "pal:text-white/70",
+          "note": "-> text-muted-foreground or text-foreground/70."
+        },
+        {
+          "id": "pal:text-white/80",
+          "note": "-> text-foreground/80."
+        },
+        {
+          "id": "pal:text-white/95",
+          "note": "-> text-foreground."
+        },
+        {
+          "id": "pal:border-white/10",
+          "note": "-> border-border (or border-foreground/10)."
+        },
+        {
+          "id": "pal:border-white/5",
+          "note": "-> border-border."
+        },
+        {
+          "id": "pal:bg-white/5",
+          "note": "-> bg-muted / bg-foreground/5."
+        },
+        {
+          "id": "pal:bg-white/10",
+          "note": "-> bg-muted."
+        },
+        {
+          "id": "pal:bg-white/15",
+          "note": "-> bg-muted."
+        },
+        {
+          "id": "pal:bg-white/20",
+          "note": "-> bg-muted."
+        },
+        {
+          "id": "pal:bg-white/25",
+          "note": "-> bg-muted."
+        },
+        {
+          "id": "pal:bg-white/30",
+          "note": "-> bg-muted."
+        },
+        {
+          "id": "pal:ring-white/30",
+          "note": "-> ring-ring / ring-border."
+        },
+        {
+          "id": "pal:ring-white/80",
+          "note": "-> ring-ring."
+        },
+        {
+          "id": "pal:bg-black",
+          "note": "-> bg-background."
+        },
+        {
+          "id": "pal:bg-black/40",
+          "note": "-> overlay: bg-background/40."
+        },
+        {
+          "id": "pal:bg-black/50",
+          "note": "-> bg-background/50."
+        },
+        {
+          "id": "pal:bg-black/60",
+          "note": "-> bg-background/60."
+        },
+        {
+          "id": "pal:bg-black/70",
+          "note": "-> bg-background/70."
+        },
+        {
+          "id": "pal:bg-black/80",
+          "note": "-> bg-background/80."
+        },
+        {
+          "id": "pal:bg-black/85",
+          "note": "-> bg-background/85."
+        },
+        {
+          "id": "pal:text-black",
+          "note": "-> text-foreground."
+        },
+        {
+          "id": "pal:text-black/50",
+          "note": "-> text-foreground/50."
+        },
+        {
+          "id": "pal:text-black/60",
+          "note": "-> text-foreground/60."
+        },
+        {
+          "id": "pal:from-pink-500",
+          "note": "Decorative event-cover gradient \u2014 intentional. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:to-cyan-400",
+          "note": "Event-cover gradient \u2014 intentional. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:to-orange-400",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:from-blue-500",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:from-emerald-400",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:to-lime-300",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:from-yellow-400",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:to-rose-400",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:from-violet-600",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:to-fuchsia-500",
+          "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:text-amber-400",
+          "note": "Status/highlight accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:text-amber-500",
+          "note": "Status accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:bg-amber-500/15",
+          "note": "Warning chip bg. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:bg-amber-500/80",
+          "note": "Warning accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:bg-emerald-500",
+          "note": "Success accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:bg-emerald-500/80",
+          "note": "Success accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:text-green-400",
+          "note": "Success text. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:text-emerald-400",
+          "note": "Success text. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:bg-rose-500/20",
+          "note": "Danger chip bg. (Optional: promote to semantic success/warning/danger tokens later.)"
+        },
+        {
+          "id": "pal:text-rose-300",
+          "note": "Danger text. (Optional: promote to semantic success/warning/danger tokens later.)"
+        }
+      ]
+    }
+  },
+  "decisions": {
+    "sheet:0": {
+      "action": "keep",
+      "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+    },
+    "sheet:1": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:2": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:3": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:4": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:5": {
+      "action": "migrate",
+      "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+    },
+    "sheet:6": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:7": {
+      "action": "keep",
+      "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+    },
+    "sheet:8": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:9": {
+      "action": "migrate",
+      "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+    },
+    "sheet:10": {
+      "action": "keep",
+      "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+    },
+    "sheet:11": {
+      "action": "keep",
+      "note": "vaul Drawer (handle + swipe) \u2014 correct for a browse/menu panel. Keep."
+    },
+    "sheet:12": {
+      "action": "keep",
+      "reference": true,
+      "note": "REFERENCE: rounded-t-2xl top + safe-area bottom padding. Every bottom sheet should match this visual contract."
+    },
+    "sheet:13": {
+      "action": "migrate",
+      "note": "vaul Drawer is fine, but add safe-area bottom padding + ensure rounded-t-2xl to match the standard."
+    },
+    "sheet:14": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:15": {
+      "action": "keep",
+      "note": "vaul Drawer (handle + swipe) \u2014 correct for a browse/menu panel. Keep."
+    },
+    "sheet:16": {
+      "action": "keep",
+      "note": "vaul Drawer (handle + swipe) \u2014 correct for a browse/menu panel. Keep."
+    },
+    "sheet:17": {
+      "action": "keep",
+      "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+    },
+    "sheet:18": {
+      "action": "keep",
+      "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+    },
+    "sheet:19": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:20": {
+      "action": "keep",
+      "note": "Matches standard (rounded-t-2xl). Verify it also has safe-area bottom padding."
+    },
+    "sheet:21": {
+      "action": "migrate",
+      "note": "Change rounded-t-3xl -> rounded-t-2xl + add safe-area bottom padding."
+    },
+    "sheet:22": {
+      "action": "migrate",
+      "note": "vaul Drawer is fine, but add safe-area bottom padding + ensure rounded-t-2xl to match the standard."
+    },
+    "sheet:23": {
+      "action": "migrate",
+      "note": "vaul Drawer is fine, but add safe-area bottom padding + ensure rounded-t-2xl to match the standard."
+    },
+    "sheet:24": {
+      "action": "migrate",
+      "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+    },
+    "sheet:25": {
+      "action": "migrate",
+      "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+    },
+    "sheet:26": {
+      "action": "migrate",
+      "note": "No top radius / no safe-area. Add rounded-t-2xl top corners + safe-area bottom padding."
+    },
+    "card:0": {
+      "action": "migrate",
+      "note": "Default radius card-like container -> standardize to rounded-2xl + card-surface border."
+    },
+    "card:1": {
+      "action": "migrate",
+      "note": "rounded-xl -> rounded-2xl to match the card standard."
+    },
+    "card:2": {
+      "action": "keep",
+      "reference": true,
+      "note": "REFERENCE: rounded-2xl + border, token-driven (card-surface). All real cards match this."
+    },
+    "card:3": {
+      "action": "migrate",
+      "note": "rounded-xl -> rounded-2xl."
+    },
+    "card:4": {
+      "action": "keep",
+      "note": "rounded-2xl, no border \u2014 acceptable variant; add card-surface border where it reads as a card."
+    },
+    "card:5": {
+      "action": "migrate",
+      "note": "Default radius -> rounded-2xl."
+    },
+    "card:6": {
+      "action": "migrate",
+      "note": "rounded-xl -> rounded-2xl; keep glass only if it's a floating/overlay surface."
+    },
+    "card:7": {
+      "action": "keep",
+      "note": "Pill / floating control (e.g. nav) \u2014 NOT a card. Exclude from the card system."
+    },
+    "card:8": {
+      "action": "migrate",
+      "note": "Default radius -> rounded-2xl."
+    },
+    "card:9": {
+      "action": "keep",
+      "note": "Pill/avatar \u2014 not a card. Exclude."
+    },
+    "card:10": {
+      "action": "keep",
+      "note": "rounded-2xl floating/glass card \u2014 acceptable variant of the standard."
+    },
+    "card:11": {
+      "action": "migrate",
+      "note": "rounded-xl -> rounded-2xl."
+    },
+    "card:12": {
+      "action": "keep",
+      "note": "Pill/chip \u2014 not a card. Exclude."
+    },
+    "card:13": {
+      "action": "migrate",
+      "note": "Default radius -> rounded-2xl."
+    },
+    "card:14": {
+      "action": "keep",
+      "note": "Avatar/dot \u2014 not a card. Exclude."
+    },
+    "card:15": {
+      "action": "migrate",
+      "note": "One-off rounded-xl+shadow -> rounded-2xl + standard card-shadow token."
+    },
+    "card:16": {
+      "action": "migrate",
+      "note": "One-off rounded-3xl -> rounded-2xl to match standard."
+    },
+    "card:17": {
+      "action": "keep",
+      "note": "rounded-2xl glass \u2014 acceptable floating variant."
+    },
+    "card:18": {
+      "action": "keep",
+      "note": "Floating pill \u2014 not a card. Exclude."
+    },
+    "card:19": {
+      "action": "migrate",
+      "note": "rounded-lg -> rounded-2xl."
+    },
+    "card:20": {
+      "action": "migrate",
+      "note": "One-off rounded-3xl -> rounded-2xl."
+    },
+    "hex:#7c3aed": {
+      "action": "migrate",
+      "note": "Hardcoded brand purple = your --primary (262 83% 58%). Replace with hsl(var(--primary)) / text-primary etc. THE genuine leak."
+    },
+    "hex:#a78bfa": {
+      "action": "keep",
+      "note": "Lighter purple used in avatarEmoji procedural palette \u2014 intentional generated color, exempt. (Optional: derive from --primary.)"
+    },
+    "hex:#ec4899": {
+      "action": "keep",
+      "note": "Pink used in decorative gradients/birthday art \u2014 intentional brand accent, exempt from theme tokens."
+    },
+    "hex:#fff": {
+      "action": "keep",
+      "note": "In shadcn chart.tsx (3rd-party defaults) + birthday artwork. Exempt; not a theme surface."
+    },
+    "hex:#ccc": {
+      "action": "keep",
+      "note": "shadcn chart.tsx default grid/axis color (3rd-party). Exempt."
+    },
+    "hex:#000": {
+      "action": "keep",
+      "note": "NightReceipt skeuomorphic 'paper receipt' artwork \u2014 intentional fixed design, exempt."
+    },
+    "hex:#f6f3ea": {
+      "action": "keep",
+      "note": "NightReceipt paper background \u2014 intentional themed artwork, exempt."
+    },
+    "hex:#3a2f00": {
+      "action": "keep",
+      "note": "CapsuleMessageCard 'paper/ink' artwork color \u2014 intentional, exempt."
+    },
+    "hex:#e6d262": {
+      "action": "keep",
+      "note": "CapsuleMessageCard gold accent \u2014 intentional artwork, exempt."
+    },
+    "hex:#1a1a1a": {
+      "action": "keep",
+      "note": "LiveRadarMapSheet Leaflet map marker styling \u2014 map needs literal colors, exempt."
+    },
+    "hex:#fbbf24": {
+      "action": "keep",
+      "note": "LiveRadarMapSheet map marker (amber) \u2014 literal needed for Leaflet, exempt."
+    },
+    "pal:bg-white": {
+      "action": "migrate",
+      "note": "-> bg-card / bg-background (breaks light mode as raw white)."
+    },
+    "pal:text-white": {
+      "action": "migrate",
+      "note": "-> text-foreground (or text-card-foreground on colored surfaces)."
+    },
+    "pal:text-white/70": {
+      "action": "migrate",
+      "note": "-> text-muted-foreground or text-foreground/70."
+    },
+    "pal:text-white/80": {
+      "action": "migrate",
+      "note": "-> text-foreground/80."
+    },
+    "pal:text-white/95": {
+      "action": "migrate",
+      "note": "-> text-foreground."
+    },
+    "pal:border-white/10": {
+      "action": "migrate",
+      "note": "-> border-border (or border-foreground/10)."
+    },
+    "pal:border-white/5": {
+      "action": "migrate",
+      "note": "-> border-border."
+    },
+    "pal:bg-white/5": {
+      "action": "migrate",
+      "note": "-> bg-muted / bg-foreground/5."
+    },
+    "pal:bg-white/10": {
+      "action": "migrate",
+      "note": "-> bg-muted."
+    },
+    "pal:bg-white/15": {
+      "action": "migrate",
+      "note": "-> bg-muted."
+    },
+    "pal:bg-white/20": {
+      "action": "migrate",
+      "note": "-> bg-muted."
+    },
+    "pal:bg-white/25": {
+      "action": "migrate",
+      "note": "-> bg-muted."
+    },
+    "pal:bg-white/30": {
+      "action": "migrate",
+      "note": "-> bg-muted."
+    },
+    "pal:ring-white/30": {
+      "action": "migrate",
+      "note": "-> ring-ring / ring-border."
+    },
+    "pal:ring-white/80": {
+      "action": "migrate",
+      "note": "-> ring-ring."
+    },
+    "pal:bg-black": {
+      "action": "migrate",
+      "note": "-> bg-background."
+    },
+    "pal:bg-black/40": {
+      "action": "migrate",
+      "note": "-> overlay: bg-background/40."
+    },
+    "pal:bg-black/50": {
+      "action": "migrate",
+      "note": "-> bg-background/50."
+    },
+    "pal:bg-black/60": {
+      "action": "migrate",
+      "note": "-> bg-background/60."
+    },
+    "pal:bg-black/70": {
+      "action": "migrate",
+      "note": "-> bg-background/70."
+    },
+    "pal:bg-black/80": {
+      "action": "migrate",
+      "note": "-> bg-background/80."
+    },
+    "pal:bg-black/85": {
+      "action": "migrate",
+      "note": "-> bg-background/85."
+    },
+    "pal:text-black": {
+      "action": "migrate",
+      "note": "-> text-foreground."
+    },
+    "pal:text-black/50": {
+      "action": "migrate",
+      "note": "-> text-foreground/50."
+    },
+    "pal:text-black/60": {
+      "action": "migrate",
+      "note": "-> text-foreground/60."
+    },
+    "pal:from-pink-500": {
+      "action": "keep",
+      "note": "Decorative event-cover gradient \u2014 intentional. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:to-cyan-400": {
+      "action": "keep",
+      "note": "Event-cover gradient \u2014 intentional. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:to-orange-400": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:from-blue-500": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:from-emerald-400": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:to-lime-300": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:from-yellow-400": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:to-rose-400": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:from-violet-600": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:to-fuchsia-500": {
+      "action": "keep",
+      "note": "Event gradient. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:text-amber-400": {
+      "action": "keep",
+      "note": "Status/highlight accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:text-amber-500": {
+      "action": "keep",
+      "note": "Status accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:bg-amber-500/15": {
+      "action": "keep",
+      "note": "Warning chip bg. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:bg-amber-500/80": {
+      "action": "keep",
+      "note": "Warning accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:bg-emerald-500": {
+      "action": "keep",
+      "note": "Success accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:bg-emerald-500/80": {
+      "action": "keep",
+      "note": "Success accent. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:text-green-400": {
+      "action": "keep",
+      "note": "Success text. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:text-emerald-400": {
+      "action": "keep",
+      "note": "Success text. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:bg-rose-500/20": {
+      "action": "keep",
+      "note": "Danger chip bg. (Optional: promote to semantic success/warning/danger tokens later.)"
+    },
+    "pal:text-rose-300": {
+      "action": "keep",
+      "note": "Danger text. (Optional: promote to semantic success/warning/danger tokens later.)"
+    }
+  }
+}
