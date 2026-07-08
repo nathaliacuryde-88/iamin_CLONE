@@ -29,12 +29,16 @@ export const useEvents = () => {
       const invitedEventIds = (invites ?? []).map((i: any) => i.event_id);
 
       const baseQuery = supabase.from("events").select("*");
-      const { data: events, error } = invitedEventIds.length > 0
+      const { data: rawEvents, error } = invitedEventIds.length > 0
         ? await baseQuery
             .or(`created_by.in.(${allowedCreators.join(",")}),id.in.(${invitedEventIds.join(",")})`)
             .order("date", { ascending: true })
         : await baseQuery.in("created_by", allowedCreators).order("date", { ascending: true });
       if (error) throw error;
+
+      // Collapse merged duplicates: an event folded into another (canonical_event_id
+      // set) is hidden so everyone sees the single primary event instead.
+      const events = (rawEvents ?? []).filter((e: any) => !e.canonical_event_id);
 
       const eventIds = events.map((e) => e.id);
       const { data: attendees } = eventIds.length

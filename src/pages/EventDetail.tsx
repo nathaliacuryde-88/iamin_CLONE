@@ -42,6 +42,7 @@ import { useBringItems, useAddBringItem, useDeleteBringItem } from "@/hooks/useB
 import { Plus, X as XIcon, Receipt } from "lucide-react";
 import NightReceipt from "@/sheets/NightReceipt";
 import EventScoreStrip from "@/components/EventScoreStrip";
+import MergeSuggestion from "@/components/MergeSuggestion";
 import CreatorScoreBadge from "@/components/CreatorScoreBadge";
 import PactSection from "@/components/PactSection";
 import LiveRadarSection from "@/components/LiveRadarSection";
@@ -801,6 +802,12 @@ const EventDetail = () => {
           className="space-y-4"
           style={editing ? { paddingTop: "calc(env(safe-area-inset-top) + 64px)" } : undefined}
         >
+          {!editing && event && (
+            <MergeSuggestion
+              event={{ id: event.id, name: event.name, date: event.date, city: (event as any).city, source_url: event.source_url }}
+              isOwner={isOwner}
+            />
+          )}
           {editing ? (
             <div className="space-y-3">
               {/* Cover edit — image (with crop) or emoji */}
@@ -1054,6 +1061,20 @@ const EventDetail = () => {
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
+                )}
+                {/* Attendees (not just the owner) can invite friends, so people
+                    spread the event they joined instead of cloning it. */}
+                {!isOwner && !!myAttendance && event.visibility !== "public" && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-primary shrink-0 -mr-1"
+                    onClick={() => setInviteOpen(true)}
+                    aria-label="Invite friends"
+                    title="Invite friends"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                  </Button>
                 )}
               </div>
 
