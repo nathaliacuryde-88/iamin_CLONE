@@ -34,6 +34,7 @@ import {
 import { toSentenceCase } from "@/lib/utils";
 import { toFriendlyError } from "@/lib/errors";
 import { compressImage } from "@/lib/imageCompress";
+import { rankDuplicates, type EventMatchInput } from "@/lib/eventMatch";
 
 const VIBE_PERSON = [
   { label: "party", emoji: "🎉" },
@@ -393,28 +394,110 @@ const AddEvent = () => {
   const [singleRsvp, setSingleRsvp] = useState<"going" | "interested">("going");
 
   // Duplicate prompt
-  const [duplicatePrompt, setDuplicatePrompt] = useState<{ id: string; name: string; creator: string } | null>(null);
+  type DuplicateMatch = { id: string; name: string; creator: string; reasons: string[]; score: number };
+  const [duplicatePrompt, setDuplicatePrompt] = useState<DuplicateMatch | null>(null);
+  const [joining, setJoining] = useState(false);
+  // Matches the user already chose "create my own" for — don't nag again.
+  const dismissedDupesRef = useRef<Set<string>>(new Set());
+
+  // Fuzzy, visibility-scoped duplicate lookup. Prefers the server RPC
+  // (find_similar_events); falls back to a broadened client query + local
+  // ranking when the RPC isn't deployed yet. Returns the best match or null.
+  const findDuplicateEvent = useCallback(
+    async (input: EventMatchInput): Promise<DuplicateMatch | null> => {
+      // 1. Server RPC — authoritative & visibility-scoped.
+      try {
+        const { data, error } = await (supabase as any).rpc("find_similar_events", {
+          _name: input.name,
+          _date: input.date ?? null,
+          _city: input.city ?? null,
+          _source_url: input.sourceUrl ?? null,
+        });
+        if (!error && Array.isArray(data)) {
+          if (data.length === 0) return null;
+          const best = data[0];
+          return {
+            id: best.id,
+            name: best.name,
+            creator: best.creator_name ?? "A friend",
+            reasons: best.same_link ? ["same link"] : ["similar event"],
+            score: best.same_link ? 1 : Number(best.score ?? 0),
+          };
+        }
+      } catch {
+        /* fall through to client fallback */
+      }
+
+      // 2. Fallback: rank friends' recent events locally.
+      if (friendIds.length === 0) return null;
+      const { data: rows } = await supabase
+        .from("events")
+        .select("id, name, date, city, source_url, created_by")
+        .in("created_by", friendIds)
+        .limit(50);
+      if (!rows || rows.length === 0) return null;
+      const ranked = rankDuplicates(input, rows as any);
+      if (ranked.length === 0) return null;
+      const best = ranked[0];
+      const { data: prof } = await supabase
+        .from("profiles").select("display_name").eq("user_id", best.created_by!).maybeSingle();
+      return { id: best.id, name: best.name, creator: prof?.display_name ?? "A friend", reasons: best.reasons, score: best.score };
+    },
+    [friendIds],
+  );
+
+  // Phase 2: actually RSVP to an existing event instead of duplicating it.
+  const joinExistingEvent = useCallback(
+    async (eventId: string, opts?: { navigateAfter?: boolean }): Promise<boolean> => {
+      if (!user) return false;
+      try {
+        const { error } = await supabase
+          .from("attendees")
+          .upsert({ event_id: eventId, user_id: user.id, status: "going" }, { onConflict: "event_id,user_id" });
+        if (error) throw error;
+        haptic("success");
+        if (opts?.navigateAfter !== false) {
+          toast({ title: "You're in 🎉", description: "We added you to their event." });
+          try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+          navigate(`/event/${eventId}`);
+        }
+        return true;
+      } catch (err: any) {
+        const rls = err?.code === "42501" || /row-level security/i.test(err?.message ?? "");
+        if (rls) {
+          toast({
+            title: "Ask for an invite",
+            description: "You can see this event but need an invite from the host to join.",
+            variant: "destructive",
+          });
+        } else {
+          const f = toFriendlyError(err, "Join event");
+          toast({ title: f.title, description: f.description, variant: "destructive" });
+        }
+        return false;
+      }
+    },
+    [user, navigate, toast, haptic],
+  );
 
   useEffect(() => {
-    if (!singleDraft.name || !singleDraft.date || !user || friendIds.length === 0) return;
-    const check = async () => {
-      const { data } = await supabase
-        .from("events")
-        .select("id, name, created_by")
-        .eq("date", singleDraft.date)
-        .ilike("name", singleDraft.name.trim())
-        .in("created_by", friendIds)
-        .limit(1);
-      if (data && data.length > 0 && !duplicatePrompt) {
-        const dupe = data[0];
-        const { data: prof } = await supabase
-          .from("profiles").select("display_name").eq("user_id", dupe.created_by).maybeSingle();
-        setDuplicatePrompt({ id: dupe.id, name: dupe.name, creator: prof?.display_name ?? "A friend" });
+    const name = singleDraft.name?.trim();
+    if (!name || name.length < 3 || !user) return;
+    let cancelled = false;
+    const t = window.setTimeout(async () => {
+      const match = await findDuplicateEvent({
+        name,
+        date: singleDraft.date || null,
+        city: singleDraft.city || null,
+        sourceUrl: url || null,
+      });
+      if (!cancelled && (!match || !dismissedDupesRef.current.has(match.id))) {
+        setDuplicatePrompt((prev) => prev ?? match);
       }
-    };
-    check();
+    }, 500);
+    return () => { cancelled = true; window.clearTimeout(t); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleDraft.name, singleDraft.date, friendIds.join(",")]);
+  }, [singleDraft.name, singleDraft.date, singleDraft.city, url, findDuplicateEvent]);
 
   // ============= BULK SCREENSHOT FLOW =============
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -586,7 +669,19 @@ const AddEvent = () => {
       const { data: me } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle();
 
       let createdCount = 0;
+      let joinedCount = 0;
       for (const d of ready) {
+        // Skip creating a near-certain duplicate; RSVP to the existing one instead.
+        const dupe = await findDuplicateEvent({
+          name: d.draft.name,
+          date: d.draft.date || null,
+          city: d.draft.city || null,
+          sourceUrl: null,
+        });
+        if (dupe && dupe.score >= 0.8) {
+          const ok = await joinExistingEvent(dupe.id, { navigateAfter: false });
+          if (ok) { joinedCount++; continue; }
+        }
         let image_url: string | null = null;
         if (d.file) {
           const compressed = await compressImage(d.file);
@@ -610,6 +705,7 @@ const AddEvent = () => {
           description: d.draft.description || null,
           vibe_category: d.draft.vibeCategory || null,
           image_url,
+          source_url: null,
           created_by: user.id,
           visibility: d.visibility,
           bring_list_enabled: isOrganizer ? false : d.bringListEnabled,
@@ -645,7 +741,16 @@ const AddEvent = () => {
       if (lastCity) {
         try { window.localStorage.setItem(LAST_CITY_KEY, lastCity); } catch { /* ignore */ }
       }
-      toast({ title: `${createdCount} event${createdCount > 1 ? "s" : ""} created!` });
+      toast(
+        createdCount === 0 && joinedCount > 0
+          ? { title: `Joined ${joinedCount} event${joinedCount === 1 ? "" : "s"} a friend already added.` }
+          : {
+              title: `${createdCount} event${createdCount === 1 ? "" : "s"} created!`,
+              description: joinedCount > 0
+                ? `Joined ${joinedCount} event${joinedCount === 1 ? "" : "s"} a friend already added.`
+                : undefined,
+            },
+      );
       haptic("success");
       try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
       navigate("/");
@@ -1882,18 +1987,37 @@ const AddEvent = () => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               <span className="text-foreground font-medium">{duplicatePrompt?.creator}</span> already added{" "}
-              <span className="text-foreground font-medium">"{duplicatePrompt?.name}"</span> on this date. Want to join
-              their event instead of creating a duplicate?
+              <span className="text-foreground font-medium">"{duplicatePrompt?.name}"</span>
+              {duplicatePrompt?.reasons?.includes("same link") ? " from the same link" : " around this date"}. Join
+              theirs so you're all on one event — or create your own anyway.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Create my own</AlertDialogCancel>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel
+              disabled={joining}
+              onClick={() => { if (duplicatePrompt) dismissedDupesRef.current.add(duplicatePrompt.id); }}
+            >
+              Create my own
+            </AlertDialogCancel>
+            <Button
+              variant="outline"
+              disabled={joining}
+              onClick={() => { if (duplicatePrompt) navigate(`/event/${duplicatePrompt.id}`); }}
+            >
+              View first
+            </Button>
             <AlertDialogAction
-              onClick={() => {
-                if (duplicatePrompt) navigate(`/event/${duplicatePrompt.id}`);
+              disabled={joining}
+              onClick={async (e) => {
+                e.preventDefault(); // keep dialog open until the RSVP resolves
+                if (!duplicatePrompt) return;
+                setJoining(true);
+                const ok = await joinExistingEvent(duplicatePrompt.id);
+                setJoining(false);
+                if (ok) setDuplicatePrompt(null);
               }}
             >
-              Join their event
+              {joining ? "Joining…" : "Join theirs"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
