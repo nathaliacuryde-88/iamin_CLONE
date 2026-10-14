@@ -1,0 +1,144 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>@font-face{font-family:'SG';font-weight:300 700;src:url(sg.woff2) format('woff2');}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#090A0F}
+#bg{position:absolute;inset:0;width:1080px;height:1920px}
+canvas{position:absolute;inset:0}
+#ov{position:absolute;inset:0;width:1080px;height:1920px}</style>
+<script type="importmap">{"imports":{"three":"./js/node_modules/three/build/three.module.js","three/addons/":"./js/node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<img id="bg"><img id="ov">
+<script type="module">
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+// ---------------- iPhone 16 Pro proportions (mm): 71.5 x 149.6 x 8.25, corner radius ~ 12
+const PW = 71.5, PH = 149.6, PD = 8.25, R = 11.6;
+const SW = 66.0, SH = 143.6, SR = 9.6;   // display area (front)
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(1080, 1920);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+document.body.insertBefore(renderer.domElement, document.getElementById("ov"));
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(30, 1080 / 1920, 1, 5000);
+
+const rrect = (w, h, r) => { const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; };
+const uvFit = (geo, w, h) => { const p = geo.attributes.position, uv = new Float32Array(p.count * 2);
+  for (let i = 0; i < p.count; i++) { uv[i * 2] = p.getX(i) / w + .5; uv[i * 2 + 1] = p.getY(i) / h + .5; } geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2)); return geo; };
+
+const phone = new THREE.Group(); scene.add(phone);
+// titanium frame: extruded rounded rect with bevel
+const ti = new THREE.MeshPhysicalMaterial({ color: 0x3a3a3e, metalness: 1, roughness: .32, clearcoat: .3, clearcoatRoughness: .4 });
+const bodyGeo = new THREE.ExtrudeGeometry(rrect(PW - 1.6, PH - 1.6, R - .8), { depth: PD - 1.6, bevelEnabled: true, bevelThickness: .8, bevelSize: .8, bevelSegments: 6, curveSegments: 24 });
+bodyGeo.translate(0, 0, -(PD - 1.6) / 2);
+phone.add(new THREE.Mesh(bodyGeo, ti));
+// back glass (frosted dark)
+const backMat = new THREE.MeshPhysicalMaterial({ color: 0x1a1a1e, metalness: .25, roughness: .6, clearcoat: .5, clearcoatRoughness: .55 });
+const back = new THREE.Mesh(new THREE.ShapeGeometry(rrect(PW - 2.4, PH - 2.4, R - 1.2), 24), backMat); back.position.z = -PD / 2 - .02; back.rotation.y = Math.PI; phone.add(back);
+// camera plateau + lenses
+const cam = new THREE.Group(); cam.position.set(PW / 2 - 19, PH / 2 - 19, -PD / 2 - .05); cam.rotation.y = Math.PI; phone.add(cam);
+const plateau = new THREE.Mesh(new THREE.ExtrudeGeometry(rrect(32, 32, 8), { depth: 1.2, bevelEnabled: true, bevelThickness: .4, bevelSize: .4, bevelSegments: 4 }), new THREE.MeshPhysicalMaterial({ color: 0x26262a, metalness: .3, roughness: .35, clearcoat: 1 }));
+cam.add(plateau);
+const ringMat = new THREE.MeshPhysicalMaterial({ color: 0x55555a, metalness: 1, roughness: .2 }), glassMat = new THREE.MeshPhysicalMaterial({ color: 0x05060a, metalness: .2, roughness: .05, clearcoat: 1 });
+for (const [x, y] of [[-7.3, 7.3], [-7.3, -7.3], [7.6, 0]]) {
+  const ring = new THREE.Mesh(new THREE.CylinderGeometry(6, 6.2, 2.4, 48), ringMat); ring.rotation.x = Math.PI / 2; ring.position.set(x, y, 2.2); cam.add(ring);
+  const lens = new THREE.Mesh(new THREE.CylinderGeometry(4.4, 4.4, .4, 48), glassMat); lens.rotation.x = Math.PI / 2; lens.position.set(x, y, 3.45); cam.add(lens);
+  const dot = new THREE.Mesh(new THREE.CircleGeometry(1.6, 32), new THREE.MeshPhysicalMaterial({ color: 0x1b2a4a, metalness: .5, roughness: .1 })); dot.position.set(x, y, 3.7); cam.add(dot);
+}
+const flash = new THREE.Mesh(new THREE.CircleGeometry(1.8, 32), new THREE.MeshStandardMaterial({ color: 0xe8e2d0, roughness: .4 })); flash.position.set(7.6, 9.5, 1.7); cam.add(flash);
+// side buttons
+const btn = (x, y, h) => { const b = new THREE.Mesh(new THREE.BoxGeometry(1.2, h, 3.4), ti); b.position.set(x, y, 0); phone.add(b); };
+btn(-PW / 2 - .3, 38, 6); btn(-PW / 2 - .3, 25, 11); btn(-PW / 2 - .3, 11, 11); btn(PW / 2 + .3, 20, 17); btn(PW / 2 + .3, -18, 9);
+// front: black glass + display
+const frontGlass = new THREE.Mesh(new THREE.ShapeGeometry(rrect(PW - 1.8, PH - 1.8, R - .9), 24), new THREE.MeshPhysicalMaterial({ color: 0x020203, metalness: 0, roughness: .05, clearcoat: 1 }));
+frontGlass.position.z = PD / 2 + .01; phone.add(frontGlass);
+const tex = new THREE.Texture(); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.minFilter = THREE.LinearMipmapLinearFilter;
+const screenMat = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
+const screen = new THREE.Mesh(uvFit(new THREE.ShapeGeometry(rrect(SW, SH, SR), 32), SW, SH), screenMat); screen.position.z = PD / 2 + .03; phone.add(screen);
+const island = new THREE.Mesh(new THREE.ShapeGeometry(rrect(20, 6.2, 3.1), 16), new THREE.MeshBasicMaterial({ color: 0x000000 })); island.position.set(0, SH / 2 - 6, PD / 2 + .05); phone.add(island);
+// glass reflection sheen
+const sheen = new THREE.Mesh(new THREE.ShapeGeometry(rrect(SW, SH, SR), 24), new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .02, transparent: true, opacity: .05, clearcoat: 1 }));
+sheen.position.z = PD / 2 + .08; phone.add(sheen);
+
+const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(200, 300, 400); scene.add(key);
+const rim = new THREE.DirectionalLight(0x9b7bff, 1.6); rim.position.set(-300, 100, -200); scene.add(rim);
+scene.add(new THREE.AmbientLight(0xffffff, .25));
+
+// ---------------- helpers for shots
+// fullBleedDist: camera distance at which the screen fills the 1080 width exactly
+const fov = camera.fov * Math.PI / 180, aspect = 1080 / 1920;
+const distForWidth = (w) => (w / 2) / Math.tan(fov / 2) / aspect;
+window.FULL = distForWidth(SW) ;   // screen width == frame width (screen is 66 x 143.6 -> 0.4596 aspect vs 0.5625 frame)
+const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+const texCache = new Map();
+window.setScreen = async (src, crop) => {   // crop: [x,y,w,h] in source px
+  const key = src + (crop ? crop.join(",") : "");
+  let c = texCache.get(key);
+  if (!c) { const img = await loadImg(src); c = document.createElement("canvas"); c.width = 1080; c.height = Math.round(1080 * SH / SW);
+    const g = c.getContext("2d"); g.fillStyle = window.FILL || "#111217"; g.fillRect(0, 0, c.width, c.height);
+    if (img) { const [x, y, w, h] = crop || [0, 0, img.width, img.height]; const s = c.width / w; g.drawImage(img, x, y, w, h, 0, 0, w * s, h * s); }
+    texCache.set(key, c); if (texCache.size > 20) texCache.delete(texCache.keys().next().value); }
+  tex.image = c; tex.needsUpdate = true; };
+window.setBg = (src, op = 1, dy = 0) => { const b = document.getElementById("bg"); if (src) { b.src = src; b.style.opacity = op; b.style.transform = `translateY(${dy}px)`; b.style.display = "block"; } else b.style.display = "none"; return b.decode?.().catch(() => {}); };
+window.setOv = (src, op = 1, clip = null) => { const o = document.getElementById("ov"); if (src) { o.src = src; o.style.opacity = op; o.style.clipPath = clip || "none"; o.style.display = "block"; } else o.style.display = "none"; return o.decode?.().catch(() => {}); };
+// pose: phone rotation (deg) + position, camera at (0,0,dist) looking at target
+window.pose = ({ rx = 0, ry = 0, rz = 0, x = 0, y = 0, z = 0, dist = 400, ty = 0, sheenOp = .05, isl = 1 }) => {
+  island.material.transparent = true; island.material.opacity = isl; island.visible = isl > .01; sheenOp = sheenOp * isl; sheen.visible = isl > .01;
+  phone.rotation.set(rx * Math.PI / 180, ry * Math.PI / 180, rz * Math.PI / 180, "YXZ"); phone.position.set(x, y, z);
+  camera.position.set(0, ty, dist); camera.lookAt(0, ty, 0); sheen.material.opacity = sheenOp; renderer.render(scene, camera); };
+
+const avs = [];
+window.setAvatars = async (list) => {   // list: [{src, x, y, r}] in texture px (1080 wide)
+  for (const a of avs) phone.remove(a.g); avs.length = 0;
+  const TH = 1080 * SH / SW;
+  for (const a of list) {
+    const t = new THREE.Texture(await loadImg(a.src)); t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true;
+    const g = new THREE.Group(); const lx = (a.x / 1080 - .5) * SW, ly = (.5 - a.y / TH) * SH, rr = a.r / 1080 * SW;
+    g.position.set(lx, ly, PD / 2 + .05);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, toneMapped: false, transparent: true })); sp.scale.set(rr * 2.5, rr * 2.5, 1); g.add(sp);
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(.18, .18, 1, 8), new THREE.MeshBasicMaterial({ color: 0x8B5CF6, transparent: true, opacity: .9 })); stem.rotation.x = Math.PI / 2; g.add(stem);
+    const glow = new THREE.Mesh(new THREE.CircleGeometry(rr * 1.05, 32), new THREE.MeshBasicMaterial({ color: 0x8B5CF6, transparent: true, opacity: .35 })); glow.position.z = .02; g.add(glow);
+    phone.add(g); avs.push({ g, sp, stem, glow, rr });
+  }
+};
+window.liftAvatars = (h) => { avs.forEach((a, i) => { const hh = h * (1 + (i % 2) * .35); a.sp.position.z = hh + a.rr * .2; a.stem.scale.y = Math.max(.001, hh); a.stem.position.z = hh / 2; a.stem.visible = hh > .3; a.glow.material.opacity = .35 * Math.min(1, h / 3); }); };
+// full-bleed: screen width == 1080 px and screen top at frame row topRow
+window.fullBleed = (topRow) => { const t = Math.tan(fov / 2); const D = (SW / 2) / t / aspect; const ty = SH / 2 - ((960 - topRow) / 960) * D * t; return { dist: D + PD / 2 + .03, ty }; };
+
+window.setScreenMix = async (srcA, srcB, alpha) => {
+  const [a, b] = await Promise.all([loadImg(srcA), alpha > 0.001 ? loadImg(srcB) : null]);
+  const c = document.createElement("canvas"); c.width = 1080; c.height = 2350; const g = c.getContext("2d");
+  g.drawImage(a, 0, 0); if (b && alpha > 0.001) { g.globalAlpha = Math.min(1, alpha); g.drawImage(b, 0, 0); }
+  tex.image = c; tex.needsUpdate = true; };
+// fliers: planes parented to the phone, flying from a 3D start to their spot on the screen
+const fliers = [];
+window.setFliers = async (list) => {
+  for (const f of fliers) phone.remove(f.m); fliers.length = 0;
+  const TH = 1080 * SH / SW;
+  for (const a of list) {
+    const t = new THREE.Texture(await loadImg(a.src)); t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; t.anisotropy = 8;
+    const w = a.w / 1080 * SW, h = a.h / 1080 * SW;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, transparent: true, toneMapped: false, side: THREE.DoubleSide }));
+    const to = new THREE.Vector3(((a.x + a.w / 2) / 1080 - .5) * SW, (.5 - (a.y + a.h / 2) / TH) * SH, PD / 2 + .12);
+    m.visible = false; phone.add(m); fliers.push({ m, to, from: a.from });
+  }
+};
+window.flyT = (arr) => { fliers.forEach((f, i) => { const k = arr[i]; if (k === undefined || k < 0) { f.m.visible = false; return; } f.m.visible = k <= 1.5;
+  const e = 1 - Math.pow(1 - Math.min(1, k), 3), fr = f.from;
+  f.m.position.set(fr.x + (f.to.x - fr.x) * e, fr.y + (f.to.y - fr.y) * e, fr.z + (f.to.z - fr.z) * e);
+  f.m.rotation.set(fr.rx * (1 - e), fr.ry * (1 - e), fr.rz * (1 - e)); const sc = fr.s + (1 - fr.s) * e; f.m.scale.set(sc, sc, sc); }); };
+// zzz sprites in world space
+const zs = [];
+await document.fonts.load("700 100px SG");
+for (let i = 0; i < 3; i++) { const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d");
+  g.font = "700 210px SG"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = i === 1 ? "#A78BFA" : "#EFF0F5"; g.fillText("z", 128, 140);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, toneMapped: false, depthTest: false })); sp.visible = false; scene.add(sp); zs.push(sp); }
+window.setZ = (arr) => { zs.forEach((z, i) => { const a = arr[i]; if (!a) { z.visible = false; return; } z.visible = a.op > .01; z.position.set(a.x, a.y, a.z); z.scale.set(a.s, a.s, 1); z.material.opacity = a.op; }); };
+window.READY = true;
+</script></body></html>
