@@ -26,6 +26,7 @@ Reference: `iamin-film4-3d-v2` (Oct 2026). Use this as the bar for every new vid
 - Real app captures only (fake backend `tools/fakebackend.mjs`), demo data, fictional "Nina Alves" for the owner. Labels/chips added on top are allowed but should be called out.
 - Taps: white dot + ring. Toggles/changes must show the real state change (e.g. Maybe = outline circle).
 - Transitions: soft fades or elements from the scene for calendar-style films; film4 keeps its slide/blur/glitch language. Never flash between identical screens.
+- **Stories safe zone:** keep the top 240 px of the 1080×1920 frame empty (dark background) — the profile row and the Instagram link sticker live there. Headlines start at y ≥ 300. Full-screen end cards (purple burst → logo) are centred and can use the whole frame.
 - Tags and interactions sit high in the frame (under the headline / on top of the phones), never at the bottom where social UI covers them.
 
 ## Tools
