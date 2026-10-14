@@ -1,0 +1,40 @@
+--- /tmp/iamin_13oct/supabase/functions/event-share/index.ts	1979-12-31 00:00:00.000000000 +0000
++++ event-share/index.ts	2026-10-14 14:39:06.752719818 +0000
+@@ -90,6 +90,7 @@
+         redirectTo: spaUrl,
+         shareUrl,
+         isCrawler,
++        imageUrl: `https://${url.host}/functions/v1/event-og-image/${eventId}.jpg`,
+       });
+       return new Response(html, {
+         status: 200,
+@@ -115,14 +116,10 @@
+       cleanDescription ||
+       (subtitle ? `${subtitle} — Tap to see who's in.` : "Tap to see who's in.");
+ 
+-    // Pick an image for the unfurl: prefer the real cover, then emoji-cover SVG fallback.
+-    let imageUrl: string | null = null;
+-    if (event.image_url) {
+-      imageUrl = event.image_url;
+-    } else {
+-      const cover = parseCoverMeta(event.description);
+-      if (cover) imageUrl = emojiCoverSvg(cover.emoji, cover.color);
+-    }
++    // Share card rendered by the event-og-image function (flyer + date + place + who's in).
++    // The ?v= changes when the event changes, so chat apps don't keep an outdated card.
++    const version = encodeURIComponent(String(event.updated_at ?? event.date ?? "1")).slice(0, 40);
++    const imageUrl = `https://${url.host}/functions/v1/event-og-image/${eventId}.jpg?v=${version}`;
+ 
+     const html = renderShell({
+       title: event.name,
+@@ -162,8 +159,10 @@
+   const img = opts.imageUrl ? escapeHtml(opts.imageUrl) : "";
+   const imageTags = img
+     ? `<meta property="og:image" content="${img}" />
++<meta property="og:image:type" content="image/jpeg" />
+ <meta property="og:image:width" content="1200" />
+ <meta property="og:image:height" content="630" />
++<meta property="og:image:alt" content="${t}" />
+ <meta name="twitter:image" content="${img}" />`
+     : "";
+   const twitterCard = img ? "summary_large_image" : "summary";
