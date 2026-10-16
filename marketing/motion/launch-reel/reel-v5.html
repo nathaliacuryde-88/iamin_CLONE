@@ -1,0 +1,358 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#090A0F}canvas{display:block}</style>
+</head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// Time capsule reel. Every frame is a pure function of t (seconds).
+const W = 1080, H = 1920, FPS = 30;
+const C = document.getElementById("c"), X = C.getContext("2d");
+const T = document.createElement("canvas"); T.width = W; T.height = H; const TX = T.getContext("2d");
+const BG = "#090A0F", PURPLE = "#8B5CF6", PURPLE_END = "rgb(126,74,241)";
+const font = new FontFace("SG", "url(a/sg.ttf)", { weight: "300 700" });
+
+// ---------- timing ----------
+const SC = [0.0, 7.059, 10.588, 14.118, 17.647, 21.177, 27.188, 30.717, 35.129, 38.659];   // bars of Baile do VJ from 0:08.10 (136 BPM); 27.188 = drop
+const NS = SC.length - 1, ENDT = SC[NS];
+const END_FRAMES = 74;
+const DUR = ENDT + 0.6;
+
+// ---------- helpers ----------
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const eo = (x) => 1 - Math.pow(1 - x, 3);
+const eio = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = (x, s = 1.6) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+const spring = (x) => x <= 0 ? 0 : x >= 1.6 ? 1 : 1 - Math.exp(-5.5 * x) * Math.cos(9 * x);
+const mix = (a, b, k) => a + (b - a) * k;
+const rr = (ctx, x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
+
+const cache = new Map();
+function img(src) {
+  if (cache.has(src)) return cache.get(src);
+  const im = new Image(); im.src = src; const p = im.decode().then(() => im).catch(() => null);
+  cache.set(src, { im, p }); if (cache.size > 160) cache.delete(cache.keys().next().value);
+  return cache.get(src);
+}
+const need = new Set();
+const I = (src) => { need.add(src); return cache.get(src)?.im; };
+
+// ---------- assets ----------
+const clipFrame = (c, sec) => { const n = { c1: 181, c2: 181, c3: 151, c4: 151, c5: 181, spA: 151, spB: 151 }[c]; const f = clamp(Math.floor(sec * FPS), 0, n - 1) + 1; return `a/clips/${c}/${String(f).padStart(4, "0")}.jpg`; };
+const APP = (n) => `a/app/${n}.png`;
+const S3 = 3; // screenshot scale (css px -> image px)
+
+// draw a region of an app screenshot (css rect) into dst rect at width w
+function appCrop(ctx, src, css, x, y, w) {
+  const im = I(src); const s = w / css[2]; const h = css[3] * s;
+  if (im) ctx.drawImage(im, css[0] * S3, css[1] * S3, css[2] * S3, css[3] * S3, x, y, w, h);
+  return h;
+}
+function cover(ctx, im, x, y, w, h, biasY = .4) {
+  if (!im) return; const r = Math.max(w / im.width, h / im.height); const sw = w / r, sh = h / r;
+  ctx.drawImage(im, (im.width - sw) / 2, (im.height - sh) * biasY, sw, sh, x, y, w, h);
+}
+function shadowed(ctx, fn, blur = 70, dy = 26, a = .6) { ctx.save(); ctx.shadowColor = `rgba(0,0,0,${a})`; ctx.shadowBlur = blur; ctx.shadowOffsetY = dy; fn(); ctx.restore(); }
+
+// card transform for a scene element: spring in at a, ease out at b
+function inOut(t, a, b, delay = 0) {
+  const k = spring((t - a - delay) / .55), o = 1 - eio(lin(t, b - .28, b));
+  return { alpha: clamp(lin(t, a + delay, a + delay + .18)) * o, dy: (1 - k) * 110 - (1 - o) * 50, s: mix(.93, 1, k) * mix(1, .96, 1 - o) };
+}
+function withT(ctx, tr, cx, cy, fn) {
+  if (tr.alpha <= 0.002) return; ctx.save(); ctx.globalAlpha *= tr.alpha;
+  ctx.translate(cx, cy + tr.dy); ctx.scale(tr.s, tr.s); if (tr.rot) ctx.rotate(tr.rot); ctx.translate(-cx, -cy); fn(); ctx.restore();
+}
+
+// ---------- background: time of day ----------
+const STARS = Array.from({ length: 90 }, (_, i) => { const r = (n) => { const x = Math.sin(i * 127.1 + n * 311.7) * 43758.5453; return x - Math.floor(x); }; return [r(1) * W, r(2) * 1100, .6 + r(3) * 1.8, r(4) * 6.28]; });
+// orb along an arc: p in [0,1] maps left->right
+const ARC = { cx: 540, cy: 2050, r: 1560 };
+const arcPt = (p) => { const x = mix(730, 1010, p); const y = ARC.cy - Math.sqrt(ARC.r * ARC.r - (x - ARC.cx) ** 2); return [x, y]; };
+function sky(t) {
+  // [glow rgb, glow alpha, star alpha, orb p, kind, clock(min)]
+  const S = [
+    { g: [139, 92, 246], a: .26, st: .4, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+    { g: [255, 190, 120], a: .26, st: 0, p0: .3, p1: .3, k: "none", m0: 0, m1: 0 },
+    { g: [236, 72, 153], a: .2, st: 0, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+    { g: [139, 92, 246], a: .24, st: .2, p0: .6, p1: .6, k: "none", m0: 0, m1: 0 },
+    { g: [92, 84, 220], a: .26, st: 1, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+    { g: [236, 72, 153], a: .24, st: .6, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+    { g: [139, 92, 246], a: .2, st: 0, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+    { g: [139, 92, 246], a: .22, st: .3, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+    { g: [139, 92, 246], a: .34, st: .5, p0: .5, p1: .5, k: "none", m0: 0, m1: 0 },
+  ];
+  let i = SC.findIndex((s, j) => t < SC[j + 1]); if (i < 0) i = NS - 1; i = clamp(i, 0, NS - 1); const cur = S[i], prev = S[Math.max(0, i - 1)];
+  const k = i > 0 ? eio(lin(t, SC[i] - .1, SC[i] + .7)) : 1, u = lin(t, SC[i], SC[i + 1]);
+  return { cur, prev, k, u, i };
+}
+function drawBg(ctx, t) {
+  ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+  const { cur, prev, k, u } = sky(t);
+  const g = cur.g.map((v, j) => mix(prev.g[j], v, k)), a = mix(prev.a, cur.a, k), st = mix(prev.st, cur.st, k);
+  const [ox, oy] = arcPt(mix(cur.p0, cur.p1, u));
+  const grd = ctx.createRadialGradient(ox, oy, 0, ox, oy, 1250);
+  grd.addColorStop(0, `rgba(${g[0]},${g[1]},${g[2]},${a})`); grd.addColorStop(.45, `rgba(${g[0]},${g[1]},${g[2]},${a * .35})`); grd.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = grd; ctx.fillRect(0, 0, W, H);
+  if (st > .01) for (const [x, y, r, ph] of STARS) { ctx.globalAlpha = st * (.35 + .35 * Math.sin(t * 2.1 + ph)); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  // arc line
+  ctx.save(); ctx.strokeStyle = "rgba(255,255,255,.07)"; ctx.lineWidth = 2; ctx.setLineDash([3, 12]);
+  ctx.beginPath(); ctx.arc(ARC.cx, ARC.cy, ARC.r, Math.PI * 1.18, Math.PI * 1.82); ctx.stroke(); ctx.restore();
+}
+function drawOrb(ctx, t) {
+  const { cur, prev, k, u, i } = sky(t); if (cur.k === "none") return;
+  const fade = clamp(lin(t, SC[i] + .05, SC[i] + .5)) * (1 - lin(t, SC[i + 1] - .25, SC[i + 1])) * (cur.hide ? 1 - lin(t - SC[i], cur.hide, cur.hide + .8) : 1);
+  const [x, y] = arcPt(mix(cur.p0, cur.p1, u));
+  ctx.save(); ctx.globalAlpha = fade;
+  if (cur.k === "sun") {
+    const col = i === 0 ? [255, 160, 80] : [255, 214, 150];
+    const gl = ctx.createRadialGradient(x, y, 0, x, y, 120); gl.addColorStop(0, `rgba(${col},.9)`); gl.addColorStop(.3, `rgba(${col},.35)`); gl.addColorStop(1, `rgba(${col},0)`);
+    ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(x, y, 120, 0, 7); ctx.fill();
+    ctx.fillStyle = `rgb(${col})`; ctx.beginPath(); ctx.arc(x, y, 30, 0, 7); ctx.fill();
+  } else {
+    const gl = ctx.createRadialGradient(x, y, 0, x, y, 110); gl.addColorStop(0, "rgba(220,215,255,.35)"); gl.addColorStop(1, "rgba(220,215,255,0)");
+    ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(x, y, 110, 0, 7); ctx.fill();
+    ctx.fillStyle = "#ECEAFF"; ctx.beginPath(); ctx.arc(x, y, 26, 0, 7); ctx.fill();
+    ctx.globalCompositeOperation = "destination-out"; ctx.beginPath(); ctx.arc(x + 12, y - 8, 22, 0, 7); ctx.fill(); ctx.globalCompositeOperation = "source-over";
+  }
+  // clock pill
+  const m = Math.round(mix(cur.m0, cur.m1, eio(u))), hh = Math.floor(m / 60) % 24, mm = m % 60;
+  const label = `${(hh % 12) || 12}:${String(mm).padStart(2, "0")} ${hh < 12 ? "AM" : "PM"}`;
+  ctx.font = "600 30px SG"; const tw = ctx.measureText(label).width;
+  const px = x - tw / 2 - 22, py = y + 52;
+  ctx.fillStyle = "rgba(255,255,255,.08)"; rr(ctx, px, py, tw + 44, 50, 25); ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.12)"; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,.88)"; ctx.textBaseline = "middle"; ctx.fillText(label, px + 22, py + 26);
+  ctx.restore();
+}
+
+// ---------- caption (top-left, word by word, last word purple) ----------
+const CAPS = [
+  ["We are live."],
+  ["It’s Friday."],
+  ["Screenshot a flyer.", "It’s in."],
+  ["Your crew’s", "already in."],
+  ["Who’s out tonight?"],
+  ["See who’s", "really in."],
+  null,
+  ["From the plan", "to the memory."],
+  null,
+];
+function drawCaption(ctx, t) {
+  const i = SC.findIndex((s, j) => t >= s && t < SC[j + 1]); if (i < 0 || i > NS - 1 || !CAPS[i]) return;
+  const a = SC[i], b = SC[i + 1]; const lines = CAPS[i];
+  ctx.save(); ctx.font = "700 84px SG"; ctx.textBaseline = "top";
+  const out = 1 - eio(lin(t, b - .3, b)); let w = 0;
+  const total = lines.join(" ").split(" ").length;
+  lines.forEach((ln, li) => {
+    let x = 72; const y = 245 + li * 92;
+    ln.split(" ").forEach((word, wi) => {
+      const dl = i === 2 && li === 1 ? 2.35 : 0;   // "It's in." lands when the app has read the flyer
+      const k = eo(lin(t, a + .12 + dl + w * .09, a + .12 + dl + w * .09 + .35));
+      const last = li === lines.length - 1 && (i === 3 ? true : wi === ln.split(" ").length - 1);
+      ctx.globalAlpha = k * out; ctx.fillStyle = "#fff";
+      ctx.fillText(word, x, y + (1 - k) * 34 - (1 - out) * 26);
+      x += ctx.measureText(word + " ").width; w++;
+    });
+  });
+  ctx.restore();
+}
+
+// ---------- brackets ( ) — the capsule ----------
+function bracket(ctx, x, y, h, flip, lw = 14) {
+  const w = Math.min(70, h * .22), r = w * .95;
+  ctx.save(); ctx.translate(x, y); if (flip) ctx.scale(-1, 1);
+  ctx.strokeStyle = PURPLE; ctx.lineWidth = lw; ctx.lineCap = "round";
+  ctx.shadowColor = "rgba(139,92,246,.75)"; ctx.shadowBlur = 30;
+  ctx.beginPath(); ctx.moveTo(w, 0); ctx.lineTo(r, 0); ctx.arcTo(0, 0, 0, r, r); ctx.lineTo(0, h - r); ctx.arcTo(0, h, r, h, r); ctx.lineTo(w, h); ctx.stroke();
+  ctx.restore();
+}
+// open = 0 closed snug around rect, 1 far apart
+function brackets(ctx, rect, open, alpha) {
+  if (alpha <= 0) return; const [x, y, w, h] = rect; const gap = 26 + open * 260;
+  ctx.save(); ctx.globalAlpha *= alpha;
+  bracket(ctx, x - gap, y - 30, h + 60, false); bracket(ctx, x + w + gap, y - 30, h + 60, true); ctx.restore();
+}
+
+// ---------- footage card ----------
+const FCG = { x: 56, y: 500, w: 540, h: 676, r: 38 };   // Reels safe zone: content in x 56–940 below y 1100, above y 1500
+function footage(ctx, t, src, tr, label, av, biasY = .38, flash = 0, FC = FCG) {
+  withT(ctx, tr, FC.x + FC.w / 2, FC.y + FC.h / 2, () => {
+    shadowed(ctx, () => { ctx.fillStyle = "#111"; rr(ctx, FC.x, FC.y, FC.w, FC.h, FC.r); ctx.fill(); });
+    ctx.save(); rr(ctx, FC.x, FC.y, FC.w, FC.h, FC.r); ctx.clip();
+    cover(ctx, I(src), FC.x, FC.y, FC.w, FC.h, biasY);
+    if (flash > 0) { ctx.fillStyle = `rgba(255,255,255,${flash})`; ctx.fillRect(FC.x, FC.y, FC.w, FC.h); }
+    const gr = ctx.createLinearGradient(0, FC.y + FC.h - 180, 0, FC.y + FC.h); gr.addColorStop(0, "rgba(0,0,0,0)"); gr.addColorStop(1, "rgba(0,0,0,.55)");
+    ctx.fillStyle = gr; ctx.fillRect(FC.x, FC.y + FC.h - 180, FC.w, 180);
+    ctx.restore();
+    ctx.strokeStyle = "rgba(255,255,255,.1)"; ctx.lineWidth = 2; rr(ctx, FC.x, FC.y, FC.w, FC.h, FC.r); ctx.stroke();
+    if (label) chip(ctx, FC.x + 22, FC.y + FC.h - 78, label, av);
+  });
+}
+function chip(ctx, x, y, label, av) {
+  ctx.save(); ctx.font = "600 28px SG"; const tw = ctx.measureText(label).width; const w = tw + (av ? 86 : 44);
+  ctx.fillStyle = "rgba(10,10,16,.62)"; rr(ctx, x, y, w, 56, 28); ctx.fill();
+  if (av) { const im = I(`a/av_${av}.jpg`); ctx.save(); ctx.beginPath(); ctx.arc(x + 30, y + 28, 20, 0, 7); ctx.clip(); if (im) ctx.drawImage(im, x + 10, y + 8, 40, 40); ctx.restore(); }
+  ctx.fillStyle = "#fff"; ctx.textBaseline = "middle"; ctx.fillText(label, x + (av ? 62 : 22), y + 29); ctx.restore();
+}
+// app card frame (rounded, border, shadow) around content drawn by fn
+function appCard(ctx, x, y, w, h, fn, r = 30) {   // the app card brings its own border; we add the shadow
+  shadowed(ctx, () => { ctx.fillStyle = "#0E0F15"; rr(ctx, x, y, w, h, r); ctx.fill(); }, 90, 34, .75);
+  ctx.save(); rr(ctx, x, y, w, h, r); ctx.clip(); ctx.fillStyle = "#0B0C11"; ctx.fillRect(x, y, w, h); fn(); ctx.restore();
+}
+function tap(ctx, x, y, k) { // white dot + ring, k in [0,1]
+  if (k <= 0 || k >= 1) return; ctx.save();
+  ctx.globalAlpha = 1 - eo(k); ctx.strokeStyle = "#fff"; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(x, y, 26 + 46 * eo(k), 0, 7); ctx.stroke();
+  ctx.globalAlpha = k < .5 ? .95 : 1 - (k - .5) * 2; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, y, 22, 0, 7); ctx.fill(); ctx.restore();
+}
+
+const TILE = [57, 322, 279, 108];
+
+// ---------- 3D layers ----------
+const R3 = {};
+const shotLen = { hook: 212, flyer: 106, crew: 106, tonight: 106, receipt: 150 };
+const f3 = (shot, l) => clamp(Math.round(l * FPS), 0, shotLen[shot] - 1);
+function l3d(ctx, shot, l, alpha = 1, sc = 1, dy = 0) {
+  const im = I(`a/3d/${shot}/${String(f3(shot, l)).padStart(3, "0")}.png`); if (!im || alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha *= alpha; ctx.translate(540, 960 + dy); ctx.scale(sc, sc); ctx.translate(-540, -960); ctx.drawImage(im, 0, 0); ctx.restore();
+}
+const rect3 = (shot, l) => (R3[shot] || [])[f3(shot, l)] || null;
+const fadeIO = (t, a, b, fi = .25, fo = .3) => clamp(lin(t, a, a + fi)) * (1 - lin(t, b - fo, b));
+const BAR = 4 * .44118, BEATS = .44118;
+
+function logo(ctx, cx, cy, s, open, alpha) {
+  if (alpha <= 0) return; ctx.save(); ctx.globalAlpha *= alpha; ctx.fillStyle = "#fff"; ctx.textBaseline = "middle";
+  ctx.font = `700 ${70 * s}px SG`; const wA = ctx.measureText("I am").width; ctx.font = `700 ${92 * s}px SG`; const wI = ctx.measureText("IN").width;
+  const bh = 104 * s, bw = Math.min(70, bh * .22), inner = 12 * s;
+  const total = wA + 22 * s + bw + inner + wI + inner + bw; let x = cx - total / 2;
+  ctx.font = `700 ${70 * s}px SG`; ctx.fillText("I am", x, cy + 4 * s); x += wA + 22 * s;
+  const lx = mix(cx - bw, x, open), rx = mix(cx + bw, x + bw + inner + wI + inner + bw, open);
+  bracket(ctx, lx, cy - bh / 2, bh, false, 11 * s); bracket(ctx, rx, cy - bh / 2, bh, true, 11 * s);
+  ctx.font = `700 ${92 * s}px SG`; ctx.globalAlpha *= clamp(open * 1.5); ctx.fillText("IN", x + bw + inner, cy + 4 * s); ctx.restore();
+}
+function badges(ctx, cx, y, s, alpha) {
+  if (alpha <= 0) return; const a = I("a/appstore_black.svg"), g = I("a/googleplay.svg"); ctx.save(); ctx.globalAlpha *= alpha;
+  const aw = 270 * s, ah = 80 * s, gw = 270 * s * 155 / 135 * .87, gh = gw * 60 / 155;
+  const gap = 24 * s, tot = aw + gap + gw; if (a) ctx.drawImage(a, cx - tot / 2, y, aw, ah); if (g) ctx.drawImage(g, cx - tot / 2 + aw + gap, y + ah / 2 - gh / 2, gw, gh); ctx.restore();
+}
+
+// ---------- S0 hook: We are live. Now on the App Store & Google Play ----------
+function scene0(ctx, t) {
+  const a = SC[0], b = SC[1], l = t - a, out = 1 - eio(lin(t, b - .3, b));
+  l3d(ctx, "hook", l, out, mix(1, .95, 1 - out));
+  const k = eo(lin(l, BAR - .1, BAR + .35));
+  ctx.save(); ctx.globalAlpha = k * out; ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillStyle = "rgba(255,255,255,.88)"; ctx.font = "500 42px SG";
+  ctx.fillText("Now on the App Store & Google Play", 72, 352 + (1 - k) * 20); ctx.restore();
+  ctx.save(); ctx.translate(0, (1 - back(lin(l, BAR + .1, BAR + .55))) * 40); badgesLeft(ctx, 72, 430, 1, clamp(lin(l, BAR + .1, BAR + .3)) * out); ctx.restore();
+}
+// fix: badges are left-aligned under the caption
+function badgesLeft(ctx, x, y, s, alpha) { badges(ctx, x + (270 * s + 24 * s + 270 * s * 155 / 135 * .87) / 2, y, s, alpha); }
+
+// ---------- S1 It's Friday (São Paulo, clip A) + a push from a friend ----------
+const FA = { x: 90, y: 470, w: 620, h: 790, r: 40 };
+function notif(ctx, x, y, w, k, title, body) {
+  if (k <= 0) return; ctx.save(); ctx.globalAlpha *= clamp(k * 2); ctx.translate(0, (1 - back(k, 1.2)) * -60);
+  shadowed(ctx, () => { ctx.fillStyle = "rgba(28,27,38,.94)"; rr(ctx, x, y, w, 150, 34); ctx.fill(); }, 60, 20, .6);
+  ctx.strokeStyle = "rgba(255,255,255,.08)"; ctx.lineWidth = 2; rr(ctx, x, y, w, 150, 34); ctx.stroke();
+  const ic = I("a/app-icon-512.png"); ctx.save(); rr(ctx, x + 24, y + 33, 84, 84, 20); ctx.clip(); if (ic) ctx.drawImage(ic, x + 24, y + 33, 84, 84); ctx.restore();
+  ctx.textBaseline = "top"; ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.font = "500 24px SG"; ctx.fillText("I AM (IN) · now", x + 130, y + 28);
+  ctx.fillStyle = "#fff"; ctx.font = "700 32px SG"; ctx.fillText(title, x + 130, y + 60); ctx.fillStyle = "rgba(255,255,255,.75)"; ctx.font = "500 28px SG"; ctx.fillText(body, x + 130, y + 100);
+  ctx.restore();
+}
+function scene1(ctx, t) {
+  const a = SC[1], b = SC[2], l = t - a;
+  footage(ctx, t, clipFrame("spA", l + .2), inOut(t, a, b), "Nina · São Paulo", "nina", .3, 0, FA);
+  notif(ctx, 140, 1300, 800, lin(l, BAR - .05, BAR + .35) * (1 - lin(t, b - .3, b)), "Marie is out tonight 💃", "Razzia later · see who’s in");
+}
+
+// ---------- S2 Screenshot a flyer -> It's in (3D: the flyer flies into the app) ----------
+function scene2(ctx, t) {
+  const a = SC[2], b = SC[3], l = t - a, al = fadeIO(t, a, b, .2, .3);
+  // the Instagram story screenshot, then the flash
+  const sk = 1 - eio(lin(l, .35, .7)); if (sk > 0) { const im = I("a/shot_midnight.png"); const w = 330, h = w * 2000 / 924, x = 70, y = 520;
+    ctx.save(); ctx.globalAlpha = al * sk * clamp(lin(l, 0, .15)); ctx.translate(x + w / 2, y + h / 2); ctx.scale(mix(.85, 1, sk), mix(.85, 1, sk)); ctx.rotate(-.04);
+    shadowed(ctx, () => { ctx.fillStyle = "#000"; rr(ctx, -w / 2, -h / 2, w, h, 26); ctx.fill(); }); ctx.save(); rr(ctx, -w / 2, -h / 2, w, h, 26); ctx.clip(); if (im) ctx.drawImage(im, -w / 2, -h / 2, w, h);
+    const fl = Math.max(0, 1 - Math.abs(l - .22) * 8); if (fl > 0) { ctx.fillStyle = `rgba(255,255,255,${fl})`; ctx.fillRect(-w / 2, -h / 2, w, h); } ctx.restore(); ctx.restore(); }
+  l3d(ctx, "flyer", l, al);
+}
+// ---------- S3 Your crew's already in (clip B + chips rise out of the phone) ----------
+const FB3 = { x: 56, y: 470, w: 400, h: 500, r: 34 };
+function scene3(ctx, t) {
+  const a = SC[3], b = SC[4], l = t - a;
+  l3d(ctx, "crew", l, fadeIO(t, a, b, .2, .3));
+  footage(ctx, t, clipFrame("spB", l + .2), inOut(t, a, b), "Pre-drinks", null, .3, 0, FB3);
+}
+// ---------- S4 Who's out tonight? (phone like a map, friends lift on stems) ----------
+function scene4(ctx, t) { const a = SC[4], b = SC[5], l = t - a; l3d(ctx, "tonight", l, fadeIO(t, a, b, .2, .3)); }
+
+// ---------- S5 See who's really in -> tap I'm in -> build into the drop ----------
+const FEED = { css: [16, 236, 361, 440], x: 220, y: 520, w: 640 };
+const CHIPS = [["timo", "Timo is in"], ["jonas", "Jonas is in"], ["marie", "Marie is in"]];
+function scene5(ctx, t) {
+  const a = SC[5], b = SC[6], l = t - a;
+  const s = FEED.w / FEED.css[2], h = FEED.css[3] * s;
+  const zoom = Math.pow(eio(lin(l, BAR * 2.2, b - a)), 2.2), sc = mix(1, 3.4, zoom), al = 1 - lin(l, b - a - .35, b - a);
+  const cx = FEED.x + FEED.w / 2, cy = FEED.y + h * .5;
+  ctx.save(); ctx.globalAlpha = clamp(lin(l, 0, .25)) * al; ctx.translate(cx, cy + (1 - spring(l / .55)) * 90); ctx.scale(sc, sc); ctx.translate(-cx, -cy);
+  appCard(ctx, FEED.x, FEED.y, FEED.w, h, () => appCrop(ctx, APP(l < BAR + .05 ? "feed" : "feed_in"), FEED.css, FEED.x, FEED.y, FEED.w), 16 * s);
+  tap(ctx, FEED.x + (266 + 36 - FEED.css[0]) * s, FEED.y + (627 + 15 - FEED.css[1]) * s, lin(l, BAR - .2, BAR + .25));
+  ctx.restore();
+  // friends who are in, on the beats of the kick bar
+  CHIPS.forEach(([av, label], i) => { const k = spring((l - BAR - .15 - i * BEATS) / .45); if (k <= 0) return;
+    ctx.save(); ctx.globalAlpha = clamp(k * 3) * (1 - zoom) * al; ctx.translate(0, (1 - k) * 60); chip(ctx, 96 + i * 290, 1345, label, av); ctx.restore(); });
+  if (l > b - a - .12) { ctx.fillStyle = `rgba(255,255,255,${lin(l, b - a - .12, b - a)})`; ctx.fillRect(0, 0, W, H); }
+}
+// ---------- S6 the drop: people, full screen ----------
+function scene6(ctx, t) {
+  const a = SC[6], b = SC[7], l = t - a, two = l >= BAR;
+  const im = I(clipFrame(two ? "c4" : "c3", two ? l - BAR + .3 : l + .6)); if (im) cover(ctx, im, 0, 0, W, H, .35);
+  const g = ctx.createLinearGradient(0, 1400, 0, 1920); g.addColorStop(0, "rgba(9,10,15,0)"); g.addColorStop(1, "rgba(9,10,15,.45)"); ctx.fillStyle = g; ctx.fillRect(0, 1400, W, 520);
+  const fl = Math.max(0, 1 - l * 5, two ? 1 - (l - BAR) * 5 : 0); if (fl > 0) { ctx.fillStyle = `rgba(255,255,255,${fl * .9})`; ctx.fillRect(0, 0, W, H); }
+  const o = lin(l, b - a - .2, b - a); if (o > 0) { ctx.fillStyle = `rgba(9,10,15,${o})`; ctx.fillRect(0, 0, W, H); }
+}
+// ---------- S7 from the plan to the memory: the receipt prints out of the phone ----------
+const RCPT = { x: 240, y: 560, w: 600 };
+function stamp2d(ctx, x, y, s) { ctx.save(); ctx.globalAlpha *= .92; ctx.translate(x, y); ctx.scale(s, s); ctx.rotate(-.12);
+  ctx.strokeStyle = PURPLE; ctx.lineWidth = 8; rr(ctx, -145, -50, 290, 100, 16); ctx.stroke(); ctx.fillStyle = PURPLE; ctx.font = "700 74px SG"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("FIRE", 22, 5);
+  ctx.font = "60px sans-serif"; ctx.fillText("🔥", -96, 3); ctx.restore(); }
+function scene7(ctx, t) {
+  const a = SC[7], b = SC[8], l = t - a, al = fadeIO(t, a, b, .2, .3), lr = .5 + l * 1.05;   // receipt shot sped up slightly
+  const k = eio(lin(l, 3.2, 3.75));
+  l3d(ctx, "receipt", lr, al * mix(1, .3, k));
+  if (k > 0) { const r = rect3("receipt", Math.min(lr, .5 + 3.2 * 1.05)); const im = I("a/3d_paper.png"); const ph = RCPT.w * 1449 / 1020;
+    const src = r && r.length >= 8 ? [r[4], r[5], r[6], r[7]] : [RCPT.x, RCPT.y, RCPT.w, ph];
+    const x = mix(src[0], RCPT.x, k), y = mix(src[1], RCPT.y, k), w = mix(src[2], RCPT.w, k), hh = mix(src[3], ph, k);
+    ctx.save(); ctx.globalAlpha = al; shadowed(ctx, () => { ctx.fillStyle = "#F4F1EA"; ctx.fillRect(x, y, w, hh); }, 70, 30, .6); if (im) ctx.drawImage(im, x, y, w, hh); stamp2d(ctx, x + w * .72, y + hh * .71, w / 600); ctx.restore(); }
+}
+// ---------- S8 end: I am (IN) · Get in · App Store / Google Play ----------
+function scene8(ctx, t) {
+  const a = SC[8], l = t - a;
+  logo(ctx, 540, 820, 1.5, spring((l - .1) / .55), clamp(lin(l, 0, .2)));
+  const k = eo(lin(l, .55, .95)); ctx.save(); ctx.globalAlpha = k; ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillStyle = "#fff"; ctx.font = "700 64px SG"; ctx.fillText("Get in", 540, 960 + (1 - k) * 24); ctx.restore();
+  ctx.save(); ctx.translate(0, (1 - back(lin(l, .8, 1.25))) * 40); badges(ctx, 540, 1080, 1.1, clamp(lin(l, .8, 1.0))); ctx.restore();
+}
+
+// ---------- grain + frame ----------
+const GR = Array.from({ length: 4 }, () => { const g = document.createElement("canvas"); g.width = 540; g.height = 960; const gx = g.getContext("2d"); const d = gx.createImageData(540, 960);
+  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 10; } gx.putImageData(d, 0, 0); return g; });
+const SCENES = [scene0, scene1, scene2, scene3, scene4, scene5, scene6, scene7, scene8];
+function frame(ctx, t) {
+  drawBg(ctx, t);
+  SCENES.forEach((fn, i) => { if (t >= SC[i] - .05 && t < (i === NS - 1 ? 1e9 : SC[i + 1] + .3)) fn(ctx, t); });
+  drawCaption(ctx, t);
+  ctx.drawImage(GR[Math.floor(t * FPS) % 4], 0, 0, W, H);
+}
+let booted = false;
+window.render = async (f, N = 3) => {
+  if (!booted) { await font.load(); document.fonts.add(font); for (const s of Object.keys(shotLen)) R3[s] = await fetch(`a/3d/${s}/rects.json`).then((r) => r.json()).catch(() => []); booted = true; }
+  const ts = Array.from({ length: N }, (_, i) => (f + (i - (N - 1) / 2) * (.5 / N)) / FPS);
+  need.clear(); TX.save(); ts.forEach((t) => frame(TX, Math.max(0, t))); TX.restore();
+  await Promise.all([...need].map((s) => img(s).p));
+  need.clear(); X.globalAlpha = 1; X.clearRect(0, 0, W, H);
+  ts.forEach((t, i) => { TX.save(); TX.globalAlpha = 1; frame(TX, Math.max(0, t)); TX.restore(); X.globalAlpha = 1 / (i + 1); X.drawImage(T, 0, 0); });
+  X.globalAlpha = 1; return 0;
+};
+window.DUR = DUR; window.FPS = FPS;
+
+</script></body></html>
