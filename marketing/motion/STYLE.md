@@ -30,6 +30,16 @@ Reference: `iamin-film4-3d-v2` (Oct 2026). Use this as the bar for every new vid
 - Fixing an existing film: shift each scene down by `245 − headline top` (crop the bottom, fill the top with `#090A0F`), ramp the shift across the existing transitions, and extend the top row with a fade to the background on slide/blur frames so no hard band shows.
 - Tags and interactions sit high in the frame (under the headline / on top of the phones), never at the bottom where social UI covers them.
 
+## Level 2: "dots film" pipeline (from Oct 2026 on)
+Reference: OpenAI "dots" launch film (30 s, 120 BPM, −16 LUFS). New reels aim for this level.
+- **Script table first:** scene · time · caption · voice line. Only true claims (checked against the app code), one idea per scene.
+- **Real life + product side by side:** a small card of real-looking footage (Higgsfield: Soul stills + Kling clips, one consistent cast, 35 mm film look, candid, warm light) next to the real app doing the thing at that moment. Everything around the card is drawn in code. In 9:16, stack them (footage card above or overlapping the phone).
+- **Time passes visibly:** clock ticking (6:40 PM → 2:13 AM → 10:12 AM), sun/moon arc, background tint shifting from dusk to night to morning (kept dark, brand bg underneath).
+- **Captions:** short, sentence case, appear word by word with the voice. Same height rule as the safe zone.
+- **Characters/brand objects** move with squash and stretch, springs, blinks and hops, and land on the beat. For I am in: the `( )` brackets and the purple dot.
+- **One web page, frame = f(t):** every frame is computed from the time, rendered in headless Chrome with real motion blur (sub-frame accumulation), encoded with ffmpeg.
+- **Sound:** music written in Python at 120 BPM, UI sound effects (Kenney CC0) on every cue, optional voice (Higgsfield, one file per line), mixed to −16 LUFS (−14 is fine for Reels).
+
 ## Tools
 - `tools/phone3d.html` — three.js iPhone (titanium frame, camera plateau, buttons, island, screen texture, fliers, zzz, avatar lifts, `fullBleed(topRow)`).
 - `tools/shots.mjs` — example shot scripts (razzia hero turn, radar lying down, morning-after flip). Serve the folder over HTTP and run headless Chromium with SwiftShader WebGL.
