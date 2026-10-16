@@ -31,8 +31,8 @@ if (which.includes("intro")) {   // rises from below, turning, Capsules list on 
 }
 if (which.includes("table")) {   // lying on the dinner table; the sealed notes pop out on stems, lock, drop back
   await reset(); await p.evaluate(async () => { await window.setScreen("tex/sealed.png");
-    await window.setPins([["nina", 300, 820], ["marie", 770, 1200], ["jonas", 340, 1640]].map(([n, x, y]) => ({ src0: `tex/note_${n}_0.png`, src1: `tex/note_${n}_1.png`, x, y, w: 64 }))); });
-  const H = [64, 44, 26];
+    await window.setPins([["nina", 410, 1190], ["marie", 545, 1215], ["jonas", 680, 1190]].map(([n, x, y]) => ({ src0: `tex/note_${n}_0.png`, src1: `tex/note_${n}_1.png`, x, y, w: 64 }))); });
+  const H = [84, 55, 26];
   await shot("table", 150, async (i) => {
     const k = eo(i / 20), drift = i / 149;
     const q = { sx: 540, sy: 1300, dist: dW(520) * mix(1.45, 1, k), rx: -58, ry: 3, rz: mix(-30, -14, k) + drift * 4, isl: 1, sheenOp: .05 };
@@ -54,11 +54,11 @@ if (which.includes("receipt")) {   // the morning-after receipt prints out of th
   await p.evaluate(() => { window.paperState(0); window.stampState(0, 0); });
 }
 if (which.includes("share")) {   // the story card lifts off the screen towards the camera
-  await reset(); await p.evaluate(async () => { window.paperState(0); window.stampState(0, 0); await window.setScreen("tex/story.png"); await window.setStory("tex/storycard.png", { x: 170, y: 511, w: 742, h: 1020 }); });
+  await reset(); await p.evaluate(async () => { window.paperState(0); window.stampState(0, 0); await window.setScreen("tex/story.png"); await window.setStory("tex/storycard.png", { x: 170, y: 511, w: 742, h: 1319 }); });
   await shot("share", 90, async (i) => {
     const k = eo(i / 12), e = eio(lin(i, 14, 58)), fl = Math.sin(i / 10) * .6 * lin(i, 58, 70);
     const q = { ...RQ, sy: mix(1700, RQ.sy, k), ry: RQ.ry + e * 4 };
-    const to = { x: 0, y: 38 + fl, z: 85, rx: -.14, ry: .34, rz: -.035, s: 1.55 };
+    const to = { x: 0, y: 64 + fl, z: 85, rx: -.14, ry: .34, rz: -.035, s: 1.55 };
     await p.evaluate(([q, e, to]) => { window.storyState(e, to); window.pose2(q); }, [q, e, to]);
   });
 }

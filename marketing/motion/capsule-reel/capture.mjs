@@ -12,7 +12,7 @@ const cast = (db) => {
   set(ME, "Nina Alves", "nina", AV("nina")); set(pid(101), "Timo Berger", "timo", AV("timo"));
   set(pid(103), "Jonas Weber", "jonas.w", AV("jonas")); set(pid(104), "Marie Klein", "marie", AV("marie"));
   const e = db.events.find((x) => x.id === EVID(30));
-  if (e) Object.assign(e, { name: "Saturday dinner & drinks", time: "19:30", location: "Bar Lola", image_url: null, description: "[[cover:🍝|14 85% 55%]]", visibility: "circle", created_by: ME });
+  if (e) Object.assign(e, { name: "Supperclub", time: "19:30", location: "Bar Lola", image_url: null, description: "[[cover:🍝|14 85% 55%]]", visibility: "circle", created_by: ME });
   const who = [ME, pid(104), pid(103), ME, pid(101)];
   (db.time_capsule_photos || []).forEach((ph, i) => { ph.user_id = who[i % who.length]; });
 };
@@ -129,6 +129,8 @@ if (run("receipt")) {
   await rc.click(); await p.waitForTimeout(2000); await still(p); await p.screenshot({ path: `${OUT}/receipt.png` });
   fs.writeFileSync(`${OUT}/receipt_text.txt`, await p.locator("body").innerText());
   await p.keyboard.press("Escape"); await p.waitForTimeout(800);
+  // the recap's photos ride up over the title by ~1 line; nudge them below it so the event name reads
+  await p.addStyleTag({ content: '#story-recap-card .-mt-5{margin-top:14px !important} #story-recap-card .story-photo[class*="top-[-"]{top:0 !important}' });
   await p.getByText(/Share to story/i).first().click(); await p.waitForTimeout(3500); await imgs(p); await still(p);
   await p.screenshot({ path: `${OUT}/story.png` });
   save(); await ctx.close();

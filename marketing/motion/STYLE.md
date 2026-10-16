@@ -5,7 +5,7 @@ Reference: `iamin-film4-3d-v2` (Oct 2026). Use this as the bar for every new vid
 ## Format
 - 1080×1920, 30 fps, H.264 (yuv420p, bt709), ~30–35 s, no audio unless asked.
 - One film per app page (feed, calendar, event page, capsule…).
-- English copy. Headline top-left, white, last word in brand purple `#7E4AF1`/`#8B5CF6`, Space Grotesk 700.
+- English copy. Headline top-left, white, Space Grotesk 700. Purple accent words only where they really matter (e.g. the product name in an intro) — not on every headline.
 - Background near-black `#090A0F`. No purple backgrounds.
 - Ending: "Less scrolling. More going." → purple dot burst → `I am (IN)` logo → "Get in · i-am-in.app" (reuse film7 frames).
 
@@ -14,6 +14,8 @@ Reference: `iamin-film4-3d-v2` (Oct 2026). Use this as the bar for every new vid
   - hero turn (phone pulls back from full-bleed, turns, pushes back in),
   - phone lying on a table (map-like tilt) with UI elements lifting out in 3D (avatars on purple stems),
   - story beats with the phone as a character (face-down + animated "z z z" → vibrates → flips over → content flies into the screen → camera dives into the screen).
+- Brand brackets `( )`: use them as a story device in a couple of beats, not as a frame around everything (no brackets around the 3D phone).
+- Intro sound: minimal (one soft ping + quiet chime), no bubbly pops.
 - **Seamless flat ↔ 3D.** Every 3D shot starts and ends exactly on a film frame: screen at full-bleed, Dynamic Island + glass sheen faded out at full-bleed (pixel diff < 1).
 - **No hard cuts on screens.** When the phone tilts, the rest of the real page must be visible below (capture the app taller, composite real content under the film crop).
 - **2D × 3D pins (signature look).** When the phone lies flat or tilts, pick a few UI elements and pop them out of the screen into 3D, while the screen keeps the flat (2D) version underneath:
