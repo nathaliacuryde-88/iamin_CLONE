@@ -16,10 +16,11 @@ const cast = (db) => {
   const who = [ME, pid(104), pid(103), ME, pid(101)];
   (db.time_capsule_photos || []).forEach((ph, i) => { ph.user_id = who[i % who.length]; });
 };
-async function fresh(dbOpts, at, extra = () => {}) {
+async function fresh(dbOpts, at, extra = () => {}, poll = false) {
   const ctx = await b.newContext({ viewport: { width: 393, height: 798 }, deviceScaleFactor: 3, colorScheme: "dark", timezoneId: "Europe/Berlin" });
   globalThis.FAKE_NOW = new Date(at).toISOString(); const db = makeDB(dbOpts); cast(db); extra(db); await install(ctx, db, undefined, ME);
-  await ctx.addInitScript(() => { sessionStorage.setItem("exit-poll-prompted", "1"); for (const k of ["iamin.coach.feed.v1", "iamin.coach.v1", "iamin.gesture.v1"]) localStorage.setItem(k, "1"); });
+  if (!poll) await ctx.addInitScript(() => sessionStorage.setItem("exit-poll-prompted", "1"));
+  await ctx.addInitScript(() => { for (const k of ["iamin.coach.feed.v1", "iamin.coach.v1", "iamin.gesture.v1"]) localStorage.setItem(k, "1"); });
   for (const h of ["https://geocoding-api.open-meteo.com/**", "https://api.open-meteo.com/**", "https://nominatim.openstreetmap.org/**"]) await ctx.route(h, (r) => r.fulfill({ json: {} }));
   const p = await ctx.newPage(); await p.clock.setFixedTime(new Date(at)); p.on("pageerror", (e) => console.log("ERR", e.message.slice(0, 140)));
   return { ctx, p, db };
@@ -98,6 +99,38 @@ if (run("grid")) {
   B.gridImgs = await p.evaluate(() => [...document.images].map((i) => { const r = i.getBoundingClientRect(); return { src: i.src.split("/").pop().split("?")[0], b: [r.x, r.y, r.width, r.height].map((v) => Math.round(v * 10) / 10) }; }).filter((o) => o.b[2] > 100));
   await p.addStyleTag({ content: "img{visibility:hidden !important}" }); await p.waitForTimeout(300);
   await p.screenshot({ path: `${OUT}/grid_empty.png` });
+  save(); await ctx.close();
+}
+// Exit poll: "How was it?" sheet, slider 0 -> 8
+if (run("poll")) {
+  const { ctx, p } = await fresh({ reel2b: true, photos: true, notes: NOTES, tab: true }, "2026-10-04T08:14:00Z", (db) => {
+    db.attendees.filter((a) => a.event_id !== EVID(30) && a.user_id === ME).forEach((a) => (a.status = "interested"));
+    db.events.find((e) => e.id === EVID(30)).created_by = pid(104);
+  }, true);
+  await go(p, "/time-capsule"); await p.waitForTimeout(1800); await still(p);
+  fs.writeFileSync(`${OUT}/poll_text.txt`, await p.locator("body").innerText());
+  await p.screenshot({ path: `${OUT}/poll_00.png` });
+  const sl = p.getByRole("slider").first();
+  if (await sl.count()) {
+    B.pollSlider = await box(sl); const tr = p.locator("[data-orientation=horizontal]").first(); B.pollTrack = await box(tr).catch(() => null);
+    await sl.focus(); await p.keyboard.press("Home"); await p.waitForTimeout(300); await still(p); await p.screenshot({ path: `${OUT}/poll_v0.png` });
+    for (let v = 1; v <= 10; v++) { await p.keyboard.press("ArrowRight"); await p.waitForTimeout(250); await still(p); await p.screenshot({ path: `${OUT}/poll_v${v}.png` }); B["pollThumb" + v] = await box(sl); }
+  } else console.log("no slider");
+  save(); await ctx.close();
+}
+
+// Morning-after receipt and Share to story sheets
+if (run("receipt")) {
+  const { ctx, p } = await fresh({ reel2b: true, photos: true, score: true, notes: NOTES, tab: true }, "2026-10-04T08:16:00Z");
+  await go(p, "/time-capsule/" + EVID(30)); await imgs(p); await p.waitForTimeout(800); await still(p);
+  const rc = p.getByText(/Morning-after receipt/i).first();
+  await rc.evaluate((e) => e.scrollIntoView({ block: "center" })); await p.waitForTimeout(500); await still(p);
+  await p.screenshot({ path: `${OUT}/receipt_btns.png` }); B.receiptBtn = await box(rc); B.storyBtn = await box(p.getByText(/Share to story/i).first());
+  await rc.click(); await p.waitForTimeout(2000); await still(p); await p.screenshot({ path: `${OUT}/receipt.png` });
+  fs.writeFileSync(`${OUT}/receipt_text.txt`, await p.locator("body").innerText());
+  await p.keyboard.press("Escape"); await p.waitForTimeout(800);
+  await p.getByText(/Share to story/i).first().click(); await p.waitForTimeout(3500); await imgs(p); await still(p);
+  await p.screenshot({ path: `${OUT}/story.png` });
   save(); await ctx.close();
 }
 await b.close();

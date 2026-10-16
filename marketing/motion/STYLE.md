@@ -28,6 +28,7 @@ Reference: `iamin-film4-3d-v2` (Oct 2026). Use this as the bar for every new vid
 - Transitions: soft fades or elements from the scene for calendar-style films; film4 keeps its slide/blur/glitch language. Never flash between identical screens.
 - **Stories safe zone:** keep the top ~240 px of the 1080×1920 frame empty (dark background) — the profile row and the Instagram link sticker live there. The top of the text block (eyebrow or first headline line) sits at **y ≈ 240–250** in every scene, same height as "How long's the line?" / "Leave a note for later." in film4 v4. Not lower: y ≥ 300 felt too low. Full-screen moments (opening title, phone-asleep 3D beat, purple burst → logo) keep their own centred layout.
 - Fixing an existing film: shift each scene down by `245 − headline top` (crop the bottom, fill the top with `#090A0F`), ramp the shift across the existing transitions, and extend the top row with a fade to the background on slide/blur frames so no hard band shows.
+- **Reels safe zone (also fine for Stories):** the right-hand like/comment/share column covers x > 940 between y ≈ 1100 and 1700, and the username/caption/audio block covers the bottom ~400 px. Keep text and UI that must be read inside x 56–940 below y 1100, and above y ≈ 1500. Phone bodies, photos and backgrounds may run past it.
 - Tags and interactions sit high in the frame (under the headline / on top of the phones), never at the bottom where social UI covers them.
 
 ## Level 2: "dots film" pipeline (from Oct 2026 on)
