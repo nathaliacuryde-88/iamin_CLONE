@@ -1,0 +1,181 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: SG; src: url(a/sg.ttf); font-weight: 300 700; }
+:root { --bg: #090A0F; --ink: #FFFFFF; --mute: rgba(255,255,255,.62); --purple: #8B5CF6; --paper: #F4F1EA; }
+* { box-sizing: border-box; margin: 0; }
+body { background: #222; font-family: SG, sans-serif; color: var(--ink); }
+.s { position: relative; width: 1080px; overflow: hidden; background: var(--bg); margin: 0 0 40px; }
+.s.r { height: 1920px; } .s.p { height: 1350px; }
+.glow { position: absolute; inset: 0; background: radial-gradient(900px 700px at 70% 30%, rgba(139,92,246,.34), transparent 70%), radial-gradient(700px 600px at 10% 90%, rgba(236,72,153,.16), transparent 70%); }
+.glow.warm { background: radial-gradient(900px 700px at 75% 25%, rgba(255,170,110,.28), transparent 70%), radial-gradient(700px 600px at 10% 90%, rgba(139,92,246,.18), transparent 70%); }
+.grain { position: absolute; inset: 0; opacity: .06; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.h { position: absolute; left: 72px; right: 72px; font-weight: 700; letter-spacing: -2px; line-height: .98; }
+.h1 { font-size: 132px; } .h2 { font-size: 92px; } .h3 { font-size: 66px; letter-spacing: -1px; }
+.lbl { position: absolute; left: 72px; font-size: 30px; font-weight: 600; letter-spacing: 6px; text-transform: uppercase; color: var(--purple); }
+.sub { position: absolute; left: 72px; right: 72px; font-size: 40px; font-weight: 500; color: var(--mute); line-height: 1.25; }
+.num { position: absolute; left: 72px; font-size: 34px; font-weight: 700; color: var(--purple); letter-spacing: 2px; }
+.card { position: absolute; border-radius: 34px; overflow: hidden; box-shadow: 0 40px 90px rgba(0,0,0,.65); border: 2px solid rgba(255,255,255,.08); }
+.card img { display: block; }
+.pol { position: absolute; background: var(--paper); padding: 16px 16px 64px; box-shadow: 0 30px 70px rgba(0,0,0,.6); }
+.pol img { display: block; object-fit: cover; }
+.pol span { position: absolute; left: 20px; bottom: 18px; font: 600 26px SG; color: #2A2633; }
+.chip { position: absolute; display: flex; align-items: center; gap: 16px; padding: 10px 28px 10px 10px; border-radius: 60px; background: rgba(24,22,36,.94); border: 3px solid var(--purple); font-size: 34px; font-weight: 600; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+.chip img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.badges { position: absolute; display: flex; gap: 22px; align-items: center; }
+.badges img.a { height: 92px; } .badges img.g { height: 128px; margin: -18px 0; }
+.foot { position: absolute; left: 72px; right: 72px; bottom: 64px; display: flex; justify-content: space-between; align-items: center; font-size: 30px; color: var(--mute); }
+.logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; color: #fff; }
+.logo b { color: var(--purple); font-weight: 700; }
+.bubble { position: absolute; display: flex; gap: 18px; align-items: flex-end; }
+.bubble img { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,.15); }
+.bubble div { background: #26242F; padding: 22px 30px; border-radius: 36px 36px 36px 10px; font-size: 40px; font-weight: 500; }
+.bubble.me { flex-direction: row-reverse; } .bubble.me div { background: var(--purple); border-radius: 36px 36px 10px 36px; }
+.stamp { position: absolute; border: 9px solid var(--purple); color: var(--purple); border-radius: 18px; font: 700 76px SG; padding: 4px 26px; transform: rotate(-9deg); opacity: .92; }
+.arrow { position: absolute; right: 72px; bottom: 64px; font-size: 32px; color: var(--mute); }
+.ph { position: absolute; border: 4px dashed rgba(255,255,255,.35); border-radius: 40px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--mute); font-size: 38px; line-height: 1.3; }
+.ev { position: absolute; left: 72px; right: 72px; bottom: 120px; }
+.ev .t { font-size: 70px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
+.ev .m { font-size: 38px; color: var(--mute); margin-top: 18px; }
+</style></head><body>
+
+<!-- P1 · LAUNCH REEL COVER (9:16; grid shows the middle 3:4) -->
+<div class="s r" id="p1_cover"><div class="glow"></div>
+  <div class="lbl" style="top:330px">I am (IN) · Stuttgart</div>
+  <div class="h h1" style="top:390px">We are<br>live.</div>
+  <img src="a/phone_feed.png" style="position:absolute;left:-108px;top:-150px;width:1296px">
+  <div class="badges" style="left:72px;top:670px"><img class="a" src="a/appstore_black.svg"><img class="g" src="a/googleplay.svg"></div>
+  <div class="grain"></div></div>
+
+<!-- P2 · CAROUSEL: HOW IT WORKS (4:5 x6) -->
+<div class="s p" id="p2_1"><div class="glow"></div>
+  <div class="h h2" style="top:96px">Plans with<br>friends.</div>
+  <div class="sub" style="top:310px">Without the group-chat chaos.</div>
+  <img src="a/phone_tonight.png" style="position:absolute;left:-80px;top:-360px;width:1240px">
+  <div class="foot"><span class="logo">I am <b>(</b>IN<b>)</b></span><span>How it works →</span></div><div class="grain"></div></div>
+
+<div class="s p" id="p2_2"><div class="glow warm"></div>
+  <div class="num" style="top:96px">01</div><div class="h h3" style="top:150px">Screenshot a flyer.</div>
+  <div class="sub" style="top:236px">The app reads it. It’s in your plans.</div>
+  <div class="card" style="left:72px;top:380px;width:360px;height:779px;transform:rotate(-4deg)"><img src="a/shot_midnight.png" style="width:360px"></div>
+  <div class="card" style="left:470px;top:350px;width:540px;height:860px"><img src="a/add_filled.png" style="width:540px;margin-top:-10px"></div>
+  <div class="grain"></div></div>
+
+<div class="s p" id="p2_3"><div class="glow"></div>
+  <div class="num" style="top:96px">02</div><div class="h h3" style="top:150px">See who’s really in.</div>
+  <div class="sub" style="top:236px">Your friends, on every plan.</div>
+  <div class="card" style="left:160px;top:330px;width:760px;height:851px"><img src="a/feed_in.png" style="width:760px;margin-top:-456px"></div>
+  <div class="chip" style="left:72px;top:1215px"><img src="a/av_timo.jpg">Timo is in</div>
+  <div class="chip" style="left:470px;top:1215px"><img src="a/av_marie.jpg">Marie is in</div>
+  <div class="grain"></div></div>
+
+<div class="s p" id="p2_4"><div class="glow"></div>
+  <div class="num" style="top:96px">03</div><div class="h h3" style="top:150px">Who’s out tonight?</div>
+  <div class="sub" style="top:236px">Set your mood. See who’s around.</div>
+  <img src="a/phone_tonight.png" style="position:absolute;left:-200px;top:-560px;width:1480px">
+  <div class="grain"></div></div>
+
+<div class="s p" id="p2_5"><div class="glow warm"></div>
+  <div class="num" style="top:96px">04</div><div class="h h3" style="top:150px">Rate the night.<br>Split the tab.</div>
+  <div class="card" style="left:72px;top:420px;width:520px;height:600px"><img src="a/poll_v10.png" style="width:640px;margin:-330px 0 0 -60px"></div>
+  <div style="position:absolute;left:560px;top:380px;width:450px;transform:rotate(5deg);box-shadow:0 40px 90px rgba(0,0,0,.6)"><img src="a/receipt.png" style="width:450px;display:block"></div>
+  <div class="grain"></div></div>
+
+<div class="s p" id="p2_6"><div class="glow"></div>
+  <div class="num" style="top:96px">05</div><div class="h h3" style="top:150px">Relive it together.</div>
+  <div class="sub" style="top:236px">Everyone’s photos, one capsule per night.</div>
+  <div class="card" style="left:150px;top:350px;width:780px;height:640px"><img src="a/grid_full.png" style="width:780px;margin-top:-300px"></div>
+  <div class="sub" style="top:1060px;color:#fff;font-weight:700">Get in.</div>
+  <div class="badges" style="left:72px;top:1140px"><img class="a" src="a/appstore_black.svg"><img class="g" src="a/googleplay.svg"></div>
+  <div class="grain"></div></div>
+
+<!-- P3 · TIME CAPSULE REEL COVER -->
+<div class="s r" id="p3_cover"><div class="glow"></div>
+  <div class="lbl" style="top:330px">New in I am (IN)</div>
+  <div class="h h2" style="top:390px">Introducing your<br><span style="color:var(--purple)">Time Capsule.</span></div>
+  <div class="pol" style="left:110px;top:760px;transform:rotate(-7deg)"><img src="a/01.jpg" style="width:420px;height:420px"><span>1:12 AM</span></div>
+  <div class="pol" style="left:520px;top:700px;transform:rotate(6deg)"><img src="a/03.jpg" style="width:420px;height:420px;object-position:50% 30%"><span>1:52 AM</span></div>
+  <div class="pol" style="left:300px;top:1110px;transform:rotate(-2deg)"><img src="a/02.jpg" style="width:440px;height:330px"><span>Supperclub</span></div>
+  <div class="grain"></div></div>
+
+<!-- P4 · MEME: the group chat -->
+<div class="s p" id="p4_meme"><div class="glow"></div>
+  <div class="lbl" style="top:80px">The group chat, 6 PM</div>
+  <div class="bubble me" style="right:72px;top:150px"><img src="a/av_nina.jpg"><div>Who’s in for tonight?</div></div>
+  <div class="bubble" style="left:72px;top:290px"><img src="a/av_timo.jpg"><div>I’m in 🙌</div></div>
+  <div class="bubble" style="left:72px;top:410px"><img src="a/av_marie.jpg"><div>in!!</div></div>
+  <div class="bubble" style="left:72px;top:530px"><img src="a/av_jonas.jpg"><div>100% in</div></div>
+  <div class="lbl" style="top:690px">1:12 AM</div>
+  <div class="card" style="left:72px;top:740px;width:936px;height:520px"><img src="a/01.jpg" style="width:936px;margin-top:-230px"></div>
+  <div class="grain"></div></div>
+
+<!-- P5 · WEEKLY SERIES: Where to later? (cover + 3 events + CTA) -->
+<div class="s p" id="p5_1"><div class="glow"></div>
+  <div class="lbl" style="top:96px">Stuttgart · this weekend</div>
+  <div class="h h1" style="top:150px">Where to<br>later?</div>
+  <div class="card" style="left:72px;top:520px;width:300px;height:420px;transform:rotate(-6deg)"><img src="a/fl_razzia.png" style="width:300px;height:420px;object-fit:cover"></div>
+  <div class="card" style="left:390px;top:560px;width:300px;height:420px;transform:rotate(3deg)"><img src="a/fl_queer.png" style="width:300px;height:420px;object-fit:cover"></div>
+  <div class="card" style="left:708px;top:510px;width:300px;height:420px;transform:rotate(7deg)"><img src="a/fl_midnight.png" style="width:300px;height:420px;object-fit:cover"></div>
+  <div class="foot"><span class="logo">I am <b>(</b>IN<b>)</b></span><span>3 plans →</span></div><div class="grain"></div></div>
+
+<div class="s p" id="p5_2"><img src="a/fl_razzia.png" style="position:absolute;left:0;top:0;width:1080px;height:1350px;object-fit:cover;filter:brightness(.7)">
+  <div style="position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(9,10,15,.95))"></div>
+  <div class="ev"><div class="t">Razzia · 4th anniversary</div><div class="m">SAT · 23:59 · Romantica</div></div>
+  <div class="chip" style="left:72px;top:72px"><img src="a/av_marie.jpg">3 friends in</div></div>
+
+<div class="s p" id="p5_3"><img src="a/fl_queer.png" style="position:absolute;left:0;top:0;width:1080px;height:1350px;object-fit:cover;filter:brightness(.7)">
+  <div style="position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(9,10,15,.95))"></div>
+  <div class="ev"><div class="t">Queerfeminist Night</div><div class="m">SAT · 20:00 · Sunny High</div></div>
+  <div class="chip" style="left:72px;top:72px"><img src="a/av_jonas.jpg">4 friends in</div></div>
+
+<div class="s p" id="p5_4"><img src="a/fl_midnight.png" style="position:absolute;left:0;top:0;width:1080px;height:1350px;object-fit:cover;filter:brightness(.7)">
+  <div style="position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(9,10,15,.95))"></div>
+  <div class="ev"><div class="t">Midnight Service · Summer Rave</div><div class="m">SAT · 16:00 · Trude</div></div>
+  <div class="chip" style="left:72px;top:72px"><img src="a/av_timo.jpg">3 friends in</div></div>
+
+<div class="s p" id="p5_5"><div class="glow"></div>
+  <div class="h h2" style="top:300px">See who’s<br>really in.</div>
+  <div class="sub" style="top:540px">Add the flyer, see your friends, go.</div>
+  <div class="sub" style="top:800px;color:#fff;font-weight:700">Get in.</div>
+  <div class="badges" style="left:72px;top:880px"><img class="a" src="a/appstore_black.svg"><img class="g" src="a/googleplay.svg"></div>
+  <div class="foot"><span class="logo">I am <b>(</b>IN<b>)</b></span><span>New list every Thursday</span></div><div class="grain"></div></div>
+
+<!-- P6 · FILM4 REEL COVER -->
+<div class="s r" id="p6_cover"><div class="glow"></div>
+  <div class="h h1" style="top:360px">What happens after you’re <span style="color:var(--purple)">(</span>in<span style="color:var(--purple)">)</span>?</div>
+  <img src="a/phone_crew.png" style="position:absolute;left:-132px;top:-420px;width:1296px">
+  <div class="grain"></div></div>
+
+<!-- P7 · RECEIPT -->
+<div class="s p" id="p7_receipt"><div class="glow warm"></div>
+  <div class="h h2" style="top:96px">Your night,<br>itemized.</div>
+  <div style="position:absolute;left:250px;top:380px;width:600px;transform:rotate(-4deg);box-shadow:0 50px 100px rgba(0,0,0,.65)"><img src="a/receipt.png" style="width:600px;display:block"></div>
+  <div class="stamp" style="left:640px;top:880px">🔥 FIRE</div>
+  <div class="foot"><span class="logo">I am <b>(</b>IN<b>)</b></span><span>The morning-after receipt</span></div><div class="grain"></div></div>
+
+<!-- P8 · CALENDAR REEL COVER -->
+<div class="s r" id="p8_cover"><div class="glow"></div>
+  <div class="h h2" style="top:360px">All your plans.<br>One calendar.</div>
+  <div class="card" style="left:130px;top:620px;width:820px;height:1040px"><img src="a/cal_month.png" style="width:820px;margin-top:-170px"></div>
+  <div class="grain"></div></div>
+
+<!-- P9 · FOUNDER (carousel x3; slide 1 needs Nathalia's photo) -->
+<div class="s p" id="p9_1"><div class="glow"></div>
+  <div class="ph" style="left:72px;top:72px;width:936px;height:820px">Your photo here<br>(selfie on a night out,<br>vertical, laughing)</div>
+  <div class="h h2" style="top:930px">Hi, I’m Nathalia.</div>
+  <div class="sub" style="top:1040px">I built I am (IN) because the group chat is where plans go to die.</div>
+  <div class="grain"></div></div>
+
+<div class="s p" id="p9_2"><div class="glow"></div>
+  <div class="lbl" style="top:96px">Why I built it</div>
+  <div class="h h3" style="top:160px;line-height:1.15">“Who’s going?”<br>“Where is it again?”<br>“Did anyone buy tickets?”<br>“Who owes who?”<br>“Send the photos!!”</div>
+  <div class="sub" style="top:700px;color:#fff">One app for the whole night: the plan, your friends, the tab and the memories.</div>
+  <div class="foot"><span class="logo">I am <b>(</b>IN<b>)</b></span><span>→</span></div><div class="grain"></div></div>
+
+<div class="s p" id="p9_3"><div class="glow warm"></div>
+  <div class="h h2" style="top:300px">Stuttgart,<br>let’s go out.</div>
+  <div class="sub" style="top:540px">Less scrolling. More going. 💜</div>
+  <div class="sub" style="top:800px;color:#fff;font-weight:700">Get in.</div>
+  <div class="badges" style="left:72px;top:880px"><img class="a" src="a/appstore_black.svg"><img class="g" src="a/googleplay.svg"></div>
+  <div class="grain"></div></div>
+</body></html>
