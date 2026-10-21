@@ -8,6 +8,7 @@ How to use: paste the prompts into Lovable **one at a time, in order**. After ea
 - Sticker board (what each sticker means): https://github.com/nathaliacuryde-88/iamin_CLONE/blob/228ca0ee4a7d4b7220187d2a88af17cb84efecd3/marketing/brand/stickers/sticker-board-dark.jpg
 - Mapping emoji → sticker → where it's used: https://github.com/nathaliacuryde-88/iamin_CLONE/blob/228ca0ee4a7d4b7220187d2a88af17cb84efecd3/marketing/brand/stickers/README.md
 - All PNG files (300×300, transparent): https://github.com/nathaliacuryde-88/iamin_CLONE/tree/228ca0ee4a7d4b7220187d2a88af17cb84efecd3/marketing/brand/stickers/png
+- Motion preview video: https://github.com/nathaliacuryde-88/iamin_CLONE/blob/7a0cc6f2eb43e2bbbc71530d4f98e6eb3a21ac4a/marketing/brand/stickers/motion/stickers-motion-preview.mp4
 - Direct download links (used in prompt 1): `https://raw.githubusercontent.com/nathaliacuryde-88/iamin_CLONE/228ca0ee4a7d4b7220187d2a88af17cb84efecd3/marketing/brand/stickers/png/<name>.png`
 
 ---
@@ -277,6 +278,151 @@ In the avatar fallback component(s) that currently show the emoji on a gradient,
 ```
 
 **Check:** a profile without a photo shows initials everywhere (feed, stories row, event attendees, notifications).
+
+---
+
+# Motion — making the stickers move where it makes sense
+
+Send these after prompts 1–8 work. Preview of every animation (8 s video): https://github.com/nathaliacuryde-88/iamin_CLONE/blob/7a0cc6f2eb43e2bbbc71530d4f98e6eb3a21ac4a/marketing/brand/stickers/motion/stickers-motion-preview.mp4
+
+**The idea:** stickers move only for a reason.
+- **One-shots** play once, right after *your own* action: tap I'm in, react, vote, seal a pact, open the receipt. They last under 0.8 s.
+- **Loops** run only while something is *live*: your mood tonight, "on the way", the live radar, a sealed prediction, an empty state. There are never more than 3 on screen at once, and never in the feed list, chips or the notification list.
+- Everything turns off with the phone's "Reduce motion" setting.
+- Only CSS animations: no new library and no new feature.
+
+| Moment | Sticker | Motion |
+|---|---|---|
+| Tap I'm in / Maybe | in / maybe | slap onto the flyer corner |
+| Set your mood | your mood sticker | slap; disco swings while you're out tonight |
+| React | flame / eyes / cheers | slap |
+| React ❤️ | heart | beat |
+| React 🎉 / birthday reveal | popper | slap + confetti dots |
+| Flop vote / 💀 | skull | shake |
+| Night score appears | burst | spin in |
+| Pact sealed | seal | stamp |
+| Photo added to capsule | cam | flash |
+| Morning-after receipt opens | receipt | prints in |
+| Roulette result | dice | roll |
+| I'm there (radar) | pin | drop |
+| On the way (radar) | scooter | jitter loop while on the way |
+| Live radar section | radar | slow spin while live |
+| Sealed prediction (capsule still closed) | crystal | lime glow loop |
+| Reminder / new unread notification | clock / its sticker | shake / slap once when the sheet opens |
+| "Are you really in?" card | eyes | glance loop |
+| Ghost card | ghost | float loop |
+| Empty feed / empty states | spark / balloon | twinkle / float loop |
+| Birthday today badge | balloon | float loop |
+| Category chip selected | its sticker | slap |
+
+## Prompt 9 — motion support in the Sticker component (no visible change yet)
+
+```
+RULES FOR THIS CHANGE — visual only, nothing else changes:
+- Do not change any feature, logic, state, hook, database value, Supabase query/mutation/RPC, edge function, route, prop, translation key or test.
+- Emoji values that are SAVED stay exactly as they are (out-tonight `vibe` like "🍻", reactions like "🔥", birthday card emoji, exit poll ratings, cover layers). Only how they are RENDERED changes, using <EmojiSticker>.
+- If an emoji is not in EMOJI_TO_STICKER, render it exactly as today.
+- Do not touch text people type (chat, notes, comments, captions, event names, the Cover Studio "type any emoji" input).
+- Keep the same box size as the emoji being replaced, so no layout moves.
+- Do not restyle anything else in this step (colours, fonts, spacing stay as they are).
+- When done, list every file you changed.
+
+Look at this preview video to see the motions: https://github.com/nathaliacuryde-88/iamin_CLONE/blob/7a0cc6f2eb43e2bbbc71530d4f98e6eb3a21ac4a/marketing/brand/stickers/motion/stickers-motion-preview.mp4
+
+1) Create src/styles/stickers-motion.css with exactly the content of this file: https://raw.githubusercontent.com/nathaliacuryde-88/iamin_CLONE/7a0cc6f2eb43e2bbbc71530d4f98e6eb3a21ac4a/marketing/brand/stickers/motion/stickers-motion.css
+   Import it once in src/main.tsx (after index.css).
+
+2) Replace src/components/Sticker.tsx with this version. It keeps the same props as before (id, size, tilt, label, className) and only ADDS optional motion props, so every existing usage keeps working unchanged:
+
+import { useEffect, useRef, useState } from "react";
+import { stickerFor, type StickerId } from "@/lib/stickers";
+
+export type StickerMotion =
+  | "slap" | "stamp" | "beat" | "shake" | "roll" | "drop" | "print" | "flash" | "spinin" | "confetti"
+  | "swing" | "flicker" | "float" | "spin" | "spinfast" | "twinkle" | "glow" | "jitter" | "breathe" | "glance" | "wiggle";
+const LOOPS = new Set<StickerMotion>(["swing","flicker","float","spin","spinfast","twinkle","glow","jitter","breathe","glance","wiggle"]);
+
+// What each sticker does when motion="auto"
+export const DEFAULT_MOTION: Partial<Record<StickerId, StickerMotion>> = {
+  in:"slap", maybe:"slap", free:"slap", spritz:"slap", sneaker:"slap", couch:"slap", ball:"slap", key:"slap", meh:"slap",
+  flame:"slap", eyes:"slap", cheers:"slap", ticket:"slap", cash:"slap", film:"slap", calendar:"slap", envelope:"slap", hey:"slap",
+  vinyl:"slap", tent:"slap", cake:"slap", palette:"slap", pizza:"slap", croissant:"slap", popcorn:"slap", tote:"slap", gift:"beat",
+  heart:"beat", popper:"confetti", plus1:"spinin", burst:"spinin", crown:"spinin", skull:"shake", clock:"shake", lock:"shake",
+  bottle:"shake", brokenheart:"shake", seal:"stamp", receipt:"print", cam:"flash", dice:"roll", pin:"drop",
+  disco:"swing", scooter:"jitter", radar:"spin", crystal:"glow", ghost:"float", balloon:"float", wave:"float",
+  spark:"twinkle", sun:"breathe", moon:"breathe", battery:"breathe",
+};
+
+type StickerProps = {
+  id: StickerId; size?: number; tilt?: number; label?: string; className?: string;
+  motion?: StickerMotion | "auto"; // which animation
+  playKey?: unknown;               // one-shots replay every time this value changes (not on first render)
+  playOnMount?: boolean;           // one-shot also plays on first render (use only for reveal screens)
+  loop?: boolean;                  // loops run only while this is true (a live state)
+};
+
+export function Sticker({ id, size = 24, tilt = 0, label, className = "", motion, playKey, playOnMount = false, loop = false }: StickerProps) {
+  const name = motion === "auto" ? DEFAULT_MOTION[id] : motion;
+  const isLoop = !!name && LOOPS.has(name);
+  const first = useRef(true);
+  const [plays, setPlays] = useState(0);
+  useEffect(() => { if (first.current) { first.current = false; return; } setPlays((n) => n + 1); }, [playKey]);
+  const active = !!name && (isLoop ? loop : plays > 0 || playOnMount);
+  const box = Math.round(size * 1.2), m = -Math.round(size * 0.1);
+  return (
+    <span key={plays} className={`stk ${active ? `stk-m-${name}` : ""} ${className}`}
+      style={{ width: size, height: size, fontSize: size, rotate: tilt ? `${tilt}deg` : undefined }}
+      role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
+      <img src={`/stickers/${id}.png`} alt="" draggable={false} style={{ width: box, height: box, margin: m }} />
+    </span>
+  );
+}
+
+export function EmojiSticker({ emoji, context, ...rest }: Omit<StickerProps, "id"> & { emoji?: string | null; context?: "mood" }) {
+  const id = stickerFor(emoji, context);
+  if (!id) return <>{emoji}</>;
+  return <Sticker id={id} {...rest} />;
+}
+
+Do not add motion to any screen yet. Check that every sticker still looks exactly as before.
+```
+
+**Check:** nothing on screen changes.
+
+## Prompt 10 — turn the motion on at the right moments
+
+```
+RULES FOR THIS CHANGE — visual only, nothing else changes:
+- Do not change any feature, logic, state, hook, database value, Supabase query/mutation/RPC, edge function, route, prop, translation key or test.
+- Emoji values that are SAVED stay exactly as they are (out-tonight `vibe` like "🍻", reactions like "🔥", birthday card emoji, exit poll ratings, cover layers). Only how they are RENDERED changes, using <EmojiSticker>.
+- If an emoji is not in EMOJI_TO_STICKER, render it exactly as today.
+- Do not touch text people type (chat, notes, comments, captions, event names, the Cover Studio "type any emoji" input).
+- Keep the same box size as the emoji being replaced, so no layout moves.
+- Do not restyle anything else in this step (colours, fonts, spacing stay as they are).
+- When done, list every file you changed.
+MOTION RULES:
+- Only use the Sticker/EmojiSticker props motion, playKey, playOnMount and loop. Use the existing state of each screen; the only new state allowed is a local UI counter or "last tapped" value used as playKey.
+- One-shots play only after the current user's own tap (or the first time a reveal screen opens). Never on page load of lists, never because of realtime updates from other people.
+- Loops only while the live state is true, at most 3 looping stickers visible at once. No motion in the feed card list, chips lists or the notification list except where listed below.
+- Where a one-shot plays after a tap and that tap has no haptic yet, call the existing useHaptics() with "light" ("success" for I'm in and pact sealed). Don't add a second haptic where there already is one.
+- The CSS already turns everything off with prefers-reduced-motion.
+
+See https://github.com/nathaliacuryde-88/iamin_CLONE/blob/7a0cc6f2eb43e2bbbc71530d4f98e6eb3a21ac4a/marketing/brand/stickers/motion/stickers-motion-preview.mp4 for how each one looks.
+
+1) RSVP (feed card and EventDetail): when the current user taps I'm in, a 44px <Sticker id="in" motion="slap" playKey={rsvpStatus} /> appears on the top-right corner of the flyer image (tilt 10) and stays while the status is "in". Same with id="maybe" for Maybe. No change to the buttons or RSVP logic.
+2) Your mood (OutTonightBar): your own mood sticker uses motion="auto" playKey={myVibe}; if your vibe is 🔥/🪩 (disco) it also gets loop={true} while it is set. Friends' mood stickers: no motion.
+3) Reactions (ReactionPicker and where your own reaction is shown): motion="auto" with playKey = the reaction you just tapped (local "last tapped"): heart beats, 🎉 confetti, 💀 shakes, others slap.
+4) ExitPollSheet: the option you pick plays its motion once (flame slap, meh slap, skull shake). Night score burst (NightReceipt / EventScoreStrip): motion="spinin" playOnMount the first time the receipt opens.
+5) Pact sealed (PactSection): seal motion="stamp" playKey={sealed}.
+6) Capsule: photo added → cam motion="flash" playKey={photoCount} for the uploader only; morning-after receipt sheet header → receipt motion="print" playOnMount; sealed predictions while the capsule is still closed → crystal motion="glow" loop.
+7) Roulette: dice motion="roll" playKey={result} when the result shows (after the existing spin).
+8) Live radar: your "I'm there" → pin motion="drop" playKey={myStatus}; your "On the way" chip → scooter motion="jitter" loop while that is your status; the radar title sticker → motion="spin" loop while the radar section is live.
+9) Birthday: BirthdayCardReveal → cake slap then popper confetti (playOnMount; keep the existing confetti); "birthday today" badge balloon → float loop.
+10) Small touches: RealityCheckCard eyes → glance loop; FriendGhostCard ghost → float loop; empty feed / empty states → one spark (twinkle) or balloon (float) loop; FilterSheet → the category sticker you just selected plays slap; NotificationsBell → when the sheet opens, the stickers of the first 3 UNREAD items play once (playOnMount), the rest stay still.
+List every file you changed.
+```
+
+**Check:** tap I'm in / Maybe, set a mood, react, vote in the exit poll, seal a pact, add a capsule photo, open the receipt, spin the roulette, use the radar, open a birthday card. Then turn on iPhone Settings → Accessibility → Motion → Reduce Motion and check that the stickers stay still.
 
 ---
 
