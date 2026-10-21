@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 120 120" width="240" height="240">
+<defs>
+<filter id="cut" filterUnits="userSpaceOnUse" x="-12" y="-12" width="124" height="124">
+ <feMorphology in="SourceAlpha" operator="dilate" radius="4.2" result="d"/>
+ <feGaussianBlur in="d" stdDeviation="1.4" result="b"/>
+ <feComponentTransfer in="b" result="t"><feFuncA type="linear" slope="7" intercept="-2.5"/></feComponentTransfer>
+ <feFlood flood-color="#fff"/><feComposite in2="t" operator="in" result="w"/>
+ <feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<radialGradient id="silver" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#c9c9c9"/><stop offset="1" stop-color="#5d5d5d"/></radialGradient>
+<linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset=".5" stop-color="#E9B23A"/><stop offset="1" stop-color="#B57E12"/></linearGradient>
+<clipPath id="discoclip"><circle cx="50" cy="56" r="34"/></clipPath>
+<clipPath id="ballclip"><circle cx="50" cy="50" r="38"/></clipPath>
+<clipPath id="popclip"><path d="M14 88 L40 38 L64 62 Z"/></clipPath></defs>
+<g filter="url(#cut)"><ellipse cx="50" cy="86" rx="40" ry="6" fill="#fff" stroke="#DDD" stroke-width="1.5"/><rect x="18" y="46" width="64" height="38" rx="6" fill="#FF8FC3"/><path d="M18 52 Q18 44 26 44 H74 Q82 44 82 52 V58 Q78 64 74 58 Q70 66 64 58 Q58 64 52 58 Q46 68 40 58 Q34 64 28 58 Q22 66 18 58Z" fill="#FFF6E8"/><rect x="28" y="70" width="6" height="3" rx="1.5" fill="#D8FF3D"/><rect x="48" y="74" width="6" height="3" rx="1.5" fill="#3B6CFF" transform="rotate(30 51 75)"/><rect x="66" y="69" width="6" height="3" rx="1.5" fill="#FFE14D"/><rect x="47" y="22" width="6" height="22" rx="2" fill="#D8FF3D"/><path d="M47 28l6-3M47 34l6-3M47 40l6-3" stroke="#9BC400" stroke-width="1.6"/><ellipse cx="50" cy="15" rx="4.5" ry="7.5" fill="#FF9F1C"/><ellipse cx="50" cy="17" rx="2.2" ry="4" fill="#FFE14D"/></g>
+</svg>

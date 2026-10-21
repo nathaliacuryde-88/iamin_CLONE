@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 120 120" width="240" height="240">
+<defs>
+<filter id="cut" filterUnits="userSpaceOnUse" x="-12" y="-12" width="124" height="124">
+ <feMorphology in="SourceAlpha" operator="dilate" radius="4.2" result="d"/>
+ <feGaussianBlur in="d" stdDeviation="1.4" result="b"/>
+ <feComponentTransfer in="b" result="t"><feFuncA type="linear" slope="7" intercept="-2.5"/></feComponentTransfer>
+ <feFlood flood-color="#fff"/><feComposite in2="t" operator="in" result="w"/>
+ <feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<radialGradient id="silver" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#c9c9c9"/><stop offset="1" stop-color="#5d5d5d"/></radialGradient>
+<linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset=".5" stop-color="#E9B23A"/><stop offset="1" stop-color="#B57E12"/></linearGradient>
+<clipPath id="discoclip"><circle cx="50" cy="56" r="34"/></clipPath>
+<clipPath id="ballclip"><circle cx="50" cy="50" r="38"/></clipPath>
+<clipPath id="popclip"><path d="M14 88 L40 38 L64 62 Z"/></clipPath></defs>
+<g filter="url(#cut)"><path d="M77.6 45.3 L95.0 50.0 L77.6 54.7Z" fill="#FF9F1C"/><path d="M76.3 59.7 L89.0 72.5 L71.5 67.9Z" fill="#FF9F1C"/><path d="M67.9 71.5 L72.5 89.0 L59.7 76.3Z" fill="#FF9F1C"/><path d="M54.7 77.6 L50.0 95.0 L45.3 77.6Z" fill="#FF9F1C"/><path d="M40.3 76.3 L27.5 89.0 L32.1 71.5Z" fill="#FF9F1C"/><path d="M28.5 67.9 L11.0 72.5 L23.7 59.7Z" fill="#FF9F1C"/><path d="M22.4 54.7 L5.0 50.0 L22.4 45.3Z" fill="#FF9F1C"/><path d="M23.7 40.3 L11.0 27.5 L28.5 32.1Z" fill="#FF9F1C"/><path d="M32.1 28.5 L27.5 11.0 L40.3 23.7Z" fill="#FF9F1C"/><path d="M45.3 22.4 L50.0 5.0 L54.7 22.4Z" fill="#FF9F1C"/><path d="M59.7 23.7 L72.5 11.0 L67.9 28.5Z" fill="#FF9F1C"/><path d="M71.5 32.1 L89.0 27.5 L76.3 40.3Z" fill="#FF9F1C"/><circle cx="50" cy="50" r="27" fill="#FFE14D"/><rect x="31" y="42" width="16" height="11" rx="5" fill="#0B0B0A"/><rect x="53" y="42" width="16" height="11" rx="5" fill="#0B0B0A"/><path d="M47 45h6" stroke="#0B0B0A" stroke-width="2.5"/></g>
+</svg>

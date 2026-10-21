@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D9D8D3;font-family:'Inter Tight';padding:30px}
+.board{width:1640px;background:#0B0B0A;color:#F4F3EE;border-radius:40px;padding:56px 60px 60px}
+.board.l{background:#EEEDE8;color:#0B0B0A}
+h1{font:84px/0.92 Anton;text-transform:uppercase}
+.sub{font:500 18px/1.45 'Inter Tight';color:#8C8B85;margin-top:14px;width:900px}
+h2{font:26px Anton;text-transform:uppercase;margin:46px 0 18px;display:flex;gap:14px;align-items:baseline}
+h2 span{font:500 13px 'JetBrains Mono';color:#8C8B85;text-transform:none}
+.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:20px 8px}
+.it{text-align:center}
+.it svg{width:112px;height:112px;display:block;margin:0 auto;overflow:visible;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.nm{font:600 14px/1.2 'Inter Tight';margin-top:8px}
+.em{font-size:15px;margin-top:4px;opacity:.85}
+.wh{font:400 10.5px/1.3 'JetBrains Mono';color:#8C8B85;margin-top:4px}
+.not{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:6px}
+.not div{background:#171716;border-radius:22px;padding:20px}
+.l .not div{background:#fff}
+.not b{font:700 16px 'Inter Tight';display:block}
+.not p{font:500 14px/1.4 'Inter Tight';color:#8C8B85;margin-top:6px}
+.mono-av{display:flex;gap:8px;margin-top:12px}
+.mono-av i{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:18px Anton;font-style:normal;color:#0B0B0A}
+.dots{display:flex;gap:12px;margin-top:12px;font:500 12px 'JetBrains Mono';color:#8C8B85;align-items:center}
+.dots i{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:-1px}
+#solo .s{width:300px;height:300px;display:inline-block}
+#solo .s svg{width:300px;height:300px;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.28))}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs id="defs"></defs></svg>
+<div id="root"></div><div id="solo"></div>
+<script src="stickers.js"></script>
+<script>
+document.getElementById('defs').innerHTML=DEFS;
+const svg=(id)=>`<svg viewBox="-10 -10 120 120"><g filter="url(#cut)">${S[id]}</g></svg>`;
+const mode=new URLSearchParams(location.search).get('m')||'d';
+let n=0;const seen=new Set();GROUPS.forEach(g=>g[1].forEach(x=>seen.add(x[0])));
+let h=`<div class="board ${mode=='l'?'l':''}" id="board"><h1>The I am (IN)<br>sticker set</h1><div class="sub">${seen.size} stickers that take over every job emojis do in the app today — moods, reactions, ratings, categories, the night tools, capsules, birthdays and notifications. Emojis people type themselves stay.</div>`;
+GROUPS.forEach(([title,items])=>{h+=`<h2>${title}<span>${items.length} stickers</span></h2><div class="grid">${items.map((it,i)=>`<div class="it">${svg(it[0]).replace('<svg ',`<svg style="transform:rotate(${[-5,4,-3,6,-6,3,-4,5,-2,4][i%10]}deg)" `)}<div class="nm">${it[1]}</div><div class="em">${it[2]}</div><div class="wh">${it[3]}</div></div>`).join('')}</div>`});
+h+=`<h2>Not stickers<span>these jobs get plainer treatment</span></h2><div class="not">
+<div><b>Avatar without a photo</b><p>Today: 60 emojis on pastel gradients. Instead: initials in Anton on one of the sticker colours.</p><div class="mono-av"><i style="background:#D8FF3D">MK</i><i style="background:#FF5FA8">J</i><i style="background:#3B6CFF;color:#fff">TS</i><i style="background:#FFE14D">N</i><i style="background:#FF6A13">PA</i></div></div>
+<div><b>Line mode & live states</b><p>🟢 🟡 🔴 ⛔ become plain coloured dots with a word — they're status, not mood.</p><div class="dots"><span><i style="background:#17B75A"></i>open</span><span><i style="background:#FFD400"></i>busy</span><span><i style="background:#F23D3D"></i>full</span></div></div>
+<div><b>Functional icons</b><p>🔗 💳 🌐 🚫 🔔 📝 👁️ ⚠️ and arrows → ↓ 👉 👇 👆 become simple line icons or plain text.</p></div>
+<div><b>What people type</b><p>Chat, notes, captions, comments, Cover Studio "type any emoji" — users keep every emoji. Our stickers sit next to them as an option.</p></div>
+</div></div>`;
+document.getElementById('root').innerHTML=h;
+if(new URLSearchParams(location.search).get('solo')){document.body.style.background='transparent';document.getElementById('root').style.display='none'} if(new URLSearchParams(location.search).get('solo')) document.getElementById('solo').innerHTML=Object.keys(S).map(k=>`<div class="s" id="s_${k}">${svg(k)}</div>`).join('');
+</script></body></html>
