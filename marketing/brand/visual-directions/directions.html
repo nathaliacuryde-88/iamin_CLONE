@@ -1,0 +1,141 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; }
+body { background: #d9d9d9; padding: 20px; font-family: "Inter Tight", sans-serif; }
+.row { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 40px; }
+.ph { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; position: relative; flex: none; }
+.post { width: 540px; height: 675px; overflow: hidden; position: relative; flex: none; }
+.av { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-left: -9px; border: 2px solid var(--bg); }
+.av:first-child { margin-left: 0; }
+.status { display: flex; justify-content: space-between; padding: 16px 30px 0; font-weight: 600; font-size: 15px; }
+
+/* ---------- A · CLEAN (Luma-like) ---------- */
+.A { --bg: #F6F4EF; --ink: #121212; --mute: #6F6B66; --line: rgba(0,0,0,.08); background: var(--bg); color: var(--ink); font-family: "Inter Tight", sans-serif; }
+.A .nav { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; }
+.A .logo { font-weight: 800; font-size: 20px; letter-spacing: -.5px; }
+.A .tabs { display: flex; gap: 18px; padding: 4px 22px 14px; font-size: 15px; font-weight: 600; color: var(--mute); }
+.A .tabs b { color: var(--ink); }
+.A .card { margin: 0 16px 14px; background: #fff; border-radius: 22px; padding: 12px; display: flex; gap: 14px; align-items: center; box-shadow: 0 1px 0 var(--line); }
+.A .card img.c { width: 76px; height: 76px; border-radius: 14px; object-fit: cover; }
+.A .card .t { font-weight: 700; font-size: 16px; letter-spacing: -.3px; }
+.A .card .m { font-size: 13px; color: var(--mute); margin-top: 3px; }
+.A .card .f { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--mute); }
+.A .day { padding: 14px 22px 8px; font-size: 13px; font-weight: 600; color: var(--mute); }
+.A .btn { background: var(--ink); color: #fff; border-radius: 999px; padding: 15px 0; text-align: center; font-weight: 700; font-size: 16px; }
+.A .ghost { background: #fff; color: var(--ink); border-radius: 999px; padding: 15px 0; text-align: center; font-weight: 600; font-size: 16px; border: 1px solid var(--line); }
+
+/* ---------- B · POSTER (Partiful-like) ---------- */
+.B { --bg: #0A0A0A; --ink: #FFFFFF; --mute: #9A9A9A; --sig: #D8FF3D; background: var(--bg); color: var(--ink); font-family: "Inter Tight", sans-serif; }
+.B .disp { font-family: Anton, sans-serif; text-transform: uppercase; letter-spacing: .5px; line-height: .92; }
+.B .sticker { position: absolute; width: 96px; height: 96px; border-radius: 50%; background: var(--sig); color: #0A0A0A; display: flex; align-items: center; justify-content: center; font-family: Anton; font-size: 26px; transform: rotate(-12deg); box-shadow: 0 6px 0 rgba(0,0,0,.35); }
+.B .btn { background: var(--sig); color: #0A0A0A; border-radius: 14px; padding: 16px 0; text-align: center; font-weight: 800; font-size: 17px; }
+.B .ghost { background: #1C1C1C; color: #fff; border-radius: 14px; padding: 16px 0; text-align: center; font-weight: 700; font-size: 17px; }
+.B .bub { display: inline-block; background: #fff; color: #0A0A0A; padding: 9px 15px; border-radius: 18px 18px 18px 4px; font-size: 15px; font-weight: 600; }
+
+/* ---------- C · NIGHT FILM (editorial) ---------- */
+.C { --bg: #13110F; --ink: #F2EBDF; --mute: #9C9284; --sig: #FF5A36; --line: rgba(242,235,223,.12); background: var(--bg); color: var(--ink); font-family: "Inter Tight", sans-serif; }
+.C .serif { font-family: "Instrument Serif", serif; font-weight: 400; letter-spacing: -.5px; }
+.C .mono { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mute); }
+.C .btn { background: var(--sig); color: #13110F; border-radius: 999px; padding: 15px 0; text-align: center; font-weight: 700; font-size: 16px; }
+.C .ghost { border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 15px 0; text-align: center; font-weight: 600; font-size: 16px; }
+.C .frame { background: #F2EBDF; padding: 8px 8px 30px; box-shadow: 0 20px 50px rgba(0,0,0,.5); position: absolute; }
+.C .frame img { display: block; object-fit: cover; }
+.lbl { font: 700 13px "Inter Tight"; letter-spacing: 3px; text-transform: uppercase; color: #333; margin: 0 0 10px 4px; }
+</style></head><body>
+
+<!-- =================== A · CLEAN =================== -->
+<div class="lbl">A · Clean — Luma-like: neutral UI, the flyers bring the colour</div>
+<div class="row" id="dirA">
+  <!-- feed -->
+  <div class="ph A"><div class="status"><span>9:41</span><span>●●●</span></div>
+    <div class="nav"><span class="logo">I am (IN)</span><span style="display:flex;gap:10px"><img class="av" src="a/av_nina.jpg" style="width:34px;height:34px"></span></div>
+    <div class="tabs"><b>Friends</b><span>City</span><span>Calendar</span></div>
+    <div style="margin:4px 16px 16px;background:#fff;border-radius:22px;padding:14px 16px">
+      <div style="font-size:13px;font-weight:600;color:var(--mute)">Out tonight</div>
+      <div style="display:flex;gap:16px;margin-top:10px">
+        <div style="text-align:center;font-size:12px"><img src="a/av_marie.jpg" style="width:52px;height:52px;border-radius:50%;object-fit:cover;outline:2px solid #121212;outline-offset:2px"><div style="margin-top:6px;font-weight:600">Marie</div><div style="color:var(--mute)">Razzia</div></div>
+        <div style="text-align:center;font-size:12px"><img src="a/av_timo.jpg" style="width:52px;height:52px;border-radius:50%;object-fit:cover;outline:2px solid #121212;outline-offset:2px"><div style="margin-top:6px;font-weight:600">Timo</div><div style="color:var(--mute)">Pre-drinks</div></div>
+        <div style="text-align:center;font-size:12px"><img src="a/av_jonas.jpg" style="width:52px;height:52px;border-radius:50%;object-fit:cover"><div style="margin-top:6px;font-weight:600">Jonas</div><div style="color:var(--mute)">Maybe</div></div>
+        <div style="text-align:center;font-size:12px"><div style="width:52px;height:52px;border-radius:50%;border:1.5px dashed #bbb;display:flex;align-items:center;justify-content:center;font-size:22px;color:#999">+</div><div style="margin-top:6px;font-weight:600">You?</div></div>
+      </div></div>
+    <div class="day">Tonight</div>
+    <div class="card"><img class="c" src="a/fl_razzia_clean.png"><div><div class="t">Razzia · 4th anniversary</div><div class="m">23:59 · Romantica</div><div class="f"><span style="display:flex"><img class="av" src="a/av_marie.jpg"><img class="av" src="a/av_timo.jpg"><img class="av" src="a/av_jonas.jpg"></span>Marie, Timo +5 are in</div></div></div>
+    <div class="day">Saturday</div>
+    <div class="card"><img class="c" src="a/fl_queer.png"><div><div class="t">Queerfeminist Night</div><div class="m">20:00 · Sunny High</div><div class="f"><span style="display:flex"><img class="av" src="a/av_jonas.jpg"></span>Jonas is in</div></div></div>
+    <div class="card"><img class="c" src="a/fl_midnight.png"><div><div class="t">Midnight Service</div><div class="m">16:00 · Trude</div><div class="f">3 people from your city</div></div></div>
+  </div>
+  <!-- event -->
+  <div class="ph A" style="background:#fff"><img src="a/fl_razzia_clean.png" style="width:390px;height:390px;object-fit:cover;display:block">
+    <div style="padding:20px 22px">
+      <div style="font-size:13px;font-weight:600;color:var(--mute)">Sat 3 Oct · 23:59</div>
+      <div style="font-size:31px;font-weight:800;letter-spacing:-1px;line-height:1.05;margin-top:6px">Razzia · 4th anniversary</div>
+      <div style="font-size:15px;color:var(--mute);margin-top:8px">Romantica, Stuttgart</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:18px;font-size:14px;font-weight:600"><span style="display:flex"><img class="av" src="a/av_marie.jpg" style="width:34px;height:34px"><img class="av" src="a/av_timo.jpg" style="width:34px;height:34px"><img class="av" src="a/av_jonas.jpg" style="width:34px;height:34px"></span>Marie, Timo and 5 friends are in</div>
+      <div style="display:flex;gap:10px;margin-top:22px"><div class="btn" style="flex:2">I’m in</div><div class="ghost" style="flex:1">Maybe</div></div>
+      <div style="margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--mute)">Pact · Tab · Radar · Capsule</div>
+    </div></div>
+  <!-- post -->
+  <div class="post A" style="padding:44px"><div style="font-size:15px;font-weight:600;color:var(--mute)">Stuttgart · this weekend</div>
+    <div style="font-size:64px;font-weight:800;letter-spacing:-2.5px;line-height:.95;margin-top:10px">Where to<br>later?</div>
+    <img src="a/fl_razzia_clean.png" style="position:absolute;left:44px;top:300px;width:140px;height:190px;object-fit:cover;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.18)">
+    <img src="a/fl_queer.png" style="position:absolute;left:200px;top:300px;width:140px;height:190px;object-fit:cover;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.18)">
+    <img src="a/fl_midnight.png" style="position:absolute;left:356px;top:300px;width:140px;height:190px;object-fit:cover;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.18)">
+    <div style="position:absolute;left:44px;bottom:40px;font-weight:800;font-size:18px">I am (IN)</div><div style="position:absolute;right:44px;bottom:40px;font-size:15px;color:var(--mute)">3 plans →</div></div>
+</div>
+
+<!-- =================== B · POSTER =================== -->
+<div class="lbl">B · Poster — Partiful-like: black & white, condensed type, flash photos, one signal colour</div>
+<div class="row" id="dirB">
+  <div class="ph B"><div class="status"><span>9:41</span><span>●●●</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px"><span class="disp" style="font-size:28px">I AM (IN)</span><img src="a/av_nina.jpg" style="width:34px;height:34px;border-radius:50%;object-fit:cover"></div>
+    <div class="disp" style="font-size:54px;padding:6px 20px 0">WHO’S OUT<br>TONIGHT?</div>
+    <div style="display:flex;gap:12px;padding:16px 20px">
+      <div style="text-align:center"><img src="a/av_marie.jpg" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid var(--sig)"><div style="font-size:12px;font-weight:700;margin-top:6px">MARIE</div></div>
+      <div style="text-align:center"><img src="a/av_timo.jpg" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid var(--sig)"><div style="font-size:12px;font-weight:700;margin-top:6px">TIMO</div></div>
+      <div style="text-align:center"><img src="a/av_jonas.jpg" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid #333"><div style="font-size:12px;font-weight:700;margin-top:6px;color:var(--mute)">JONAS</div></div>
+    </div>
+    <div style="margin:4px 16px;position:relative;border-radius:20px;overflow:hidden;height:380px"><img src="a/fl_razzia_clean.png" style="width:100%;height:100%;object-fit:cover">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,0,0,.9))"></div>
+      <div style="position:absolute;left:16px;bottom:16px;right:16px"><div class="disp" style="font-size:34px">RAZZIA · 4TH ANNIVERSARY</div><div style="font-size:14px;color:#ccc;margin-top:6px">TONIGHT 23:59 · ROMANTICA</div></div></div>
+    <div class="sticker" style="right:26px;top:470px">I’M IN</div>
+    <div style="padding:16px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px"><span style="display:flex"><img class="av" src="a/av_marie.jpg"><img class="av" src="a/av_timo.jpg"><img class="av" src="a/av_jonas.jpg"></span>7 friends are in</div>
+  </div>
+  <div class="ph B"><div style="position:relative;height:470px"><img src="a/01.jpg" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.08)">
+      <div style="position:absolute;left:18px;top:60px"><div class="bub">who’s coming tonight???</div></div>
+      <div style="position:absolute;right:18px;top:110px"><div class="bub" style="background:var(--sig);border-radius:18px 18px 4px 18px">I’m in 🙌</div></div></div>
+    <div style="padding:18px 20px"><div style="font-size:13px;font-weight:700;color:var(--sig)">SAT 3 OCT · 23:59</div>
+      <div class="disp" style="font-size:46px;margin-top:6px">RAZZIA ·<br>4TH ANNIVERSARY</div>
+      <div style="font-size:15px;color:var(--mute);margin-top:8px">Romantica, Stuttgart · 7 friends in</div>
+      <div style="display:flex;gap:10px;margin-top:20px"><div class="btn" style="flex:2">I’M IN</div><div class="ghost" style="flex:1">MAYBE</div></div></div></div>
+  <div class="post B"><img src="a/03.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8)">
+    <div class="disp" style="position:absolute;left:34px;top:34px;font-size:84px">ONE LINK.<br>EVERYONE’S<br>(IN).</div>
+    <div class="sticker" style="right:40px;bottom:60px;width:120px;height:120px;font-size:30px">GET IN</div></div>
+</div>
+
+<!-- =================== C · NIGHT FILM =================== -->
+<div class="lbl">C · Night film — editorial: warm black, serif + mono, film frames, flash-red accent</div>
+<div class="row" id="dirC">
+  <div class="ph C"><div class="status"><span>9:41</span><span>●●●</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 22px"><span class="serif" style="font-size:26px">I am <span style="color:var(--sig)">(</span>in<span style="color:var(--sig)">)</span></span><img src="a/av_nina.jpg" style="width:34px;height:34px;border-radius:50%;object-fit:cover"></div>
+    <div class="mono" style="padding:4px 22px">Fri · 2 Oct · Stuttgart</div>
+    <div class="serif" style="font-size:44px;padding:4px 22px 0;line-height:1">Tonight, <i>with</i><br>Marie &amp; Timo</div>
+    <div style="margin:18px 22px;border-top:1px solid var(--line)"></div>
+    <div style="display:flex;gap:14px;padding:0 22px;align-items:center"><img src="a/fl_razzia_clean.png" style="width:110px;height:140px;object-fit:cover"><div><div class="mono">23:59 · Romantica</div><div class="serif" style="font-size:30px;line-height:1.02;margin-top:4px">Razzia, 4th anniversary</div><div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--mute)"><span style="display:flex"><img class="av" src="a/av_marie.jpg"><img class="av" src="a/av_timo.jpg"></span>+5 friends</div></div></div>
+    <div style="margin:18px 22px;border-top:1px solid var(--line)"></div>
+    <div style="display:flex;gap:14px;padding:0 22px;align-items:center"><img src="a/fl_queer.png" style="width:110px;height:140px;object-fit:cover"><div><div class="mono">Sat · 20:00 · Sunny High</div><div class="serif" style="font-size:30px;line-height:1.02;margin-top:4px">Queerfeminist Night</div><div style="font-size:13px;color:var(--mute);margin-top:10px">Jonas is in</div></div></div>
+    <div style="position:absolute;left:22px;right:22px;bottom:30px" class="btn">See who’s in</div></div>
+  <div class="ph C"><img src="a/fl_razzia_clean.png" style="width:390px;height:400px;object-fit:cover;display:block">
+    <div style="padding:18px 22px"><div class="mono">Sat 3 Oct · 23:59 · Romantica</div>
+      <div class="serif" style="font-size:40px;line-height:1;margin-top:8px">Razzia, <i>4th anniversary</i></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:16px;font-size:14px"><span style="display:flex"><img class="av" src="a/av_marie.jpg" style="width:32px;height:32px"><img class="av" src="a/av_timo.jpg" style="width:32px;height:32px"><img class="av" src="a/av_jonas.jpg" style="width:32px;height:32px"></span>7 friends are in</div>
+      <div style="display:flex;gap:10px;margin-top:20px"><div class="btn" style="flex:2">I’m in</div><div class="ghost" style="flex:1">Maybe</div></div>
+      <div class="mono" style="margin-top:20px">Pact · Tab · Radar · Capsule</div></div></div>
+  <div class="post C"><div class="mono" style="position:absolute;left:40px;top:40px">The morning after · 10:12</div>
+    <div class="serif" style="position:absolute;left:40px;top:66px;font-size:66px;line-height:.95">Your night,<br><i>itemized.</i></div>
+    <div class="frame" style="left:60px;top:270px;transform:rotate(-5deg)"><img src="a/01.jpg" style="width:200px;height:200px"></div>
+    <div class="frame" style="left:270px;top:250px;transform:rotate(4deg)"><img src="a/03.jpg" style="width:200px;height:200px"></div>
+    <div style="position:absolute;left:40px;bottom:36px;font-size:15px;color:var(--mute)">I am (in) · Stuttgart</div></div>
+</div>
+</body></html>
