@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 112 112" width="224" height="224">
+<defs><radialGradient id="silver" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#c9c9c9"/><stop offset="1" stop-color="#5d5d5d"/></radialGradient>
+<linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset=".5" stop-color="#E9B23A"/><stop offset="1" stop-color="#B57E12"/></linearGradient>
+<clipPath id="discoclip"><circle cx="50" cy="56" r="34"/></clipPath></defs>
+<path d="M60 12a38 38 0 1 0 28 58A30 30 0 1 1 60 12z" fill="#FFE14D" stroke="#fff" stroke-width="6" stroke-linejoin="round"/><circle cx="40" cy="62" r="4" fill="#F2C916"/><circle cx="30" cy="44" r="2.6" fill="#F2C916"/><path d="M80 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>
+</svg>

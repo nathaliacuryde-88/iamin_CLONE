@@ -1,0 +1,234 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D9D8D3;font-family:'Inter Tight',sans-serif;padding:40px}
+.row{display:flex;gap:28px;align-items:flex-start;padding:28px;background:#D9D8D3;width:max-content}
+.lbl{font:600 15px 'Inter Tight';color:#333;margin:0 0 -10px 28px}
+.d{--bg:#0B0B0A;--s1:#171716;--s2:#242422;--ink:#F4F3EE;--mute:#8C8B85;--line:rgba(255,255,255,.08);--nav:#1A1A19;--navb:rgba(255,255,255,.08);--shadow:0 10px 30px rgba(0,0,0,.5)}
+.l{--bg:#EEEDE8;--s1:#FFFFFF;--s2:#E4E3DD;--ink:#0B0B0A;--mute:#74736D;--line:rgba(0,0,0,.07);--nav:#0B0B0A;--navb:transparent;--shadow:0 10px 30px rgba(0,0,0,.10)}
+.acc{--acc:#D8FF3D}
+.ph{--acc:#D8FF3D;width:390px;height:844px;border-radius:46px;overflow:hidden;position:relative;background:var(--bg);color:var(--ink);flex:none;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+.abs{position:absolute}
+.status{position:absolute;top:16px;left:34px;right:28px;display:flex;justify-content:space-between;font:600 16px 'Inter Tight';z-index:20}
+.mono{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.02em}
+.anton{font-family:Anton,sans-serif;text-transform:uppercase;letter-spacing:.005em}
+.wm{font:30px/1 Anton;display:flex;align-items:center;gap:6px}
+.inpill{background:var(--acc);color:#0B0B0A;border-radius:999px;padding:3px 10px 2px;font-size:22px;line-height:1}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.circ{width:42px;height:42px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center}
+.circ .ic{width:20px;height:20px}
+.av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--s1);margin-left:-8px}
+.av:first-child{margin-left:0}
+.pill{height:44px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:600 15px 'Inter Tight';padding:0 18px;white-space:nowrap}
+.p-ghost{background:var(--s2);color:var(--ink)}
+.p-acc{background:var(--acc);color:#0B0B0A}
+.p-ink{background:var(--ink);color:var(--bg)}
+.tag{display:inline-flex;align-items:center;height:30px;border:1.5px solid var(--line);border-color:color-mix(in srgb,var(--ink) 22%,transparent);border-radius:999px;padding:0 12px;font:500 12px 'JetBrains Mono';text-transform:uppercase}
+.st{display:block;overflow:visible;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
+.nav{position:absolute;left:50%;transform:translateX(-50%);bottom:24px;width:300px;height:64px;border-radius:999px;background:var(--nav);border:1px solid var(--navb);display:flex;align-items:center;justify-content:space-around;color:#8C8B85;z-index:15}
+.nav .on{color:#F4F3EE;position:relative}
+.nav .on:after{content:"";position:absolute;left:50%;bottom:-9px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--acc)}
+.nav .plus{width:48px;height:48px;border-radius:50%;background:var(--acc);color:#0B0B0A;display:flex;align-items:center;justify-content:center}
+.fade{position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(to bottom,transparent,var(--bg) 70%);z-index:14}
+.card{position:absolute;left:16px;width:358px;background:var(--s1);border-radius:28px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.wtag{display:inline-block;font:22px/1 Anton;text-transform:uppercase;padding:7px 12px 6px;border:3px solid #fff;border-radius:8px;box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.panel{border-radius:36px;flex:none;position:relative;overflow:hidden}
+.refs{display:grid;grid-template-columns:repeat(8,190px);gap:22px 18px;padding:34px;background:#F4F3EE;border-radius:36px}
+.refs img{width:190px;height:250px;object-fit:cover;border-radius:14px;display:block;background:#ddd}
+.refs p{font:500 13px/1.3 'Inter Tight';color:#222;margin-top:8px}
+.refs b{font:600 11px 'JetBrains Mono';color:#888;display:block;margin-top:6px;text-transform:uppercase}
+</style></head><body>
+
+<!-- SVG library: icons + stickers -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+ <radialGradient id="silver" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#c9c9c9"/><stop offset="1" stop-color="#5d5d5d"/></radialGradient>
+ <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset=".5" stop-color="#E9B23A"/><stop offset="1" stop-color="#B57E12"/></linearGradient>
+ <clipPath id="discoclip"><circle cx="50" cy="56" r="34"/></clipPath>
+ <!-- icons -->
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+ <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></symbol>
+ <symbol id="i-feed" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="13" rx="3"/><path d="M7 4.5h10"/></symbol>
+ <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+ <symbol id="i-cap" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M6 12h12"/></symbol>
+ <symbol id="i-me" viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.6"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+ <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 4v11M7.5 8.5L12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></symbol>
+ <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+ <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></symbol>
+ <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></symbol>
+ <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+ <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></symbol>
+ <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/></symbol>
+ <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+
+ <!-- stickers (die-cut: white outline painted under the fill) -->
+ <symbol id="st-in" viewBox="0 0 100 100"><circle cx="50" cy="50" r="43" fill="#D8FF3D" stroke="#fff" stroke-width="6"/><text x="50" y="62" text-anchor="middle" font-family="Anton" font-size="33" fill="#0B0B0A" transform="rotate(-12 50 50)">I'M IN</text></symbol>
+ <symbol id="st-disco" viewBox="0 0 100 100"><path d="M50 6v16" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M50 6v16" stroke="#9a9a9a" stroke-width="2.5"/><circle cx="50" cy="56" r="34" fill="url(#silver)" stroke="#fff" stroke-width="6"/><g clip-path="url(#discoclip)" stroke="rgba(0,0,0,.28)" stroke-width="1.6" fill="none"><path d="M10 34h80M10 43h80M10 52h80M10 61h80M10 70h80M10 79h80"/><ellipse cx="50" cy="56" rx="11" ry="34"/><ellipse cx="50" cy="56" rx="23" ry="34"/><path d="M50 20v74"/></g><rect x="30" y="37" width="8" height="7" fill="#fff" opacity=".9"/><rect x="40" y="46" width="6" height="6" fill="#fff" opacity=".6"/><path d="M78 20l2.5 7 7 2.5-7 2.5-2.5 7-2.5-7-7-2.5 7-2.5z" fill="#fff"/></symbol>
+ <symbol id="st-spritz" viewBox="0 0 100 100"><g stroke="#fff" stroke-width="6" stroke-linejoin="round" paint-order="stroke"><path d="M26 18h48c0 30-8 44-24 46C34 62 26 48 26 18z" fill="#E8F1F2"/><rect x="47" y="62" width="6" height="22" fill="#E8F1F2"/><ellipse cx="50" cy="86" rx="17" ry="5" fill="#E8F1F2"/><circle cx="72" cy="20" r="11" fill="#FFB21F"/></g><path d="M29 30h42c-2 20-9 30-21 31-12-1-19-11-21-31z" fill="#FF6A13"/><path d="M29 30h42" stroke="#FFD9B8" stroke-width="3"/><circle cx="72" cy="20" r="7.5" fill="#FFD36B"/><path d="M72 13v14M65 20h14M67 15l10 10M77 15l-10 10" stroke="#FFB21F" stroke-width="1.4"/><path d="M38 8l10 48" stroke="#0B0B0A" stroke-width="3" stroke-linecap="round"/><circle cx="41" cy="44" r="2" fill="#fff" opacity=".7"/><circle cx="56" cy="38" r="1.6" fill="#fff" opacity=".7"/></symbol>
+ <symbol id="st-key" viewBox="0 0 100 100"><g transform="rotate(-32 50 50)" stroke="#fff" stroke-width="6" stroke-linejoin="round" paint-order="stroke" fill="url(#brass)"><path d="M14 50a20 20 0 1 1 40 0a20 20 0 1 1-40 0zM52 45h40v10h-8v10h-8v-10h-6v8h-8v-8H52z"/></g><g transform="rotate(-32 50 50)"><circle cx="27" cy="50" r="6" fill="#fff"/><path d="M58 50h30" stroke="#9c6a08" stroke-width="1.5"/></g></symbol>
+ <symbol id="st-couch" viewBox="0 0 100 100"><g stroke="#fff" stroke-width="6" stroke-linejoin="round" paint-order="stroke"><rect x="22" y="28" width="56" height="30" rx="9" fill="#2F5BE6"/><rect x="16" y="50" width="68" height="22" rx="7" fill="#3B6CFF"/><rect x="8" y="40" width="18" height="36" rx="9" fill="#5A84FF"/><rect x="74" y="40" width="18" height="36" rx="9" fill="#5A84FF"/><rect x="16" y="76" width="7" height="10" rx="2" fill="#1b2f7a"/><rect x="77" y="76" width="7" height="10" rx="2" fill="#1b2f7a"/></g><path d="M50 52v18" stroke="#2848c4" stroke-width="2"/><rect x="30" y="34" width="16" height="13" rx="4" fill="#D8FF3D" transform="rotate(-8 38 40)"/></symbol>
+ <symbol id="st-moon" viewBox="0 0 100 100"><path d="M60 12a38 38 0 1 0 28 58A30 30 0 1 1 60 12z" fill="#FFE14D" stroke="#fff" stroke-width="6" stroke-linejoin="round"/><circle cx="40" cy="62" r="4" fill="#F2C916"/><circle cx="30" cy="44" r="2.6" fill="#F2C916"/><path d="M80 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/></symbol>
+ <symbol id="st-maybe" viewBox="0 0 100 100"><path d="M24 22h52a16 16 0 0 1 16 16v14a16 16 0 0 1-16 16H44l-16 14 3-14h-7A16 16 0 0 1 8 52V38a16 16 0 0 1 16-16z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><text x="50" y="53" text-anchor="middle" font-family="Inter Tight" font-style="italic" font-weight="800" font-size="21" fill="#0B0B0A">maybe?</text></symbol>
+ <symbol id="st-plus1" viewBox="0 0 100 100"><path d="M50 4l8 14 15-7 1 16 16 2-8 14 12 11-15 6 4 16-16-2-5 15-12-10-12 10-5-15-16 2 4-16-15-6 12-11-8-14 16-2 1-16 15 7z" fill="#FF5FA8" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><text x="50" y="64" text-anchor="middle" font-family="Anton" font-size="34" fill="#0B0B0A" transform="rotate(8 50 50)">+1</text></symbol>
+ <symbol id="st-star" viewBox="0 0 100 100"><path d="M50 4l8 14 15-7 1 16 16 2-8 14 12 11-15 6 4 16-16-2-5 15-12-10-12 10-5-15-16 2 4-16-15-6 12-11-8-14 16-2 1-16 15 7z" fill="#FF5FA8" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></symbol>
+ <symbol id="st-cam" viewBox="0 0 100 100"><g stroke="#fff" stroke-width="6" stroke-linejoin="round" paint-order="stroke"><rect x="10" y="28" width="80" height="48" rx="7" fill="#FFD400"/></g><rect x="10" y="28" width="80" height="13" rx="6" fill="#111"/><rect x="10" y="35" width="80" height="6" fill="#111"/><rect x="18" y="31" width="18" height="7" rx="2" fill="#EDEDED"/><rect x="72" y="31" width="11" height="7" rx="2" fill="#555"/><circle cx="58" cy="58" r="14" fill="#111"/><circle cx="58" cy="58" r="8" fill="#3a3a3a"/><circle cx="55" cy="55" r="2.6" fill="#bbb"/><text x="16" y="70" font-family="Anton" font-size="11" fill="#111">FLASH 27</text></symbol>
+ <symbol id="st-receipt" viewBox="0 0 100 100"><g transform="rotate(6 50 50)"><path d="M24 8h52v80l-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5z" fill="#fff" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><path d="M24 8h52v80l-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5z" fill="#FBFAF5" stroke="#ddd" stroke-width="1"/><text x="50" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="7.5" fill="#111">THE NIGHT</text><path d="M31 32h26M31 40h20M31 48h24M31 56h16" stroke="#999" stroke-width="2.4"/><path d="M62 32h7M64 40h5M62 48h7M64 56h5" stroke="#999" stroke-width="2.4"/><path d="M31 64h38" stroke="#111" stroke-width="1" stroke-dasharray="2 2"/><text x="31" y="75" font-family="JetBrains Mono" font-size="8" font-weight="500" fill="#111">TOTAL</text><text x="69" y="75" text-anchor="end" font-family="Anton" font-size="11" fill="#111">9.1</text></g></symbol>
+</defs></svg>
+
+<div class="lbl">B · Dark (default) — feed keeps the card deck (swipe up/down = next event, left/right = Inner Circle ↔ City Pulse) and Maybe / I'm in under the flyer</div>
+<div class="row" id="v2dark"></div>
+<div class="lbl">B · Light — same system, flipped</div>
+<div class="row" id="v2light"></div>
+<div class="lbl">Stickers instead of emojis</div>
+<div class="row" id="v2stickers"></div>
+<div class="lbl">References — what we take</div>
+<div class="row" id="v2refs"></div>
+
+<script>
+const I=(n,s=24,st='')=>`<svg class="ic" style="width:${s}px;height:${s}px;${st}"><use href="#i-${n}"/></svg>`;
+const S=(n,s=60,r=0,st='')=>`<svg class="st" viewBox="0 0 100 100" style="width:${s}px;height:${s}px;transform:rotate(${r}deg);${st}"><use href="#st-${n}"/></svg>`;
+const status=`<div class="status"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg><svg width="27" height="13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2.5" y="2.5" width="17" height="8" rx="2" fill="currentColor"/><rect x="25" y="4.5" width="2" height="4" rx="1" fill="currentColor" opacity=".4"/></svg></span></div>`;
+const nav=(on)=>`<div class="fade"></div><div class="nav">${['feed','cal'].map(n=>`<span class="${on==n?'on':''}">${I(n)}</span>`).join('')}<span class="plus">${I('plus',24)}</span>${['cap','me'].map(n=>`<span class="${on==n?'on':''}">${I(n)}</span>`).join('')}</div>`;
+const avs=(a,s=28)=>`<span style="display:flex">${a.map(x=>`<img class="av" style="width:${s}px;height:${s}px" src="a/av_${x}.jpg">`).join('')}</span>`;
+
+function feed(t){
+ const story=(img,name,mood,st,ring)=>`<div style="width:74px;text-align:center;flex:none"><div style="position:relative;width:64px;height:64px;margin:0 auto"><img src="a/av_${img}.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2.5px solid ${ring?'var(--acc)':'var(--s2)'};padding:2px;background:var(--bg)"><div class="abs" style="right:-10px;bottom:-6px">${S(st,32,-8)}</div></div><div style="font:600 13px 'Inter Tight';margin-top:8px">${name}</div><div class="mono" style="color:var(--mute);font-size:11px;margin-top:1px">${mood}</div></div>`;
+ return `<div class="ph ${t}">${status}
+ <div class="abs" style="top:58px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center"><div class="wm">I AM <span class="inpill">IN</span></div><div style="display:flex;gap:18px;align-items:center">${I('search')}<span style="position:relative">${I('bell')}<i style="position:absolute;right:1px;top:1px;width:8px;height:8px;border-radius:50%;background:#FF5FA8"></i></span><img src="a/av_nina.jpg" style="width:34px;height:34px;border-radius:50%;object-fit:cover"></div></div>
+ <div class="abs" style="top:108px;left:20px;right:20px;display:flex;align-items:center;gap:22px;font:600 17px 'Inter Tight'"><span>Inner Circle</span><span style="color:var(--mute)">City Pulse</span><span style="flex:1"></span><span class="mono" style="color:var(--mute)">1 / 6</span>${I('filter',22,'color:var(--mute)')}</div>
+ <div class="abs" style="top:150px;left:12px;display:flex;gap:4px">
+   <div style="width:74px;text-align:center;flex:none"><div style="width:64px;height:64px;margin:0 auto;border-radius:50%;border:2px dashed color-mix(in srgb,var(--ink) 30%,transparent);display:flex;align-items:center;justify-content:center;color:var(--mute)">${I('plus')}</div><div style="font:600 13px 'Inter Tight';margin-top:8px">Your mood</div><div class="mono" style="color:var(--mute);font-size:11px;margin-top:1px">tonight?</div></div>
+   ${story('jonas','Jonas','pre-drinks','spritz',1)}${story('timo','Timo','out out','disco',1)}${story('marie','Marie','at mine','key',1)}${story('nina','Nina','couch','couch',0)}
+ </div>
+ <div class="card" style="top:712px;left:34px;width:322px;opacity:.6;transform:scale(.96)"><div style="height:60px"></div></div>
+ <div class="card" style="top:668px;left:24px;width:342px;z-index:2"><div style="display:flex;justify-content:space-between;padding:16px 18px;font:600 16px 'Inter Tight'"><span>Alles offen 26</span><span class="mono" style="color:var(--mute);font-size:13px">SAT 10 OCT</span></div></div>
+ <div class="card" style="top:268px;height:416px;z-index:3">
+   <div style="display:flex;justify-content:space-between;align-items:baseline;padding:16px 18px 12px"><span style="font:600 17px 'Inter Tight'">Razzia · 4th anniversary</span><span class="mono" style="color:var(--mute);font-size:13px">TONIGHT</span></div>
+   <div style="margin:0 12px;height:290px;border-radius:20px;overflow:hidden;position:relative;background:#000"><img src="a/fl_razzia_clean.png" style="width:100%;height:100%;object-fit:cover;object-position:50% 35%"><span class="abs" style="left:10px;bottom:10px;height:30px;border-radius:999px;padding:0 12px 0 8px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);color:#fff;font:500 13px 'Inter Tight'">${I('pin',16)}Romantica</span></div>
+   <div style="display:flex;align-items:center;padding:12px 12px 0 18px;gap:8px">${avs(['marie','timo','jonas'])}<span class="mono" style="color:var(--mute);margin-left:4px">+4</span><span style="flex:1"></span><span class="pill p-ghost" style="height:40px;padding:0 16px">Maybe</span><span class="pill p-acc" style="height:40px;padding:0 16px">${I('check',18)}I'm in</span></div>
+ </div>
+ ${nav('feed')}</div>`;
+}
+
+function event(t){
+ return `<div class="ph ${t}">${status}
+ <div class="abs" style="top:56px;left:20px;right:20px;display:flex;justify-content:space-between"><span class="circ">${I('back')}</span><span style="display:flex;gap:10px"><span class="circ">${I('share')}</span><span class="circ">${I('more')}</span></span></div>
+ <div class="abs" style="top:112px;left:24px;width:342px;height:330px;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);background:#000"><img src="a/fl_razzia_clean.png" style="width:100%;height:100%;object-fit:cover;object-position:50% 40%"></div>
+ <div class="abs" style="left:282px;top:344px;z-index:4">${S('in',96,12)}</div>
+ <div class="abs" style="top:462px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center"><span class="mono" style="color:var(--mute)">SAT 3 OCT · 23:59</span><span style="display:flex;align-items:center;gap:8px">${avs(['marie','timo','jonas'],26)}<span style="font:600 13px 'Inter Tight'">7 in</span></span></div>
+ <div class="abs anton" style="top:492px;left:24px;right:24px;font-size:50px;line-height:.98">Razzia ·<br>4th anniversary</div>
+ <div class="abs" style="top:612px;left:24px;display:flex;gap:8px"><span class="tag">Party</span><span class="tag">Romantica ↗</span><span class="tag">Inner circle</span></div>
+ <div class="abs" style="top:658px;left:24px;right:24px;background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:12px 14px;display:flex;gap:12px;align-items:center"><img src="a/av_jonas.jpg" style="width:38px;height:38px;border-radius:50%;object-fit:cover"><div style="flex:1"><div style="font:600 15px 'Inter Tight'">“I'll go if you go.”</div><div class="mono" style="color:var(--mute);margin-top:2px">PACT · JONAS · 2 OF 3 IN</div></div>${S('spritz',36,10)}</div>
+ <div class="abs" style="left:16px;right:16px;bottom:28px;display:flex;gap:8px;z-index:5"><span class="pill p-ghost" style="height:56px;padding:0 20px">Maybe</span><span class="pill p-ghost" style="height:56px;padding:0 14px 0 8px;gap:2px">${S('disco',34,-6)}${S('plus1',30,8,'margin-left:-10px')}<span class="mono" style="margin-left:4px">12</span></span><span class="pill p-acc" style="height:56px;flex:1">${I('check',20)}You're in</span></div>
+ </div>`;
+}
+
+const capsWallet=`<div class="ph d">${status}
+ <div class="abs anton" style="top:62px;left:22px;font-size:52px;line-height:1">Capsules</div>
+ <div class="abs" style="top:124px;left:22px;color:var(--mute);font:500 15px 'Inter Tight'">Your nights, sealed until the morning after.</div>
+ ${[['Flohmarkt Filderstraße','03.10','#ECE9A6','#0B0B0A','8.2'],['Desterradxs','17.10','#1F3A1C','#E9F7D0','9.4'],['Alles offen 26','10.10','#E8364F','#fff','7.9'],['Midnight Service','10.10','#F48BC8','#0B0B0A','8.8']].map((c,i)=>`<div class="abs" style="top:${172+i*56}px;left:16px;width:358px;height:200px;border-radius:24px;background:${c[2]};color:${c[3]};padding:16px 18px;display:flex;justify-content:space-between;box-shadow:0 -6px 16px rgba(0,0,0,.25)"><span style="font:600 16px 'Inter Tight'">${c[0]}</span><span class="mono" style="font-size:13px">${c[1]} · ${c[4]}</span></div>`).join('')}
+ <div class="abs" style="top:396px;left:16px;width:358px;height:340px;border-radius:26px;overflow:hidden;background:#140A10;box-shadow:0 -8px 24px rgba(0,0,0,.45)">
+   <img src="a/fl_razzia_clean.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;filter:blur(2px)">
+   <div class="abs" style="inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.1),rgba(10,10,10,.85))"></div>
+   <div class="abs" style="top:16px;left:18px;right:18px;display:flex;justify-content:space-between;color:#fff"><span style="font:600 16px 'Inter Tight'">Razzia · 4th anniversary</span><span class="mono" style="font-size:13px">03.10</span></div>
+   <div class="abs" style="top:58px;left:30px;display:flex">${['f3','f4','01'].map((p,i)=>`<div style="width:92px;height:122px;border-radius:10px;border:4px solid #F4F3EE;overflow:hidden;transform:rotate(${[-8,3,10][i]}deg);margin-left:${i?-18:0}px;box-shadow:0 8px 18px rgba(0,0,0,.4)"><img src="a/${p}.jpg" style="width:100%;height:100%;object-fit:cover;filter:blur(9px) brightness(.85);transform:scale(1.2)"></div>`).join('')}</div>
+   <div class="abs" style="top:84px;left:242px">${S('cam',100,-10)}</div>
+   <div class="abs" style="left:18px;bottom:76px;color:#fff;font:600 15px 'Inter Tight'">23 photos · 5 people · 1 prediction</div>
+   <div class="abs" style="left:18px;right:18px;bottom:16px;display:flex;align-items:center;justify-content:space-between"><span class="mono" style="color:#bbb">OPENS 10:12</span><span class="pill p-acc anton" style="height:48px;font-size:24px;font-weight:400;letter-spacing:.04em">07 : 48 : 12</span></div>
+ </div>
+ ${nav('cap')}</div>`;
+
+const capsOpen=`<div class="ph d">${status}
+ <div class="abs" style="top:56px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center"><span class="circ">${I('back')}</span><span class="mono" style="color:var(--mute)">THE MORNING AFTER</span><span class="circ">${I('share')}</span></div>
+ <div class="abs" style="top:118px;left:19px;display:grid;grid-template-columns:repeat(3,112px);grid-auto-rows:148px;gap:8px">
+  ${['f3','f4','f2','01','C','f1','02','f5','03'].map(p=>p=='C'?`<div style="border-radius:14px;background:var(--s1);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="anton" style="font-size:34px;line-height:1">Razzia</div><div class="mono" style="color:var(--mute);margin-top:6px">03.10.26</div><div class="mono" style="color:var(--mute);margin-top:2px">23 PHOTOS</div></div>`:`<img src="a/${p}.jpg" style="width:112px;height:148px;object-fit:cover;border-radius:14px">`).join('')}
+ </div>
+ <div class="abs" style="top:96px;left:300px">${S('star',78,-10)}<div class="abs anton" style="top:20px;left:0;width:78px;text-align:center;font-size:28px;color:#0B0B0A;transform:rotate(-4deg)">9.1</div></div>
+ <div class="abs" style="top:520px;left:-6px">${S('receipt',96,-14)}</div>
+ <div class="abs" style="top:606px;left:16px;right:16px;background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:14px 16px">
+   <div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="color:var(--mute)">SEALED 21:04 · JONAS</span><span class="pill p-acc" style="height:26px;padding:0 10px;font-size:12px">Came true</span></div>
+   <div style="font:600 19px/1.25 'Inter Tight';margin-top:8px">“Timo ends up dancing on the bar.”</div>
+ </div>
+ <div class="abs" style="left:16px;right:16px;bottom:28px;display:flex;gap:8px"><span class="pill p-ghost" style="height:56px;flex:1">Receipt</span><span class="pill p-acc" style="height:56px;flex:1.4">Post to story</span></div>
+</div>`;
+
+const profile=`<div class="ph l">${status}
+ <div class="abs" style="top:60px;left:22px;right:22px;display:flex;align-items:center;gap:18px;font:600 32px 'Inter Tight';letter-spacing:-.03em"><span>Me</span><span style="color:#B3B2AC">Nights</span><span style="color:#B3B2AC">Crew</span><span style="flex:1"></span>${I('gear',24)}</div>
+ <div class="abs" style="top:118px;left:16px;right:16px;height:372px;background:var(--s1);border-radius:30px;text-align:center;padding-top:18px">
+   <div class="mono" style="color:var(--mute)">about me</div>
+   <div style="font:600 19px/1.25 'Inter Tight';text-transform:uppercase;margin:10px 26px 0">Hi, I'm Marie. Dinner that turns into a night? Always in.</div>
+   <img src="a/av_marie.jpg" style="width:186px;height:186px;border-radius:50%;object-fit:cover;margin-top:18px">
+   <div class="abs" style="right:84px;top:250px">${S('disco',58,8)}</div>
+   <span class="circ abs" style="left:16px;bottom:16px">${I('filter')}</span><span class="circ abs" style="right:16px;bottom:16px">${I('link')}</span>
+ </div>
+ <div class="abs" style="top:500px;left:16px;right:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[['Nights out','23'],['Crew','12'],['Avg night','8.7']].map(s=>`<div style="background:var(--s1);border-radius:22px;height:118px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;text-align:center"><span style="color:var(--mute);font:500 13px 'Inter Tight'">${s[0]}</span><span class="anton" style="font-size:46px;line-height:1">${s[1]}</span></div>`).join('')}</div>
+ <div class="abs" style="top:636px;left:22px;right:22px;display:flex;justify-content:space-between;font:600 15px 'Inter Tight'"><span>Stickers you earned</span><span style="color:var(--mute)">See all</span></div>
+ <div class="abs" style="top:668px;left:16px;display:flex;gap:10px">${[['disco','10 nights'],['spritz','host'],['cam','capsule'],['moon','4 am']].map((s,i)=>`<div style="width:80px;text-align:center">${S(s[0],58,[-6,5,-4,8][i],'margin:0 auto')}<div class="mono" style="font-size:10.5px;color:var(--mute);margin-top:4px">${s[1]}</div></div>`).join('')}</div>
+ ${nav('me')}</div>`;
+
+const calendar=`<div class="ph l">${status}
+ <div class="abs" style="top:60px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:center"><span class="anton" style="font-size:44px;line-height:1">October</span><span style="display:flex;background:var(--s2);border-radius:999px;padding:4px;font:600 13px 'Inter Tight'"><span style="background:var(--s1);border-radius:999px;padding:7px 12px">Weeks</span><span style="padding:7px 12px;color:var(--mute)">Month</span></span></div>
+ <div class="abs" style="top:122px;left:16px;right:16px;height:236px;background:#0B0B0A;color:#F4F3EE;border-radius:30px;padding:20px 20px">
+   <div style="font:600 22px 'Inter Tight'">Upcoming</div><div style="font:600 22px 'Inter Tight';color:#5E5D58">Next 2 weeks</div>
+   <div style="display:grid;grid-template-columns:repeat(7,38px);justify-content:space-between;gap:10px 0;margin-top:30px">${Array.from({length:14},(_,i)=>{const d=i+2;const plan=[3,10,17].includes(d);const today=d==2;const bday=d==12;return `<div style="position:relative;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 14px 'Inter Tight';background:${plan?'#D8FF3D':'#222220'};color:${plan?'#0B0B0A':'#F4F3EE'};${today?'box-shadow:0 0 0 2px #F4F3EE':''}">${d}${bday?`<span class="abs" style="right:-9px;top:-11px">${S('plus1',24,10)}</span>`:''}</div>`}).join('')}</div>
+ </div>
+ <div class="abs" style="top:372px;left:16px;right:16px;display:flex;flex-direction:column;gap:8px">
+ ${[['OCT','03','fl_razzia_clean.png','Razzia · 4th anniversary','Romantica · 7 friends','in'],['OCT','10','fl_alles.png','Alles offen 26','Wagenhalle · 4 friends','maybe'],['OCT','12','','Timo\'s birthday','Turns 29 · at his place','bday'],['OCT','17','fl_desterradxs.png','Desterradxs festival','Utopia Kiosk · 5 friends','in']].map(r=>`<div style="background:var(--s1);border-radius:20px;height:76px;display:flex;align-items:center;padding:0 14px 0 16px;gap:14px"><div style="width:34px;text-align:center"><div class="mono" style="color:var(--mute);font-size:11px">${r[0]}</div><div style="font:500 24px 'Inter Tight';line-height:1.1">${r[1]}</div></div><div style="width:1px;height:42px;background:var(--line)"></div>${r[2]?`<img src="a/${r[2]}" style="width:48px;height:48px;border-radius:12px;object-fit:cover">`:`<div style="width:48px;height:48px;border-radius:12px;background:#FFE3F0;display:flex;align-items:center;justify-content:center">${S('plus1',40,8)}</div>`}<div style="flex:1;min-width:0"><div style="font:600 15px 'Inter Tight';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r[3]}</div><div style="font:500 13px 'Inter Tight';color:var(--mute);margin-top:2px">${r[4]}</div></div>${r[5]=='in'?`<span class="pill p-acc" style="height:30px;padding:0 12px;font-size:13px">In</span>`:r[5]=='maybe'?`<span class="tag" style="height:30px">Maybe</span>`:`<span class="pill p-ink" style="height:30px;padding:0 12px;font-size:13px">Gift?</span>`}</div>`).join('')}
+ </div>
+ ${nav('cal')}</div>`;
+
+document.getElementById('v2dark').innerHTML=feed('d')+event('d')+capsWallet+capsOpen;
+document.getElementById('v2light').innerHTML=feed('l')+event('l')+profile+calendar;
+
+// stickers board
+const board=`<div class="panel d" style="width:820px;height:844px;background:#0B0B0A;color:#F4F3EE;padding:40px 44px">
+ <div class="anton" style="font-size:64px;line-height:.95">Stickers,<br>not emojis.</div>
+ <div style="color:#8C8B85;font:500 16px/1.4 'Inter Tight';margin-top:12px;width:560px">One small set we own. Moods, reactions, badges and empty states use these; the UI itself stays black, white and lime.</div>
+ <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:26px 10px;margin-top:34px;text-align:center">
+ ${[['in','I\'m in','instead of ✅'],['spritz','Pre-drinks','instead of 🍹'],['disco','Out out','instead of 🔥 🪩'],['key','At mine','instead of 🏠'],['couch','Couch','instead of 🛋️'],['moon','Late / afters','instead of 🌙'],['maybe','Maybe','instead of 🤔'],['plus1','+1 / birthday','instead of 🎉'],['cam','Capsule','instead of 📸'],['receipt','The tab','instead of 🧾']].map((s,i)=>`<div>${S(s[0],92,[-6,4,-3,6,-5,7,-4,5,-7,3][i],'margin:0 auto')}<div style="font:600 15px 'Inter Tight';margin-top:10px">${s[1]}</div><div class="mono" style="color:#8C8B85;font-size:11px;margin-top:3px">${s[2]}</div></div>`).join('')}
+ </div>
+ <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:36px;align-items:center">
+  <span class="wtag" style="background:#D8FF3D;color:#0B0B0A;transform:rotate(-4deg)">Out out</span>
+  <span class="wtag" style="background:#fff;color:#0B0B0A;transform:rotate(3deg)">Who's in?</span>
+  <span class="wtag" style="background:#FF5FA8;color:#0B0B0A;transform:rotate(-2deg)">Afters</span>
+  <span class="wtag" style="background:#3B6CFF;color:#fff;transform:rotate(4deg)">Same time next week</span>
+  <span class="wtag" style="background:#FFE14D;color:#0B0B0A;transform:rotate(-5deg)">Last one</span>
+ </div>
+ <div class="mono" style="color:#8C8B85;margin-top:14px">WORD STICKERS — moods and captions in type, not icons</div>
+</div>`;
+const rules=`<div class="panel l" style="width:420px;height:844px;background:#F4F3EE;color:#0B0B0A;padding:40px 36px">
+ <div class="anton" style="font-size:40px;line-height:1">How it stays fun</div>
+ ${[['App chrome: no emojis.','Tabs, headers, buttons, badges and empty states use our stickers or words.'],['People keep theirs.','Emojis people type in chat, notes, captions and reactions stay. That is their voice, not the brand\'s.'],['Words carry the mood.','Short caps tags — OUT OUT, AFTERS, COUCH — next to a photo do more than an icon.'],['Stickers move.','Tap I\'m in → the sticker slaps on the flyer with a small bounce and a haptic tap. Capsule opens → photos fly in.'],['Later: real objects.','Shoot a lighter, an Aperol glass, keys, a disco ball on iPhone, long-press → "Lift subject" → PNG stickers. Zero budget, 100% real.']].map((r,i)=>`<div style="display:flex;gap:14px;margin-top:26px"><span class="anton" style="font-size:26px;line-height:1;width:22px;color:#0B0B0A">${i+1}</span><div><div style="font:700 17px 'Inter Tight'">${r[0]}</div><div style="font:500 15px/1.4 'Inter Tight';color:#55544F;margin-top:4px">${r[1]}</div></div></div>`).join('')}
+</div>`;
+const notify=`<div class="ph l" style="--bg:#F4F3EE">${status}
+ <div class="abs" style="top:84px;left:28px">${S('in',84,-10)}</div>
+ <div class="abs anton" style="top:190px;left:28px;font-size:46px;line-height:.98">Know who's in.</div>
+ <div class="abs" style="top:252px;left:28px;right:40px;font:500 16px/1.45 'Inter Tight';color:var(--mute)">We'll tell you when friends join your plans, when a pact is on, and when your capsule opens.</div>
+ <div class="abs" style="top:386px;left:70px;width:250px;height:330px;border:2px solid rgba(0,0,0,.06);border-radius:40px"></div>
+ <div class="abs" style="top:420px;left:24px;right:24px;display:flex;flex-direction:column;gap:10px">
+ ${[['marie','Marie is in','Razzia · 4th anniversary','2m','in'],['jonas','Jonas made a pact','“I\'ll go if you go.”','1h','spritz'],['','Your capsule opens','Razzia · 23 photos · 10:12','3h','cam']].map(n=>`<div style="background:#fff;border-radius:22px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.06)"><div style="position:relative;width:44px;height:44px">${n[0]?`<img src="a/av_${n[0]}.jpg" style="width:44px;height:44px;border-radius:50%;object-fit:cover">`:`<div style="width:44px;height:44px;border-radius:50%;background:#0B0B0A;display:flex;align-items:center;justify-content:center;font:13px Anton;color:#D8FF3D">IN</div>`}<span class="abs" style="right:-8px;bottom:-6px">${S(n[4],26,-8)}</span></div><div style="flex:1"><div style="font:600 15px 'Inter Tight'">${n[1]}</div><div style="font:500 14px 'Inter Tight';color:var(--mute)">${n[2]}</div></div><span style="font:500 13px 'Inter Tight';color:var(--mute);align-self:flex-start">${n[3]}</span></div>`).join('')}
+ </div>
+ <div class="abs" style="left:24px;right:24px;bottom:64px"><span class="pill p-ink" style="width:100%;height:58px;font-size:16px">Turn on notifications</span></div>
+ <div class="abs" style="left:0;right:0;bottom:30px;text-align:center;font:600 15px 'Inter Tight';color:var(--mute)">Not now</div>
+</div>`;
+const post=`<div class="panel" style="width:540px;height:675px;background:#D8FF3D;color:#0B0B0A">
+ <div class="abs anton" style="top:36px;left:38px;font-size:96px;line-height:.9">Friday.<br>Who's in?</div>
+ <div class="abs" style="top:268px;left:150px;width:250px;height:330px;border-radius:26px;overflow:hidden;transform:rotate(5deg);box-shadow:0 20px 40px rgba(0,0,0,.25);border:6px solid #fff"><img src="a/f4.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+ <div class="abs" style="top:236px;left:360px">${S('disco',120,10)}</div>
+ <div class="abs" style="top:500px;left:86px">${S('in',118,-14)}</div>
+ <div class="abs" style="top:300px;left:52px">${S('spritz',92,-12)}</div>
+ <div class="abs" style="left:38px;bottom:32px;display:flex;align-items:center;gap:6px;font:26px Anton">I AM <span style="background:#0B0B0A;color:#D8FF3D;border-radius:999px;padding:3px 10px 2px;font-size:19px">IN</span></div>
+ <div class="abs mono" style="right:38px;bottom:38px;font-size:13px">STUTTGART</div>
+</div>`;
+document.getElementById('v2stickers').innerHTML=board+rules+notify+post;
+
+// refs
+const R=[['00','Feed deck','Cards peek behind the active one; one action bar under the media'],['01','Event page','Flyer framed on the page, big title, ghost pills + one full-width primary'],['02','Tags','Outline mono tags instead of filled purple badges'],['03','Flyer view','Tap a card → full-bleed flyer, small header, one round button'],['04','Capsules','A wallet of past nights; stacked cards with just name + date'],['05','Calendar','Dark card with day circles, list with a date column'],['06','City Pulse','Loose photo grid + filter chips for the city tab'],['07','Profile','Big tab words, stat tiles with big numbers'],['08','Onboarding','Scattered photos with small labels — stickers, not icons'],['09','Capsule opening','Photos fly in loose…'],['10','Capsule opening','…and settle into a grid around the title'],['11','Permissions','Stacked notification cards over a ghost phone, black pill'],['12','Light mode','Solid colour blocks as cards (City Pulse categories)'],['13','Reels','UI pieces pop out of the phone in 3D'],['14','Marketing','One loud brand colour, white UI on top — our lime'],['15','Capsule prompts','Full-bleed photo cards to swipe (“Seal a prediction”)']];
+document.getElementById('v2refs').innerHTML=`<div class="refs">${R.map(r=>`<div><img src="r2/${r[0]}.jpg"><b>${r[1]}</b><p>${r[2]}</p></div>`).join('')}</div>`;
+</script>
+</body></html>
