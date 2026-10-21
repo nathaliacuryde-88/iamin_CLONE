@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stickers-motion.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1350px;background:#0B0B0A;color:#F4F3EE;font-family:'Inter Tight';padding:64px 56px;overflow:hidden}
+h1{font:76px/0.92 Anton;text-transform:uppercase}
+.sub{font:500 19px 'Inter Tight';color:#8C8B85;margin-top:12px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:28px 10px;margin-top:44px}
+.it{text-align:center}
+.stage{height:150px;display:flex;align-items:center;justify-content:center}
+.nm{font:600 15px/1.2 'Inter Tight';margin-top:6px}
+.mm{font:400 12px 'JetBrains Mono';color:#8C8B85;margin-top:4px}
+.loop .mm{color:#D8FF3D}
+.legend{position:absolute;left:56px;bottom:52px;font:400 14px 'JetBrains Mono';color:#8C8B85}
+.legend b{color:#D8FF3D;font-weight:400}
+</style></head><body>
+<h1>Stickers in motion</h1>
+<div class="sub">One-shots play once after a tap. Loops run only while something is live.</div>
+<div class="grid" id="g"></div>
+<div class="legend">white = plays once after an action · <b>lime = loops while live</b> · all off with “reduce motion”</div>
+<script>
+const L=[["in","slap","Tap I'm in"],["maybe","slap","Tap Maybe"],["popper","confetti","React / party"],["heart","beat","React love"],["skull","shake","Flop vote"],
+["burst","spinin","Night score"],["seal","stamp","Pact sealed"],["receipt","print","Morning receipt"],["cam","flash","Photo added"],["dice","roll","Roulette result"],
+["pin","drop","I'm there"],["clock","shake","Reminder"],["disco","swing","Out tonight (you)",1],["scooter","jitter","On the way",1],["radar","spin","Radar live",1],
+["crystal","glow","Sealed prediction",1],["flame","flicker","Worth it, live",1],["ghost","float","Ghost card",1],["eyes","glance","Are you really in?",1],["spark","twinkle","Empty feed",1]];
+const S=120,box=Math.round(S*1.2),m=-Math.round(S*.1);
+document.getElementById('g').innerHTML=L.map((x,i)=>`<div class="it ${x[3]?'loop':''}" data-i="${i}"><div class="stage"><span class="stk stk-m-${x[1]}" style="width:${S}px;height:${S}px;font-size:${S}px;rotate:${[-4,3,-2,5,-5,2,-3,4,-6,3][i%10]}deg"><img src="../png/${x[0]}.png" style="width:${box}px;height:${box}px;margin:${m}px"></span></div><div class="nm">${x[2]}</div><div class="mm">${x[1]}</div></div>`).join('');
+window.setT=(t)=>{for(const a of document.getAnimations()){a.pause();const ct=a.effect.getComputedTiming();const tgt=a.effect.target;const i=+(tgt.closest('.it')?.dataset.i||0);
+ if(ct.iterations===Infinity) a.currentTime=t+i*137; else {let lt=((t-i*90)%2600+2600)%2600; a.currentTime=Math.min(lt,ct.endTime);}}};
+</script></body></html>

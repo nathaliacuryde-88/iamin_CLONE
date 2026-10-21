@@ -1,0 +1,113 @@
+/* I am (IN) sticker motion. CSS only. Tilt uses the `rotate` property, so the
+   animations below (which use `transform`) add on top of it. */
+.stk { display: inline-block; position: relative; vertical-align: middle; flex: none; }
+.stk > img { display: block; user-select: none; pointer-events: none; }
+.stk > img { transform-origin: 50% 50%; }
+
+/* ---------- one-shots: play once, right after a user action ---------- */
+@keyframes stk-slap {
+  0% { transform: scale(.3) rotate(18deg); opacity: 0; }
+  55% { transform: scale(1.14) rotate(-4deg); opacity: 1; }
+  78% { transform: scale(.95) rotate(2deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes stk-stamp {
+  0% { transform: scale(1.9); opacity: 0; }
+  55% { transform: scale(.88); opacity: 1; }
+  78% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes stk-beat {
+  0%, 100% { transform: scale(1); }
+  18% { transform: scale(1.24); }
+  36% { transform: scale(.95); }
+  56% { transform: scale(1.12); }
+  76% { transform: scale(.99); }
+}
+@keyframes stk-shake {
+  0%, 100% { transform: rotate(0); }
+  12% { transform: rotate(-15deg); }
+  26% { transform: rotate(13deg); }
+  40% { transform: rotate(-10deg); }
+  54% { transform: rotate(8deg); }
+  68% { transform: rotate(-5deg); }
+  82% { transform: rotate(2deg); }
+}
+@keyframes stk-roll {
+  0% { transform: translateY(-40%) rotate(-560deg) scale(.7); opacity: 0; }
+  60% { transform: translateY(4%) rotate(12deg) scale(1.06); opacity: 1; }
+  80% { transform: translateY(-3%) rotate(-4deg); }
+  100% { transform: none; }
+}
+@keyframes stk-drop {
+  0% { transform: translateY(-70%); opacity: 0; }
+  55% { transform: translateY(5%); opacity: 1; }
+  75% { transform: translateY(-8%); }
+  100% { transform: none; }
+}
+@keyframes stk-print {
+  0% { clip-path: inset(0 0 100% 0); transform: translateY(-14%); }
+  100% { clip-path: inset(0 0 0 0); transform: none; }
+}
+@keyframes stk-flash {
+  0% { filter: brightness(3.2) saturate(.2); transform: scale(1.08); }
+  100% { filter: none; transform: none; }
+}
+@keyframes stk-spinin {
+  0% { transform: rotate(-140deg) scale(.2); opacity: 0; }
+  70% { transform: rotate(10deg) scale(1.12); opacity: 1; }
+  100% { transform: none; }
+}
+@keyframes stk-confetti {
+  0% { transform: scale(.25); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.stk-m-slap > img    { animation: stk-slap .38s cubic-bezier(.2,.9,.3,1) both; }
+.stk-m-stamp > img   { animation: stk-stamp .3s cubic-bezier(.3,.9,.4,1) both; }
+.stk-m-beat > img    { animation: stk-beat .75s ease-out both; }
+.stk-m-shake > img   { animation: stk-shake .6s ease-in-out both; }
+.stk-m-roll > img    { animation: stk-roll .8s cubic-bezier(.25,.8,.3,1) both; }
+.stk-m-drop > img    { animation: stk-drop .45s cubic-bezier(.3,.9,.4,1) both; }
+.stk-m-print > img   { animation: stk-print .7s steps(9, end) both; }
+.stk-m-flash > img   { animation: stk-flash .45s ease-out both; }
+.stk-m-spinin > img  { animation: stk-spinin .55s cubic-bezier(.2,.9,.3,1) both; }
+/* party popper: slap + a ring of confetti dots (sizes in em; the wrapper font-size = sticker size) */
+.stk-m-confetti > img { animation: stk-slap .38s cubic-bezier(.2,.9,.3,1) both; }
+.stk-m-confetti::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: .1em; height: .1em; margin: -.05em;
+  border-radius: 50%; pointer-events: none;
+  box-shadow: 0 -.9em #D8FF3D, .75em -.5em #FF5FA8, .9em .3em #FFE14D, .3em .9em #3B6CFF,
+              -.6em .7em #FF6A13, -.9em -.15em #D8FF3D, -.45em -.8em #FF5FA8, .55em .75em #D8FF3D;
+  animation: stk-confetti .65s ease-out both;
+}
+
+/* ---------- loops: only while a live state is on ---------- */
+@keyframes stk-swing   { 0%,100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+@keyframes stk-flicker { 0%,100% { transform: scale(1,1) skewX(0); } 25% { transform: scale(.97,1.06) skewX(-2deg); } 50% { transform: scale(1.03,.97) skewX(1deg); } 75% { transform: scale(.98,1.05) skewX(2deg); } }
+@keyframes stk-float   { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-9%) rotate(3deg); } }
+@keyframes stk-spin    { to { transform: rotate(360deg); } }
+@keyframes stk-twinkle { 0%,100% { transform: scale(.86) rotate(0); opacity: .8; } 50% { transform: scale(1.08) rotate(14deg); opacity: 1; } }
+@keyframes stk-glow    { 0%,100% { filter: drop-shadow(0 0 0 rgba(216,255,61,0)); } 50% { filter: drop-shadow(0 0 .3em rgba(216,255,61,.95)); } }
+@keyframes stk-jitter  { 0%,100% { transform: translate(-4%, 0); } 50% { transform: translate(4%, -3%); } }
+@keyframes stk-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes stk-glance  { 0%,78%,100% { transform: translateX(0); } 84% { transform: translateX(-7%); } 92% { transform: translateX(7%); } }
+@keyframes stk-wiggle  { 0%,86%,100% { transform: rotate(0); } 90% { transform: rotate(-10deg); } 94% { transform: rotate(10deg); } 97% { transform: rotate(-4deg); } }
+
+.stk-m-swing > img   { transform-origin: 50% 6%; animation: stk-swing 3s ease-in-out infinite; }
+.stk-m-flicker > img { transform-origin: 50% 92%; animation: stk-flicker .9s ease-in-out infinite; }
+.stk-m-float > img   { animation: stk-float 2.8s ease-in-out infinite; }
+.stk-m-spin > img    { animation: stk-spin 4s linear infinite; }
+.stk-m-spinfast > img{ animation: stk-spin 2.2s linear infinite; }
+.stk-m-twinkle > img { animation: stk-twinkle 1.6s ease-in-out infinite; }
+.stk-m-glow > img    { animation: stk-glow 2.4s ease-in-out infinite; }
+.stk-m-jitter > img  { animation: stk-jitter .5s ease-in-out infinite; }
+.stk-m-breathe > img { animation: stk-breathe 3s ease-in-out infinite; }
+.stk-m-glance > img  { animation: stk-glance 3.2s ease-in-out infinite; }
+.stk-m-wiggle > img  { animation: stk-wiggle 3s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stk > img, .stk::before { animation: none !important; }
+  .stk::before { display: none; }
+}
