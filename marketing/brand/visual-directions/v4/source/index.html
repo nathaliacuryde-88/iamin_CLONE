@@ -1,0 +1,88 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D9D8D3;padding:30px}
+.area{margin-bottom:40px}
+.area h2{font:700 28px 'Space Grotesk';color:#222;margin:0 0 8px 26px}
+.row{display:flex;gap:26px;align-items:flex-start;padding:20px 26px;width:max-content}
+.cap{font:600 14px 'Space Grotesk';color:#555;width:390px;margin-bottom:8px}
+.col{display:flex;flex-direction:column}
+.d{--bg:#0B0B0A;--s1:#171716;--s2:#242422;--s3:#2F2F2C;--ink:#F4F3EE;--mute:#8C8B85;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);--pt:#A98BFF;--navbg:rgba(28,28,26,.92);--shadow:0 10px 30px rgba(0,0,0,.5);--fadeTo:#0B0B0A;--sheet:#141413;--hero:#171716;--heroInk:#F4F3EE}
+.l{--bg:#F2F1EC;--s1:#FFFFFF;--s2:#E8E7E1;--s3:#DCDBD4;--ink:#0B0B0A;--mute:#74736D;--line:rgba(0,0,0,.07);--line2:rgba(0,0,0,.14);--pt:#7C3BED;--navbg:rgba(255,255,255,.94);--shadow:0 10px 30px rgba(0,0,0,.08);--fadeTo:#F2F1EC;--sheet:#FFFFFF;--hero:#0B0B0A;--heroInk:#F4F3EE}
+.ph{--p:#7C3BED;width:390px;border-radius:46px;overflow:hidden;position:relative;background:var(--bg);color:var(--ink);flex:none;box-shadow:0 30px 60px rgba(0,0,0,.25);font-family:'Space Grotesk',sans-serif;padding-bottom:130px}
+.dsp{font-family:Anton,sans-serif;text-transform:uppercase;line-height:.95;letter-spacing:.005em}
+.meta{font-family:'JetBrains Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--mute)}
+.abs{position:absolute}
+.status{height:50px;display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0 34px;font:600 16px 'Space Grotesk';position:relative;z-index:22}
+.hdr{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 20px}
+.logo{font:700 19px 'Space Grotesk';letter-spacing:.04em;line-height:1}
+.logo i{font-style:normal;color:var(--p)}
+.hic{display:flex;gap:2px}
+.hb{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;flex:none}
+.badge{position:absolute;top:3px;right:3px;min-width:16px;height:16px;border-radius:8px;background:var(--p);color:#fff;font:700 10px 'Space Grotesk';display:flex;align-items:center;justify-content:center;padding:0 4px}
+.pi{fill:currentColor;flex:none;display:inline-block;vertical-align:middle}
+.st{display:inline-block;overflow:visible;filter:drop-shadow(0 3px 5px rgba(0,0,0,.3));flex:none;vertical-align:middle}
+.pill{height:44px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:14.5px;padding:0 18px;white-space:nowrap}
+.pg{background:var(--s2);color:var(--ink)}
+.pp{background:var(--p);color:#fff}
+.po{border:1.5px solid var(--line2);color:var(--ink)}
+.ppt{background:color-mix(in srgb,var(--p) 16%,transparent);color:var(--pt);border:1.5px solid color-mix(in srgb,var(--p) 45%,transparent)}
+.pr{color:#F0524F}
+.av{width:24px;height:24px;border-radius:50%;object-fit:cover;border:2px solid var(--s1);margin-left:-7px}
+.av:first-child{margin-left:0}
+.sec{margin:12px 16px 0;background:var(--s1);border:1px solid var(--line);border-radius:24px;padding:16px}
+.sech{display:flex;align-items:center;gap:7px;margin-bottom:12px}
+.sech .meta{color:var(--ink);font-size:12px}
+.sech>.pi{color:var(--pt)}
+.fld{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:9px 14px;min-height:52px;display:flex;flex-direction:column;justify-content:center}
+.fld .k{font-family:'JetBrains Mono';font-size:10.5px;text-transform:uppercase;color:var(--mute)}
+.fld .v{font-size:15.5px;font-weight:600;margin-top:2px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ph2{color:var(--mute);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;border-radius:999px;padding:0 13px;font-size:13.5px;font-weight:600;background:var(--bg);border:1.5px solid var(--line2);white-space:nowrap}
+.chip.on{background:var(--p);border-color:var(--p);color:#fff}
+.seg{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:38px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mute)}
+.seg span.on{background:var(--s3);color:var(--ink)}
+.seg span.onp{background:var(--p);color:#fff}
+.tog{width:44px;height:26px;border-radius:999px;background:var(--p);position:relative;flex:none;display:inline-block}
+.tog:after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+.tog.off{background:var(--s3)}.tog.off:after{right:auto;left:3px}
+.nav{position:absolute;left:16px;right:16px;bottom:22px;height:66px;border-radius:999px;background:var(--navbg);border:1px solid var(--line2);display:flex;align-items:center;justify-content:space-around;z-index:15;box-shadow:0 10px 30px rgba(0,0,0,.25);backdrop-filter:blur(12px)}
+.nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--mute);width:56px}
+.nav .it.on{color:var(--pt)}
+.nav .add{width:56px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--mute);margin-top:-30px}
+.nav .add b{width:54px;height:54px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(124,59,237,.45);border:4px solid var(--bg)}
+.fade{position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(to bottom,transparent,var(--fadeTo) 65%);z-index:14;pointer-events:none}
+.row2{display:flex;align-items:center;gap:12px}
+.lrow{background:var(--s1);border:1px solid var(--line);border-radius:20px;min-height:70px;display:flex;align-items:center;padding:12px 14px;gap:12px}
+.datec{width:36px;text-align:center;flex:none}
+.datec b{display:block;font:700 22px/1.05 'Space Grotesk'}
+.thumb{width:46px;height:46px;border-radius:12px;object-fit:cover;flex:none}
+.tt{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:13px;color:var(--mute);margin-top:3px;display:flex;align-items:center;gap:6px}
+.sheetp{left:0;right:0;bottom:0;background:var(--sheet);border-radius:32px 32px 0 0;padding:10px 0 30px;overflow:hidden}
+.handle{width:44px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 14px}
+.dlg{left:20px;right:20px;top:200px;background:var(--sheet);border-radius:30px;padding:22px}
+.tile{border-radius:20px;background:var(--bg);border:1.5px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:600;text-align:center}
+.tile.on{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 8px 20px rgba(124,59,237,.35)}
+.hint{font-size:13px;color:var(--mute);line-height:1.45}
+.rowi{display:flex;align-items:center;gap:14px;padding:14px 16px;font-weight:600;font-size:15px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs id="defs"></defs></svg>
+<div id="root"></div>
+<script src="../phosphor.js"></script>
+<script src="../stickers/stickers.js"></script>
+<script src="common.js"></script>
+<script src="feed.js"></script>
+<script src="add.js"></script>
+<script src="cal.js"></script>
+<script src="cap.js"></script>
+<script src="me.js"></script>
+<script>
+const AREAS=[['Feed',window.FEED],['Add event',window.ADD],['Calendar',window.CAL],['Capsule',window.CAP],['Profile',window.ME]];
+const only=new URLSearchParams(location.search).get('a');
+document.getElementById('root').innerHTML=AREAS.filter(a=>a[1]&&(!only||a[0]==only)).map(([name,screens])=>`<div class="area" id="area-${name.replace(/ /g,'')}"><h2>${name}</h2>${['d','l'].map(t=>`<div class="row" id="row-${name.replace(/ /g,'')}-${t}">${screens.map(s=>`<div class="col"><div class="cap">${s[0]}</div>${s[1](t)}</div>`).join('')}</div>`).join('')}</div>`).join('');
+</script>
+</body></html>
