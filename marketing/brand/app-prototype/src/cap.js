@@ -3,18 +3,28 @@
 const NIGHTS = [['Flohmarkt Filderstraße', '4 photos', '#ECE9A6', '#0B0B0A'], ['Desterradxs festival', '12 photos', '#1F3A1C', '#E9F7D0'], ['Supperclub', 'empty · 31h left', '', ''], ["Marie's birthday", '18 photos', '#F48BC8', '#0B0B0A'], ['Alles offen 26', '9 photos', '#E8364F', '#fff']];
 const blurTiles = (imgs) => `<div style="display:flex;position:absolute;left:22px;top:84px">${imgs.map((p, i) => `<div style="width:96px;height:126px;border-radius:12px;border:4px solid #F4F3EE;overflow:hidden;transform:rotate(${[-8, 3, 10][i]}deg);margin-left:${i ? -20 : 0}px;box-shadow:0 8px 18px rgba(0,0,0,.4);flex:none"><img src="${A(p)}" alt="" style="width:100%;height:100%;object-fit:cover;filter:blur(9px) brightness(.85);transform:scale(1.2)"></div>`).join('')}</div>`;
 
+function openCard(c) {
+  const app = document.getElementById('app'); const ar = app.getBoundingClientRect(); const r = c.getBoundingClientRect(); const to = c.dataset.go;
+  const fly = c.cloneNode(true); fly.className = c.className + ' wfly'; fly.removeAttribute('data-go');
+  Object.assign(fly.style, { left: (r.left - ar.left) + 'px', top: (r.top - ar.top) + 'px', width: r.width + 'px', height: r.height + 'px', right: 'auto', margin: 0, animation: 'none' });
+  app.appendChild(fly);
+  c.closest('.scroll').querySelectorAll('.wc, .wfront').forEach((x) => { if (x !== c) x.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(90px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }); else x.style.visibility = 'hidden'; });
+  const lift = fly.animate([{ transform: 'none' }, { transform: 'translateY(-14px) scale(1.03) rotate(-1deg)' }], { duration: 170, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+  lift.onfinish = () => { const grow = fly.animate([{ left: fly.style.left, top: (r.top - ar.top - 14) + 'px', width: r.width + 'px', height: r.height + 'px', borderRadius: '26px', transform: 'scale(1.03) rotate(-1deg)' }, { left: '0px', top: '0px', width: ar.width + 'px', height: ar.height + 'px', borderRadius: '0px', transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'forwards' });
+    grow.onfinish = () => { go(to, { anim: 1 }); const pg = app.querySelector('#scr'); app.appendChild(fly); pg.animate([{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.2,.9,.3,1)' }); fly.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: 'forwards' }).onfinish = () => fly.remove(); }; };
+}
+
 SCREENS.capsule = { label: 'Capsules — wallet + countdown', section: 'Capsule', tag: 'new', nav: 'capsule', render: () => `${statusBar()}${header()}
   <div class="scroll">
   <div class="dsp" style="font-size:50px;padding:4px 20px 0">Capsules</div>
   <div class="mute" style="padding:6px 20px 0;font-size:15px;font-weight:500">Shared memories, one per night.</div>
   <div style="position:relative;height:${5 * 58 + 380}px;margin-top:16px">
-   ${NIGHTS.map((c, i) => `<button data-go="opened" class="wc" style="top:${i * 58}px;${c[2] ? `background:${c[2]};color:${c[3]}` : 'background:var(--bg);border:2px dashed var(--line2);color:var(--ink)'}"><span style="font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c[0]}</span><span class="meta" style="color:inherit;opacity:.75;white-space:nowrap">${c[1]}</span></button>`).join('')}
+   ${NIGHTS.map((c, i) => `<button data-go="opened" class="wc" style="--i:${i};top:${i * 58}px;${c[2] ? `background:${c[2]};color:${c[3]}` : 'background:var(--bg);border:2px dashed var(--line2);color:var(--ink)'}"><span style="font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c[0]}</span><span class="meta" style="color:inherit;opacity:.75;white-space:nowrap">${c[1]}</span></button>`).join('')}
    <button data-go="sealed" class="wfront">
      <img src="${A('fl_razzia.jpg')}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;filter:blur(2px)">
      <span style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.1),rgba(10,10,10,.88))"></span>
      <span class="row" style="position:absolute;top:16px;left:18px;right:18px;text-align:left"><span style="flex:1"><span style="display:block;font-weight:700;font-size:17px">Razzia · 4th anniversary</span><span class="meta" style="color:#bbb">Sat 24 Oct · sealed</span></span><span class="avs">${['marie', 'timo', 'jonas'].map((a) => `<img class="av" src="${AV(a)}" alt="" width="26" height="26" style="border-color:#140A10">`).join('')}</span></span>
      ${blurTiles(['f3.jpg', 'f4.jpg', 'f1.jpg'])}
-     <span style="position:absolute;right:8px;top:86px">${SV('cam', 100, -10)}</span>
      <span style="position:absolute;left:18px;bottom:84px;font-size:15px;font-weight:600">23 photos · 5 people · 3 predictions</span>
      <span class="row" style="position:absolute;left:18px;right:18px;bottom:18px"><span style="text-align:left"><span class="meta" style="display:block;color:#bbb">Opens</span><b>Sun 10:12</b></span><span class="sp"></span><span class="pill pp cdn2" style="height:48px;font:24px var(--dsp);letter-spacing:.04em;padding:0 18px" id="cdown">07 : 48 : 12</span></span>
    </button>
@@ -23,8 +33,15 @@ SCREENS.capsule = { label: 'Capsules — wallet + countdown', section: 'Capsule'
   <div class="mute" style="text-align:center;font-size:13px;margin-top:10px">Tap a night to open it</div>
   </div>${nav('capsule')}
   <style>.wc{position:absolute;left:16px;right:16px;height:200px;border-radius:26px;padding:16px 18px;display:flex;justify-content:space-between;gap:10px;box-shadow:0 -6px 16px rgba(0,0,0,.22);text-align:left}
-  .wfront{position:absolute;left:16px;right:16px;top:290px;height:380px;border-radius:28px;overflow:hidden;background:#140A10;box-shadow:0 -10px 28px rgba(0,0,0,.45);color:#fff;display:block}</style>`,
-  mount: (el) => { let s = 7 * 3600 + 48 * 60 + 12; const t = setInterval(() => { const c = el.querySelector('#cdown'); if (!c) return clearInterval(t); s--; const h = String(Math.floor(s / 3600)).padStart(2, '0'), m = String(Math.floor(s / 60) % 60).padStart(2, '0'), x = String(s % 60).padStart(2, '0'); c.textContent = `${h} : ${m} : ${x}`; }, 1000); } };
+  .wfront{position:absolute;left:16px;right:16px;top:290px;height:380px;border-radius:28px;overflow:hidden;background:#140A10;box-shadow:0 -10px 28px rgba(0,0,0,.45);color:#fff;display:block;--i:5}
+  .wc,.wfront{animation:wcin .6s cubic-bezier(.2,.9,.25,1.05) calc(var(--i) * 60ms) both;transition:transform .25s cubic-bezier(.2,.9,.3,1)}
+  .wc:hover{transform:translateY(-6px)}
+  @keyframes wcin{from{transform:translateY(160px);opacity:0}to{transform:none;opacity:1}}
+  .wfly{position:absolute;z-index:300;overflow:hidden;pointer-events:none}</style>`,
+  mount: (el) => {
+    // tap a night: the card lifts out of the wallet and grows into the page
+    el.addEventListener('click', (e) => { const c = e.target.closest('.wc, .wfront'); if (!c) return; e.stopPropagation(); e.preventDefault(); openCard(c); }, true);
+    let s = 7 * 3600 + 48 * 60 + 12; const t = setInterval(() => { const c = el.querySelector('#cdown'); if (!c) return clearInterval(t); s--; const h = String(Math.floor(s / 3600)).padStart(2, '0'), m = String(Math.floor(s / 60) % 60).padStart(2, '0'), x = String(s % 60).padStart(2, '0'); c.textContent = `${h} : ${m} : ${x}`; }, 1000); } };
 
 SCREENS.sealed = { label: 'Sealed capsule', section: 'Capsule', tag: 'new', render: () => `${statusBar()}${back('Sealed capsule', 'capsule')}
   <div class="scroll">
@@ -41,9 +58,9 @@ SCREENS.sealed = { label: 'Sealed capsule', section: 'Capsule', tag: 'new', rend
 SCREENS.opened = { label: 'The morning after (opened)', section: 'Capsule', tag: 'upd', render: () => `${statusBar()}${back('The morning after', 'capsule')}
   <div class="scroll">
   <div style="position:relative;margin:10px 19px 0"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-   ${['f3.jpg', 'f4.jpg', 'f2.jpg', 'p01.jpg', 'C', 'f1.jpg', 'p02.jpg', 'f5.jpg', 'p03.jpg'].map((p, k) => p == 'C' ? `<div class="card" style="height:148px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px"><span class="dsp" style="font-size:30px">Razzia</span><span class="meta" style="margin-top:6px">24.10.26</span><span class="meta">23 photos</span></div>` : `<button data-go="gallery" style="position:relative;height:148px;border-radius:14px;overflow:hidden"><img src="${A(p)}" alt="" style="width:100%;height:100%;object-fit:cover">${k == 1 ? `<span class="react" style="position:absolute;left:5px;bottom:5px;height:26px;padding-right:8px;background:rgba(255,255,255,.92);color:#0B0B0A;border:0">${SV('flame', 20)}9</span>` : ''}${k == 6 ? `<span style="position:absolute;right:-4px;top:-2px">${SV('heart', 36, 10)}</span>` : ''}</button>`).join('')}
-  </div><span style="position:absolute;right:-12px;top:-24px">${SV('burst', 82, -10)}</span><span style="position:absolute;left:-14px;bottom:-28px">${SV('receipt', 90, -14)}</span></div>
-  <div class="card" style="margin:26px 16px 0;padding:16px"><div class="row"><span class="meta" style="flex:1">Sealed 21:04 · Jonas</span><span class="pill pp" style="height:26px;font-size:12px;padding:0 10px">Came true</span></div><div style="font-weight:600;font-size:19px;margin-top:8px">“Timo ends up dancing on the bar.”</div></div>
+   ${['f3.jpg', 'f4.jpg', 'f2.jpg', 'p01.jpg', 'C', 'f1.jpg', 'p02.jpg', 'f5.jpg', 'p03.jpg'].map((p, k) => p == 'C' ? `<div class="card" style="height:148px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px"><span class="dsp" style="font-size:30px">Razzia</span><span class="meta" style="margin-top:6px">24.10.26</span><span class="meta">23 photos</span></div>` : `<button data-go="gallery" style="position:relative;height:148px;border-radius:14px;overflow:hidden"><img src="${A(p)}" alt="" style="width:100%;height:100%;object-fit:cover">${k == 1 ? `<span class="react" style="position:absolute;left:5px;bottom:5px;height:26px;padding-right:8px;background:rgba(255,255,255,.92);color:#0B0B0A;border:0">${SV('flame', 20)}9</span>` : ''}</button>`).join('')}
+  </div></div>
+  <div class="card" style="margin:16px 16px 0;padding:16px"><div class="row"><span class="meta" style="flex:1">Sealed 21:04 · Jonas</span><span class="pill pp" style="height:26px;font-size:12px;padding:0 10px">Came true</span></div><div style="font-weight:600;font-size:19px;margin-top:8px">“Timo ends up dancing on the bar.”</div></div>
   <div class="row" style="padding:22px 20px 8px">${SV('crystal', 44, -6)}<span class="dsp" style="font-size:28px">Revealed</span></div>
   <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px">${[['marie', 'Marie Klein', 'Jonas loses his jacket. Again.'], ['nina', 'You', 'Home before 4. Lol.']].map((r) => `<div class="card" style="padding:14px 16px;border-radius:20px"><div style="font-weight:600;font-size:15.5px">“${r[2]}”</div><div class="row" style="gap:8px;margin-top:10px"><img class="av" src="${AV(r[0])}" alt="" width="24" height="24"><b style="font-size:13px">${r[1]}</b><span class="mute" style="font-size:12.5px">· sealed before the night</span></div></div>`).join('')}</div>
   <div class="card" style="margin:12px 16px 0;padding:16px"><b>Exit poll</b><div class="meta">12 votes</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">${[['flame', 'Worth it', 9], ['meh', 'Mid', 2], ['skull', 'Flop', 1]].map((v, i) => `<div style="height:108px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--bg);border:1.5px solid ${i ? 'var(--line)' : 'var(--p)'}">${SV(v[0], 44, -6)}<span><b class="dsp" style="font-size:22px">${v[2]}</b> <span class="mute" style="font-size:12.5px">${v[1]}</span></span></div>`).join('')}</div></div>
@@ -52,7 +69,7 @@ SCREENS.opened = { label: 'The morning after (opened)', section: 'Capsule', tag:
 
 SCREENS.gallery = { label: 'Photo gallery', section: 'Capsule', tag: 'upd', render: () => `<div style="position:absolute;inset:0;background:#000;color:#fff">${statusBar(1)}
   <div class="row" style="padding:0 14px"><span class="meta" style="color:#fff">3 / 23</span><span class="sp"></span>${['Download', 'Trash2'].map((i) => `<button class="icb" style="background:rgba(255,255,255,.14);margin-left:6px" data-toast="${i == 'Download' ? 'Saved to photos' : 'Only your own photos can be deleted'}">${I(i, 19)}</button>`).join('')}<button class="icb" style="background:rgba(255,255,255,.14);margin-left:6px" data-go="opened" aria-label="Close">${I('X', 19)}</button></div>
-  <div style="position:absolute;left:0;right:0;top:120px;height:520px"><img src="${A('f4.jpg')}" alt="" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;right:16px;top:20px">${SV('heart', 60, 12)}</span><span style="position:absolute;left:14px;bottom:60px">${SV('hey', 64, -10)}</span></div>
+  <div style="position:absolute;left:0;right:0;top:120px;height:520px"><img src="${A('f4.jpg')}" alt="" style="width:100%;height:100%;object-fit:cover"></div>
   <div class="row" style="position:absolute;left:14px;right:14px;bottom:110px;gap:6px">${[['flame', 9], ['heart', 4], ['eyes', 2]].map(([s, n]) => `<span class="react" style="background:rgba(255,255,255,.14);border-color:transparent;color:#fff">${SV(s, 26)}${n}</span>`).join('')}<span class="react" style="background:rgba(255,255,255,.14);border-color:transparent;color:#fff;padding:0 12px">${I('Smile', 17)}</span></div>
   <div class="row" style="position:absolute;left:0;right:0;bottom:30px;justify-content:center;gap:8px">${['f3.jpg', 'f1.jpg', 'f4.jpg', 'f2.jpg', 'f5.jpg'].map((p, i) => `<img src="${A(p)}" alt="" style="width:${i == 2 ? 62 : 52}px;height:${i == 2 ? 62 : 52}px;border-radius:12px;object-fit:cover;${i == 2 ? 'box-shadow:0 0 0 3px #7C3BED' : 'opacity:.55'}">`).join('')}</div></div>` };
 

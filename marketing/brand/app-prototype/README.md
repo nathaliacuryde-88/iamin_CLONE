@@ -20,14 +20,13 @@ The side panel tags each screen: **New** (new feature), **New look** (existing f
 
 | Section | What it shows |
 |---|---|
-| Feed | Today row (thought bubbles + sticker), vertical card carousel (neighbours smaller and darker), Maybe / I'm in, reaction counters, Roulette, Note, Notifications |
-| Filter | "Mix your night": vibe-sticker board, friends-going dial, With, date range, live result count |
-| Event page | Ticket sections with sticky torn-ticket bar, sticker layer on the flyer, Live radar (compass) |
+| Feed | Today row (mood sticker on the lower-right of each photo, short note under the name), vertical card carousel (neighbours smaller and darker), Maybe / I'm in (no sticker slap), reaction counters, Roulette, Note, Notifications |
+| Filter | "Mix your night": drag vibe stickers onto the board (drag off to remove, tap also works), friends-going dial, With, date range, live result count |
+| Event page | One page, no subpages: ticket sections incl. Live radar (compass), The tab (Add expense opens a drawer), Bring what?, Message to the future; sticky torn-ticket bar; sticker layer on the flyer |
 | Add | Fanned screenshots + big plus, full form, event-art studio (background, stickers, text, frame & shadow, light, base) |
-| Calendar | Month (flyer circles, spend, stats, birthdays, friend away, blocked days) and Agenda (giant day numbers); sync, block, birthday sheets |
-| Capsule | v4 design: wallet of nights, countdown, sealed, morning after, gallery, receipt, story, prediction |
-| Profile | Me / Calendar / Friends tabs, bio look with sticker badges, widgets in Me, status sheet |
-| The tab | Split-the-bill screen and Add expense sheet |
+| Calendar | Month (flyer circles, birthdays, blocked days), Week (giant day numbers) and Day (hour timeline); under the calendar: Friends away and Your October stats (nights out, spent, top venue); sync, block, birthday sheets |
+| Capsule | v4 design with motion: wallet cards slide in, the tapped card lifts and grows into the page. Countdown, sealed, morning after, gallery (no stickers over photos), receipt, story, prediction |
+| Profile | Me / Calendar / Friends tabs; Friends opens with People you may know + contact sync; bio look with sticker badges, all widgets in Me, status sheet |
 | Home screen | Home-screen widgets and app-icon quick actions (native) |
 
 No existing feature is removed; everything new is tagged **New**.

@@ -55,7 +55,7 @@ function closeSheet() { const w = document.getElementById('sheetwrap'); if (w) w
 function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; app.appendChild(t); setTimeout(() => t.remove(), 2200); }
 
 app.addEventListener('click', (e) => {
-  const c = e.target.closest('[data-close]'); if (c) { closeSheet(); return; }
+  const c = e.target.closest('[data-close]'); if (c) { closeSheet(); if (c.dataset.toast) toast(c.dataset.toast); return; }
   const g = e.target.closest('[data-go]'); if (g) { closeSheet(); go(g.dataset.go, g.dataset.p ? JSON.parse(g.dataset.p) : {}); return; }
   const sh = e.target.closest('[data-sheet]'); if (sh) { openSheet(sh.dataset.sheet, sh.dataset.p ? JSON.parse(sh.dataset.p) : {}); return; }
   const t = e.target.closest('[data-toast]'); if (t) { toast(t.dataset.toast); return; }
