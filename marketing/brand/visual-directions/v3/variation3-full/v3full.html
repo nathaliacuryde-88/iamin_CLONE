@@ -1,0 +1,224 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D9D8D3;padding:30px}
+.row{display:flex;gap:26px;align-items:flex-start;padding:26px;background:#D9D8D3;width:max-content}
+.d{--bg:#0B0B0A;--s1:#171716;--s2:#242422;--s3:#2F2F2C;--ink:#F4F3EE;--mute:#8C8B85;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);--pt:#A98BFF;--navbg:rgba(28,28,26,.92);--shadow:0 10px 30px rgba(0,0,0,.5);--fadeTo:#0B0B0A}
+.l{--bg:#F2F1EC;--s1:#FFFFFF;--s2:#E8E7E1;--s3:#DCDBD4;--ink:#0B0B0A;--mute:#74736D;--line:rgba(0,0,0,.07);--line2:rgba(0,0,0,.14);--pt:#7C3BED;--navbg:rgba(255,255,255,.94);--shadow:0 10px 30px rgba(0,0,0,.08);--fadeTo:#F2F1EC}
+.ph{--p:#7C3BED;width:390px;border-radius:46px;overflow:hidden;position:relative;background:var(--bg);color:var(--ink);flex:none;box-shadow:0 30px 60px rgba(0,0,0,.25);font-family:'Space Grotesk',sans-serif;padding-bottom:130px}
+.dsp{font-family:Anton,sans-serif;text-transform:uppercase;line-height:.95;letter-spacing:.005em}
+.meta{font-family:'JetBrains Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--mute)}
+.abs{position:absolute}
+.status{height:50px;display:flex;justify-content:space-between;align-items:center;padding:4px 30px 0 34px;font:600 16px 'Space Grotesk'}
+.hdr{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 20px}
+.logo{font:700 19px 'Space Grotesk';letter-spacing:.04em;line-height:1}
+.logo i{font-style:normal;color:var(--p)}
+.hic{display:flex;gap:2px}
+.hb{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
+.badge{position:absolute;top:3px;right:3px;min-width:16px;height:16px;border-radius:8px;background:var(--p);color:#fff;font:700 10px 'Space Grotesk';display:flex;align-items:center;justify-content:center;padding:0 4px}
+.lu{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;display:inline-block;vertical-align:middle}
+.st{display:inline-block;overflow:visible;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));flex:none;vertical-align:middle}
+.pill{height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:14px;padding:0 16px;white-space:nowrap}
+.pg{background:var(--s2);color:var(--ink)}
+.pp{background:var(--p);color:#fff}
+.po{border:1.5px solid var(--line2);color:var(--ink)}
+.ppt{background:color-mix(in srgb,var(--p) 16%,transparent);color:var(--pt);border:1.5px solid color-mix(in srgb,var(--p) 45%,transparent)}
+.av{width:24px;height:24px;border-radius:50%;object-fit:cover;border:2px solid var(--s1);margin-left:-7px}
+.av:first-child{margin-left:0}
+.sec{margin:12px 16px 0;background:var(--s1);border:1px solid var(--line);border-radius:24px;padding:16px}
+.sech{display:flex;align-items:center;gap:7px;margin-bottom:12px}
+.sech .meta{color:var(--ink);font-size:12px}
+.sech .lu{color:var(--pt)}
+.fld{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:9px 14px;min-height:52px;display:flex;flex-direction:column;justify-content:center}
+.fld .k{font-family:'JetBrains Mono';font-size:10.5px;text-transform:uppercase;color:var(--mute)}
+.fld .v{font-size:15.5px;font-weight:600;margin-top:2px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.fld .ph2{color:var(--mute);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;border-radius:999px;padding:0 13px 0 7px;font-size:13.5px;font-weight:600;background:var(--bg);border:1.5px solid var(--line2);white-space:nowrap}
+.chip.on{background:var(--p);border-color:var(--p);color:#fff}
+.seg{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:38px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mute)}
+.seg span.on{background:var(--s3);color:var(--ink)}
+.seg span.onp{background:var(--p);color:#fff}
+.tog{width:44px;height:26px;border-radius:999px;background:var(--p);position:relative;flex:none}
+.tog:after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+.tog.off{background:var(--s3)}.tog.off:after{right:auto;left:3px}
+.nav{position:absolute;left:16px;right:16px;bottom:22px;height:66px;border-radius:999px;background:var(--navbg);border:1px solid var(--line2);display:flex;align-items:center;justify-content:space-around;z-index:15;box-shadow:0 10px 30px rgba(0,0,0,.25);backdrop-filter:blur(12px)}
+.nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--mute);width:56px}
+.nav .it.on{color:var(--pt)}
+.nav .add{width:56px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--mute);margin-top:-30px}
+.nav .add b{width:54px;height:54px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(124,59,237,.45);border:4px solid var(--bg)}
+.fade{position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(to bottom,transparent,var(--fadeTo) 65%);z-index:14;pointer-events:none}
+.row2{display:flex;align-items:center;gap:12px}
+.lrow{background:var(--s1);border:1px solid var(--line);border-radius:20px;min-height:70px;display:flex;align-items:center;padding:12px 14px;gap:12px}
+.datec{width:36px;text-align:center;flex:none}
+.datec b{display:block;font:700 22px/1.05 'Space Grotesk'}
+.thumb{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none}
+.tt{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:13px;color:var(--mute);margin-top:3px;display:flex;align-items:center;gap:6px}
+.lbl{font:600 16px 'Space Grotesk';color:#333;margin:0 0 -6px 26px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs id="defs"></defs></svg>
+<div class="lbl">Variation 3 · dark</div>
+<div class="row" id="rd"></div>
+<div class="lbl">Variation 3 · light</div>
+<div class="row" id="rl"></div>
+<script src="lucide.js"></script>
+<script src="stickers/stickers.js"></script>
+<script>
+document.getElementById('defs').innerHTML=DEFS;
+S.in=S.in.replace('#D8FF3D','#7C3BED').replace('fill="#0B0B0A"','fill="#fff"');
+const L=(n,s=20,st='')=>`<svg class="lu" viewBox="0 0 24 24" style="width:${s}px;height:${s}px;${st}">${LUCIDE[n]}</svg>`;
+const ST=(n,s=24,r=0,st='')=>`<svg class="st" viewBox="-10 -10 120 120" style="width:${s*1.2}px;height:${s*1.2}px;margin:${-s*.1}px;transform:rotate(${r}deg);${st}"><g filter="url(#cut)">${S[n]}</g></svg>`;
+const A=(x)=>`a/av_${x}.jpg`;
+const avs=(a,s=24)=>`<span style="display:flex">${a.map(x=>`<img class="av" style="width:${s}px;height:${s}px" src="${A(x)}">`).join('')}</span>`;
+const status=`<div class="status"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg><svg width="27" height="13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2.5" y="2.5" width="17" height="8" rx="2" fill="currentColor"/></svg></span></div>`;
+const header=`<div class="hdr"><span class="logo">I am <i>(</i>IN<i>)</i></span><span class="hic"><span class="hb">${L('Users',19)}</span><span class="hb">${L('Search',19)}</span><span class="hb">${L('Bell',19)}<span class="badge">3</span></span><span class="hb">${L('Settings',19)}</span></span></div>`;
+const nav=(on)=>`<div class="fade"></div><div class="nav">${[['LayoutGrid','Feed','feed'],['CalendarDays','Calendar','cal']].map(x=>`<span class="it ${on==x[2]?'on':''}">${L(x[0],21)}${x[1]}</span>`).join('')}<span class="add"><b>${L('Plus',24,'stroke-width:2.5')}</b>Add</span>${[['Archive','Capsule','cap'],['User','Profile','me']].map(x=>`<span class="it ${on==x[2]?'on':''}">${L(x[0],21)}${x[1]}</span>`).join('')}</div>`;
+const phone=(t,id,body,on,h)=>`<div class="ph ${t}" id="${id}-${t}" ${h?`style="height:${h}px;padding-bottom:0"`:''}>${status}${header}${body}${nav(on)}</div>`;
+
+/* ---------------- FEED ---------------- */
+function feed(t){
+ const bub=(img,name,tag,st,ring,wave)=>`<div style="width:62px;text-align:center;flex:none"><div style="position:relative;width:56px;height:56px;margin:0 auto"><img src="${A(img)}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2.5px solid ${ring?'var(--p)':'color-mix(in srgb,var(--p) 40%,transparent)'};padding:2px;background:var(--bg)">${st?`<span class="abs" style="right:-8px;top:-6px">${ST(st,22,8)}</span>`:''}${wave?`<span class="abs" style="left:-10px;top:-8px">${ST('hey',22,-10)}</span>`:''}<span class="abs meta" style="left:50%;transform:translateX(-50%);bottom:-7px;background:var(--p);color:#fff;font-size:8.5px;padding:2px 5px;border-radius:6px;white-space:nowrap;letter-spacing:0">${tag}</span></div><div style="font-weight:600;font-size:12px;margin-top:10px">${name}</div></div>`;
+ return phone(t,'feed',`
+ <div style="display:flex;align-items:center;padding:6px 18px 0 20px;gap:20px;font-weight:600;font-size:15px"><span style="position:relative">Inner Circle<i style="position:absolute;left:50%;bottom:-8px;width:4px;height:4px;border-radius:50%;background:var(--p);margin-left:-2px"></i></span><span style="color:var(--mute)">City Pulse</span><span style="flex:1"></span><span class="hb" style="width:34px;height:34px">${L('Dices',19)}</span><span class="hb" style="width:34px;height:34px">${L('SlidersHorizontal',19)}<span class="badge" style="top:0;right:0">2</span></span></div>
+ <div style="display:flex;align-items:center;gap:6px;padding:16px 0 0 18px">
+   <span style="font-weight:600;font-size:13px;color:var(--mute);width:42px">Today</span>
+   <div style="width:62px;text-align:center;flex:none"><div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2px dashed var(--line2);display:flex;align-items:center;justify-content:center;color:var(--pt)">${L('Plus',22)}</div><div style="font-weight:600;font-size:12px;margin-top:10px">Your mood</div></div>
+   ${bub('jonas','Jonas','Drinks','spritz',1)}${bub('timo','Timo','At Razzia','',0)}${bub('marie','Marie','Westend','sneaker',1,1)}${bub('nina','Nina','Chill','couch',1)}
+ </div>
+ <div class="abs" style="top:262px;left:40px;right:40px;height:50px;border-radius:22px;background:var(--s1);border:1px solid var(--line);opacity:.45;transform:perspective(600px) rotateX(-10deg) scale(.9);filter:brightness(.7)"></div>
+ <div class="abs" style="top:707px;left:36px;right:36px;height:80px;border-radius:24px;background:var(--s1);border:1px solid var(--line);transform:perspective(600px) rotateX(8deg) scale(.92);filter:brightness(.75);padding:14px 18px;display:flex;justify-content:space-between;font-weight:600;font-size:15px"><span>Supperclub at Marie's</span><span class="meta" style="font-size:12px">Sat, Oct 24</span></div>
+ <div class="abs" style="top:282px;left:14px;right:14px;height:438px;background:var(--s1);border:1px solid var(--line);border-radius:26px;box-shadow:0 18px 40px rgba(124,59,237,.18),var(--shadow);z-index:3">
+   <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 18px 12px"><span style="font-weight:600;font-size:16px;letter-spacing:-.01em">Razzia · 4th anniversary</span><span class="meta" style="font-size:12px">Today</span></div>
+   <div style="margin:0 10px;height:318px;border-radius:18px;overflow:hidden;position:relative;background:#000"><img src="a/fl_razzia_clean.png" style="width:100%;height:100%;object-fit:cover;object-position:50% 40%">
+     <span class="abs meta" style="left:10px;top:10px;height:24px;border-radius:999px;padding:0 9px;display:flex;align-items:center;gap:5px;background:var(--p);color:#fff;font-size:10px;letter-spacing:.03em">${L('Users',12)}Inner circle</span>
+     <span class="abs" style="left:10px;bottom:10px;height:28px;border-radius:999px;padding:0 11px 0 8px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:500">${L('MapPin',14)}Romantica</span>
+     <span class="abs" style="right:10px;bottom:10px;height:30px;border-radius:999px;padding:0 10px 0 6px;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.85);color:#0B0B0A;font-size:12px;font-weight:700">${ST('flame',18,-6)}${ST('eyes',18,4,'margin-left:-8px')}5</span>
+   </div>
+   <div style="display:flex;align-items:center;padding:12px 12px 0 16px;gap:6px">${avs(['marie','timo','jonas'])}<span style="height:24px;min-width:24px;border-radius:12px;background:var(--p);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;margin-left:-7px;border:2px solid var(--s1)">+4</span><span class="meta" style="margin-left:2px">9</span><span style="flex:1"></span><span class="pill pg" style="height:38px;padding:0 14px">${L('HelpCircle',16)}Maybe</span><span class="pill pp" style="height:38px;padding:0 14px">${L('Check',16)}I'm in</span></div>
+ </div>`,'feed',844);
+}
+
+/* ---------------- ADD ---------------- */
+function add(t){
+ const vibes=[['popper','party'],['cake','birthday'],['croissant','brunch'],['pizza','dinner',1],['spritz','drinks'],['vinyl','concert'],['disco','club'],['tent','festival'],['popcorn','cinema'],['ball','sports'],['sun','day event']];
+ const tiles=[['Eye','Public'],['Users','Circle',1],['Lock','List'],['EyeOff','Ghost']];
+ const friend=(a,n,on)=>`<div class="row2" style="padding:7px 0"><img src="${A(a)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover"><span style="flex:1;font-weight:600;font-size:14.5px">${n}</span><span style="width:24px;height:24px;border-radius:50%;${on?'background:var(--p);color:#fff':'border:2px solid var(--line2)'};display:flex;align-items:center;justify-content:center">${on?L('Check',14,'stroke-width:3'):''}</span></div>`;
+ return phone(t,'add',`
+ <div style="padding:8px 20px 0" class="dsp"><span style="font-size:44px">Add a plan</span></div>
+ <div class="seg" style="margin:14px 16px 0"><span>${L('Camera',16)}Photo</span><span>${L('Link',16)}URL</span><span class="on">${L('PenTool',16)}Manual</span></div>
+ <div class="sec"><div class="sech">${L('Image',15)}<span class="meta">Cover</span></div>
+   <div style="height:296px;border-radius:18px;background:#7C3BED;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px">${ST('pizza',86,-10)}${ST('spritz',78,8)}<span class="abs" style="right:10px;bottom:10px;height:32px;border-radius:999px;padding:0 12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.55);color:#fff;font-size:12.5px;font-weight:600">${L('PenTool',14)}Cover Studio</span></div>
+   <div style="display:flex;gap:8px;margin-top:10px"><span class="pill ppt" style="flex:1;height:42px">${L('Smile',16)}Sticker</span><span class="pill pg" style="flex:1;height:42px">${L('Image',16)}Photo</span></div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center"><span class="chip">${ST('pizza',20)}${L('X',14)}</span><span class="chip">${ST('spritz',20)}${L('X',14)}</span><span class="chip" style="padding:0 13px">${L('Plus',15)}Add sticker</span></div>
+   <div style="font-size:12.5px;color:var(--mute);margin-top:8px">Pick up to 5 — use Cover Studio for colors, stickers and text.</div>
+ </div>
+ <div class="sec"><div class="sech">${L('Tag',15)}<span class="meta">The basics</span></div><div class="fld"><span class="k">Event name<b style="color:var(--pt)">*</b></span><span class="v">Supperclub at Marie's</span></div></div>
+ <div class="sec"><div class="sech">${L('Calendar',15)}<span class="meta">When & where</span></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="fld"><span class="k">Start date*</span><span class="v">Oct 24, 2026${L('Calendar',16,'color:var(--mute)')}</span></div><div class="fld"><span class="k">End date</span><span class="v"><span class="ph2">Date</span>${L('Calendar',16,'color:var(--mute)')}</span></div><div class="fld"><span class="k">Start time</span><span class="v">8:00 PM${L('Clock',16,'color:var(--mute)')}</span></div><div class="fld"><span class="k">End time</span><span class="v"><span class="ph2">End</span>${L('Clock',16,'color:var(--mute)')}</span></div></div>
+   <div class="fld" style="margin-top:8px"><span class="k">Venue / address</span><span class="v">Marie's place, Westend</span></div>
+   <div class="fld" style="margin-top:8px"><span class="k">City*</span><span class="v" style="justify-content:flex-start">${L('MapPin',16,'color:var(--mute)')}Stuttgart</span></div>
+ </div>
+ <div class="sec"><div class="sech">${L('Sparkles',15)}<span class="meta">Vibe</span></div><div style="display:flex;flex-wrap:wrap;gap:7px">${vibes.map(v=>`<span class="chip ${v[2]?'on':''}">${ST(v[0],20,-4)}${v[1]}</span>`).join('')}</div></div>
+ <div class="sec"><div class="sech">${L('FileText',15)}<span class="meta">Description</span><span style="flex:1"></span><span style="font-size:12px;color:var(--mute)">optional</span></div>
+   <div class="fld" style="min-height:96px;justify-content:flex-start;padding-top:12px"><span style="font-size:15px;line-height:1.4">Pasta, natural wine and one long table. Bring your best story from this week.</span></div>
+   <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><span class="pill ppt" style="height:36px;font-size:13px">${L('Sparkles',15)}Generate</span><span class="pill pg" style="height:36px;font-size:13px">${L('PenTool',15)}Improve</span></div>
+ </div>
+ <div class="sec"><div class="sech">${L('Lock',15)}<span class="meta">Who can see it</span></div>
+   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">${tiles.map(x=>`<div style="height:66px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:600;${x[2]?'background:var(--p);color:#fff;box-shadow:0 6px 18px rgba(124,59,237,.4)':'background:var(--bg);border:1.5px solid var(--line2)'}">${L(x[0],19)}${x[1]}</div>`).join('')}</div>
+   <div style="font-size:13px;color:var(--mute);margin-top:10px;line-height:1.4"><b style="color:var(--ink)">Circle</b> — Visible only to your mutual friends. Won't appear on the public feed.</div>
+ </div>
+ <div class="sec"><div class="sech">${L('Users',15)}<span class="meta">Who should be in</span><span style="flex:1"></span><span style="font-size:12.5px;color:var(--mute);font-weight:600">Select all</span><span style="font-size:12.5px;color:var(--pt);font-weight:700;margin-left:8px">2 selected</span></div>
+   <div class="fld" style="min-height:44px;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;color:var(--mute);font-size:14px">${L('Search',16)}Search friends</div>
+   <div style="margin-top:6px">${friend('marie','Marie Klein',1)}${friend('jonas','Jonas Weber',1)}${friend('timo','Timo Schulz',0)}${friend('nina','Nina Ortega',0)}</div>
+ </div>
+ <div class="sec"><div class="sech">${L('Users',15)}<span class="meta">Co-host</span><span style="flex:1"></span><span style="font-size:12px;color:var(--mute)">optional</span></div>
+   <div class="fld" style="min-height:44px;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;color:var(--mute);font-size:14px">${L('Search',16)}Search friends to add as co-host</div>
+   <div style="margin-top:10px"><span class="chip on" style="padding:0 12px 0 4px"><img src="${A('marie')}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">Marie ${L('X',14)}</span></div>
+ </div>
+ <div class="sec"><div class="sech">${L('Package',15)}<span class="meta">Bring what?</span><span style="flex:1"></span><span class="tog"></span></div>
+   <div style="font-size:13px;color:var(--mute);line-height:1.4">Let attendees claim items to bring (snacks, speaker, ball…)</div>
+   <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px"><span class="chip on" style="padding:0 12px">Wine ${L('X',13)}</span><span class="chip on" style="padding:0 12px">Bread ${L('X',13)}</span><span class="chip" style="padding:0 12px">+ Speaker</span><span class="chip" style="padding:0 12px">+ Ice</span><span class="chip" style="padding:0 12px">+ Cups</span></div>
+   <div class="row2" style="margin-top:10px"><div class="fld" style="min-height:44px;flex:1;color:var(--mute);font-size:14px">Add an item…</div><span style="width:44px;height:44px;border-radius:12px;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center">${L('Plus',20)}</span></div>
+ </div>
+ <div class="sec"><div class="sech">${L('Check',15)}<span class="meta">Your RSVP</span></div><div class="seg" style="background:var(--bg)"><span>${L('HelpCircle',16)}Maybe</span><span class="onp">${L('Check',16)}I am in</span></div></div>
+ <div style="margin:16px 16px 0"><span class="pill pp" style="width:100%;height:56px;font-size:17px;box-shadow:0 10px 26px rgba(124,59,237,.4)">Create event</span></div>
+ `,'add');
+}
+
+/* ---------------- CALENDAR ---------------- */
+function calendar(t){
+ const start=28, cells=[];
+ for(let i=0;i<35;i++){const d=i<3?start+i:(i-2>31?i-33:i-2); cells.push({d, other:i<3||i>33})}
+ const ev={3:1,9:1,10:2,17:1,24:3,25:1,31:1}, today=22, blocked=[14,15], bday=[12,30];
+ const grid=cells.map(c=>{const n=c.d;const o=c.other;const b=!o&&blocked.includes(n);const e=!o&&!b&&ev[n];const sz=e?Math.min(6+2*(e-1),12):0;
+   return `<div style="height:46px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;font-size:14px;font-weight:${n==today&&!o?700:500};color:${o?'color-mix(in srgb,var(--ink) 30%,transparent)':b?'var(--mute)':n==today?'var(--pt)':'var(--ink)'};${n==today&&!o?'box-shadow:inset 0 0 0 2px var(--p)':''};${b?'background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--mute) 35%,transparent) 0 2px,transparent 2px 6px)':''}">${n}<i style="width:${sz}px;height:${sz}px;border-radius:50%;background:var(--p);display:block;${sz?'':'visibility:hidden;height:6px'}"></i>${!o&&bday.includes(n)?`<span class="abs" style="right:-2px;top:-4px">${ST('cake',16,10)}</span>`:''}</div>`}).join('');
+ const row=(dot,wd,day,img,title,time,extra,right,op,blur)=>`<div class="lrow" style="${op?`opacity:${op};`:''}${blur?'filter:blur(1.5px);':''}"><i style="width:10px;height:10px;border-radius:50%;flex:none;${dot=='in'?'background:var(--p)':dot=='maybe'?'box-shadow:inset 0 0 0 2px var(--p)':'background:#FF5FA8'}"></i><div class="datec"><span class="meta" style="font-size:10.5px">${wd}</span><b>${day}</b></div>${img}<div style="flex:1;min-width:0"><div class="tt">${title}</div><div class="sub">${time?`<span style="height:22px;border-radius:999px;padding:0 8px;background:color-mix(in srgb,var(--p) 16%,transparent);color:var(--pt);display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono';font-size:11px">${L('Clock',12)}${time}</span>`:''}${extra}</div></div>${right}</div>`;
+ const img=(f)=>`<img class="thumb" src="a/${f}">`;
+ return phone(t,'cal',`
+ <div style="padding:8px 20px 0;display:flex;align-items:flex-end;justify-content:space-between"><span class="dsp" style="font-size:46px">October</span><span class="meta" style="font-size:13px;margin-bottom:4px">2026</span></div>
+ <div style="display:flex;align-items:center;justify-content:space-between;margin:14px 16px 0"><div class="seg" style="width:150px"><span class="on">M</span><span>W</span><span>D</span></div><span style="display:flex;align-items:center;gap:4px"><span class="hb" style="background:var(--s1);border:1px solid var(--line)">${L('ChevronLeft',18)}</span><span style="font-weight:700;font-size:15px;width:76px;text-align:center">Oct 2026</span><span class="hb" style="background:var(--s1);border:1px solid var(--line)">${L('ChevronRight',18)}</span></span></div>
+ <div style="margin:12px 16px 0"><span class="pill" style="width:100%;height:44px;background:var(--s1);border:1px solid var(--line);font-size:14px">${L('RefreshCcw',16,'color:var(--mute)')}Sync to my calendar</span></div>
+ <div class="sec" style="padding:14px 10px 12px"><div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:6px">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<span class="meta" style="font-size:10px">${d}</span>`).join('')}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px 2px">${grid}</div>
+   <div class="meta" style="text-align:center;font-size:10px;margin-top:10px;line-height:1.6;text-transform:none">Long-press to mark days unavailable · Tap a blocked day to edit</div></div>
+ <div style="margin:10px 16px 0;display:flex;gap:14px;padding:0 4px">${[['in','Going'],['maybe','Maybe']].map(x=>`<span class="meta" style="display:flex;align-items:center;gap:6px;font-size:10.5px"><i style="width:9px;height:9px;border-radius:50%;${x[0]=='in'?'background:var(--p)':'box-shadow:inset 0 0 0 2px var(--p)'}"></i>${x[1]}</span>`).join('')}<span class="meta" style="display:flex;align-items:center;gap:6px;font-size:10.5px"><i style="width:14px;height:9px;border-radius:2px;background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--mute) 45%,transparent) 0 2px,transparent 2px 4px)"></i>Unavailable</span><span class="meta" style="display:flex;align-items:center;gap:4px;font-size:10.5px">${ST('cake',13)}Birthday</span></div>
+ <div style="margin:12px 16px 0;height:50px;border-radius:999px;background:var(--s1);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 18px;font-weight:600;font-size:14px">Show Maybes<span class="tog"></span></div>
+ <div style="margin:12px 16px 0;display:flex;flex-direction:column;gap:8px">
+  ${row('in','Sat','24',img('f2.jpg'),"Supperclub at Marie's",'20:00','6 going',L('ChevronRight',18,'color:var(--mute)'))}
+  ${row('maybe','Sun','25',img('fl_desterradxs.png'),'Desterradxs festival','22:00','12 going',L('ChevronRight',18,'color:var(--mute)'))}
+  ${row('bd','Fri','30',`<span style="position:relative;flex:none"><img src="${A('nina')}" style="width:44px;height:44px;border-radius:50%;object-fit:cover"><span class="abs" style="right:-6px;bottom:-6px">${ST('cake',18,8)}</span></span>`,"Nina's birthday",'',`Tap to send a card ${ST('envelope',15,-6)}`,L('ChevronRight',18,'color:var(--mute)'))}
+  ${row('in','Sat','31','<div class="thumb" style="background:var(--s2)"></div>','Hidden plan','23:00','',`<span style="width:30px;height:30px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;color:var(--mute)">${L('Lock',15)}</span>`,'.5',1)}
+  ${row('in','Sat','10',img('fl_alles.png'),'Alles offen 26','16:00','Past',L('CheckCircle2',18,'color:var(--pt);opacity:.6'),'.6')}
+  ${row('in','Sat','03',img('fl_razzia_clean.png'),'Razzia · 4th anniversary','23:59','Past',L('CheckCircle2',18,'color:var(--pt);opacity:.6'),'.6')}
+ </div>`,'cal');
+}
+
+/* ---------------- CAPSULE ---------------- */
+function capsule(t){
+ const col=(imgs,more)=>`<div style="position:relative;height:224px;margin-top:10px">${imgs.map((p,i)=>`<div class="abs" style="width:42%;aspect-ratio:1;left:${[6,50,10,46][i]}%;top:${[4,10,44,50][i]}%;transform:rotate(${[-7,5,-3,6][i]}deg);border-radius:14px;overflow:hidden;border:3px solid var(--s1);box-shadow:0 10px 22px rgba(0,0,0,.35),0 0 0 1px var(--line)"><img src="a/${p}" style="width:100%;height:100%;object-fit:cover">${i==3&&more?`<div class="abs" style="inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;font:26px Anton">+${more}</div>`:''}${p=='f5.jpg'?`<span class="abs" style="left:8px;bottom:8px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center"><svg width="10" height="12"><path d="M0 0L10 6L0 12Z" fill="#fff"/></svg></span>`:''}</div>`).join('')}</div>`;
+ const card=(name,date,body,foot,trash)=>`<div class="sec" style="border-radius:28px;padding:16px 16px 14px"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:700;font-size:17px">${name}</div><div class="meta" style="margin-top:3px">${date}</div></div>${trash?`<span class="hb" style="background:var(--s2);color:var(--mute)">${L('Trash2',17)}</span>`:''}</div>${body}${foot}</div>`;
+ const foot=(n,m)=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><span style="display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--mute);font-weight:500">${n} photos · ${ST('crystal',16)} ${m}</span><span style="display:flex;align-items:center;gap:4px;color:var(--pt);font-weight:700;font-size:14px">Open ${L('ArrowRight',16)}</span></div>`;
+ const addmore=`<div style="text-align:center;margin-top:8px"><span class="pill pg" style="height:36px;font-size:13px">${L('ImagePlus',15)}Add more</span></div>`;
+ return phone(t,'cap',`
+ <div style="padding:8px 20px 0" class="dsp"><span style="font-size:50px">Capsules</span></div>
+ <div style="padding:6px 20px 0;color:var(--mute);font-size:15px;font-weight:500">Shared memories, one per night.</div>
+ ${card('Razzia · 4th anniversary','Sat 3 Oct',col(['f3.jpg','f4.jpg','f1.jpg','f2.jpg'],19)+addmore,foot(23,3))}
+ ${card("Supperclub",'Fri 2 Oct',`<div style="margin-top:12px;height:150px;border-radius:18px;border:2px dashed var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0 26px;text-align:center;color:var(--mute);font-size:13.5px;line-height:1.4">${L('ImagePlus',24,'color:var(--pt)')}Empty capsule — you have 48h to upload something, otherwise it will be deleted.</div>`,foot(0,1),1)}
+ ${card('Desterradxs festival','Sun 20 Sep',col(['fl_desterradxs.png','f5.jpg','f2.jpg'],0)+addmore,foot(12,2))}
+ `,'cap');
+}
+
+/* ---------------- PROFILE ---------------- */
+function profile(t){
+ const hl=[['f4.jpg','Razzia','Oct 3'],['f2.jpg','Supper','Oct 2'],['f5.jpg','Desterradxs','Sep 20'],['01.jpg','Birthday','Sep 6']];
+ const ev=(wd,d,img,n,loc)=>`<div class="lrow"><div class="datec"><span class="meta" style="font-size:10.5px">${wd}</span><b>${d}</b></div><img class="thumb" style="width:40px;height:40px" src="a/${img}"><div style="flex:1;min-width:0"><div class="tt">${n}</div><div class="sub">${loc}</div></div>${L('ChevronRight',18,'color:var(--mute)')}</div>`;
+ return phone(t,'me',`
+ <div style="display:flex;align-items:center;gap:18px;padding:10px 20px 0">
+   <div style="position:relative;flex:none"><img src="${A('marie')}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--p);padding:3px;background:var(--bg)"><span class="abs" style="right:0;bottom:2px;width:30px;height:30px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;border:3px solid var(--bg)">${L('Edit2',13)}</span></div>
+   <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);text-align:center">${[['23','events'],['7','followers'],['7','following']].map(s=>`<div><div class="dsp" style="font-size:34px">${s[0]}</div><div style="font-size:12.5px;color:var(--mute);margin-top:4px;font-weight:500">${s[1]}</div></div>`).join('')}</div>
+ </div>
+ <div style="padding:16px 20px 0"><div style="display:flex;align-items:center;gap:10px"><span class="dsp" style="font-size:34px">Marie Klein</span><span style="color:var(--mute)">${L('Link2',20)}</span></div>
+   <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;height:30px;border-radius:999px;padding:0 12px 0 6px;background:var(--s1);border:1px solid var(--line);font-size:13px;font-weight:600">${ST('flame',18,-6)}87% worth it <span style="color:var(--mute);font-weight:500">· 12 rated</span></div>
+   <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;align-items:center"><span class="meta" style="font-size:12.5px">@marie</span><span style="display:flex;align-items:center;gap:4px;font-size:13.5px;color:var(--mute)">${ST('pin',14)}Stuttgart</span><span style="display:flex;align-items:center;gap:4px;font-size:13.5px;color:var(--mute)">${ST('cake',15)}22 March</span></div>
+   <div style="font-size:15px;line-height:1.45;margin-top:10px">Dinner that turns into a night? Always in.</div>
+   <div style="margin-top:12px;display:inline-flex;align-items:center;gap:8px;height:38px;border-radius:999px;padding:0 14px 0 8px;background:var(--s2);font-size:13.5px;font-weight:600">${ST('free',30,0)}Open for events <span style="color:var(--mute);font-weight:500">· change</span></div>
+ </div>
+ <div style="display:flex;gap:14px;padding:18px 20px 0;overflow:hidden">
+   <div style="text-align:center;width:66px;flex:none"><div style="width:64px;height:64px;border-radius:50%;border:2px dashed var(--line2);display:flex;align-items:center;justify-content:center;color:var(--pt)">${L('Plus',22)}</div><div style="font-size:12px;font-weight:600;margin-top:6px">Edit</div></div>
+   ${hl.map(h=>`<div style="text-align:center;width:66px;flex:none"><div style="width:64px;height:64px;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,#7C3BED,#C4A6FF)"><img src="a/${h[0]}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2.5px solid var(--bg)"></div><div style="font-size:12px;font-weight:600;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h[1]}</div><div class="meta" style="font-size:9.5px">${h[2]}</div></div>`).join('')}
+ </div>
+ <div style="margin:18px 16px 0"><span class="pill po" style="width:100%;height:46px">${L('Sparkles',16,'color:var(--pt)')}Rate past events (3)</span></div>
+ <div class="seg" style="margin:14px 16px 0"><span class="on">${L('LayoutGrid',16)}Events</span><span>${L('Sparkles',16)}DNA</span></div>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 20px 0"><span class="dsp" style="font-size:28px">2026</span><span class="meta" style="display:flex;align-items:center;gap:5px">${L('ArrowUpDown',13)}Newest first</span></div>
+ <div class="meta" style="padding:12px 20px 8px">October</div>
+ <div style="margin:0 16px;display:flex;flex-direction:column;gap:8px">${ev('Sat','24','f2.jpg',"Supperclub at Marie's",'Westend')}${ev('Sat','10','fl_alles.png','Alles offen 26','Kunstverein Wagenhalle')}${ev('Sat','03','fl_razzia_clean.png','Razzia · 4th anniversary','Romantica')}</div>
+ <div class="meta" style="padding:16px 20px 8px">September</div>
+ <div style="margin:0 16px;display:flex;flex-direction:column;gap:8px">${ev('Sun','20','fl_desterradxs.png','Desterradxs festival','Utopia Kiosk')}${ev('Sun','06','01.jpg','Marie turns 30','Westend')}</div>
+ `,'me');
+}
+
+for(const [t,id] of [['d','rd'],['l','rl']]) document.getElementById(id).innerHTML=feed(t)+add(t)+calendar(t)+capsule(t)+profile(t);
+</script>
+</body></html>
