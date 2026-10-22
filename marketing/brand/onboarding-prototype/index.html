@@ -380,12 +380,12 @@ choose: { label: 'Person or organizer', tag: 'upd', render: () => `<div class="s
 </div>` },
 
 p1: { label: 'Plans in one place', tag: 'upd', story: 1, render: () => `<div class="scr" style="background:var(--bg)">
-  <div style="position:absolute;left:22px;right:22px;top:92px"><h2 class="hl" style="font-size:62px">${words('Screenshot it. It\'s a *plan.*', 150)}</h2></div>
-  <div style="position:absolute;left:96px;top:316px;width:196px;height:272px;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.35);animation:dropIn .7s cubic-bezier(.2,.9,.3,1.2) .35s both;--r:-6deg">
+  <div style="position:absolute;left:22px;right:22px;top:92px"><h2 class="hl" style="font-size:52px">${words('Screenshot it. It\'s a *plan.*', 150)}</h2></div>
+  <div style="position:absolute;left:96px;top:300px;width:196px;height:272px;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.35);animation:dropIn .7s cubic-bezier(.2,.9,.3,1.2) .35s both;--r:-6deg">
     <img src="${A('fl_midnight.jpg')}" alt="" style="width:100%;height:100%;object-fit:cover">
     <i style="position:absolute;left:0;right:0;height:4px;background:#7C3BED;box-shadow:0 0 18px 6px rgba(124,59,237,.7);animation:scan 1.1s ease-in-out 1s both"></i>
   </div>
-  ${st('cam', 76, 52, 284, -12, 700)}
+  ${st('cam', 76, 46, 312, -12, 700)}
   <div class="card" style="position:absolute;left:30px;right:30px;top:520px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 16px 40px rgba(0,0,0,.25);animation:cardUp .6s cubic-bezier(.2,.9,.3,1.15) 2.1s both">
     <img src="${A('fl_midnight.jpg')}" alt="" style="width:54px;height:66px;border-radius:12px;object-fit:cover">
     <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:15.5px">Midnight Service</div><div style="font-size:12.5px;color:var(--mute);margin-top:2px">Sat 10 Oct · 16:00 · Trude</div><div style="display:flex;gap:6px;margin-top:8px"><span class="mono" style="font-size:10px;padding:3px 7px;border-radius:6px;background:var(--pSoft);color:var(--pt)">festival</span><span class="mono" style="font-size:10px;padding:3px 7px;border-radius:6px;background:var(--s2)">read ✓</span></div></div>
@@ -412,7 +412,7 @@ p2: { label: "See who's really in", tag: 'upd', story: 1, render: () => `<div cl
 p3: { label: 'The night itself', tag: 'upd', story: 1, render: () => `<div class="scr photo">
   <img class="bg" src="${A('f3.jpg')}" alt=""><div class="shade"></div>
   <div style="position:absolute;right:18px;top:120px;display:flex;flex-direction:column;align-items:flex-end;gap:14px">
-    ${[['scooter', 'Jonas · 4 min away', 500], ['ticket', 'Line · short wait', 1200], ['receipt', 'The tab · €14 each', 1900]].map((r) => `<div class="row slideR" style="animation-delay:${r[2]}ms"><div class="chip glass" style="height:44px;padding:0 16px">${r[1]}</div><span style="display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))">${SV(r[0], 64)}</span></div>`).join('')}
+    ${[['scooter', 'Jonas · 4 min away', 500], ['ticket', 'Line · short wait', 1200], ['receipt', 'The tab · €14 each', 1900]].map((r) => `<div class="row slideR" style="animation-delay:${r[2]}ms"><div class="chip glass" style="height:44px;padding:0 16px;background:rgba(0,0,0,.55)">${r[1]}</div><span style="display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))">${SV(r[0], 64)}</span></div>`).join('')}
   </div>
   <div style="position:absolute;left:20px;right:20px;bottom:calc(44px + env(safe-area-inset-bottom,0px))">
     <h2 class="hl" style="font-size:66px">${words('The night, *sorted.*', 400)}</h2>
@@ -514,7 +514,7 @@ notif: { label: 'Notifications', tag: 'new', setup: 1, render: () => setupScr({
 
 done: { label: "You're in", tag: 'new', render: (st8) => `<div class="scr setup" style="align-items:center;text-align:center;justify-content:center">
   ${st('popper', 74, 30, 150, -10, 500)}${st('disco', 70, 286, 130, 10, 650)}${st('spark', 44, 70, 610, 0, 800)}${st('heart', 56, 280, 600, 8, 950)}
-  <div class="pop" style="position:relative;animation-delay:150ms">${st8.photo ? `<img class="av" src="${A('av_marie.jpg')}" alt="" width="150" height="150" style="border:4px solid var(--p);padding:4px;background:var(--bg)">` : `<div style="width:150px;height:150px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 52px var(--ui)">${(st8.name || 'You').slice(0, 1).toUpperCase()}</div>`}${st8.mood ? `<span style="position:absolute;right:-26px;bottom:-14px">${SV(st8.mood, 64)}</span>` : ''}</div>
+  <div class="pop" style="position:relative;animation-delay:150ms">${st8.photo ? `<img class="av" src="${A('av_marie.jpg')}" alt="" width="150" height="150" style="border:4px solid var(--p);padding:4px;background:var(--bg)">` : `<div style="width:150px;height:150px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 52px var(--ui)">${(st8.name || '?').trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</div>`}${st8.mood ? `<span style="position:absolute;right:-26px;bottom:-14px">${SV(st8.mood, 64)}</span>` : ''}</div>
   <h2 class="hl" style="font-size:96px;margin-top:26px">${words("You're *in.*", 400)}</h2>
   <p class="sub" style="margin:12px 10px 0;--d:900ms">${st8.path == 'organizer' ? 'Your organizer profile is ready. Create your first event.' : "Your feed is ready. Your friends' plans show up here first."}</p>
   <div style="position:absolute;left:20px;right:20px;bottom:calc(30px + env(safe-area-inset-bottom,0px))"><button class="btn p" data-act="restart">${st8.path == 'organizer' ? 'Create my first event' : 'Go to my feed'}</button></div>
