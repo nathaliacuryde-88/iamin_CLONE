@@ -268,17 +268,27 @@ o2: { label: 'Your track record', tag: 'upd', story: 1, render: () => `<div clas
   <style>@keyframes grow{from{transform:scaleX(0)}to{transform:none}}</style>
 </div>` },
 
-getin: { label: 'Get in', tag: 'upd', story: 1, hold: 1, render: (st8) => `<div class="scr purple">
-  ${st('disco', 80, 24, 120, -10, 200)}${st('spritz', 74, 280, 150, 12, 320)}${st('cam', 78, 270, 420, 8, 440)}${st('popper', 70, 20, 430, -6, 560)}${st('hey', 62, 150, 96, -4, 680)}
-  <div style="position:absolute;left:22px;right:22px;top:250px;text-align:left">
-    <div class="logo" style="font-size:22px;color:#fff">I am <i>(</i>IN<i>)</i></div>
-    <h2 class="hl" style="font-size:150px;margin-top:10px;color:#fff">${words('Get in.', 300)}</h2>
+getin: { label: 'Get in', tag: 'upd', story: 1, hold: 1, render: (st8) => {
+  const ph = (img, x, y, w, h, r, d, lbl, sk, sx, sy) => `<div class="gph" style="left:${x}px;top:${y}px;width:${w}px;--r:${r}deg;animation-delay:${d}ms"><img src="${A(img)}" alt="" style="height:${h}px"><span class="glb" style="left:${sx}px;top:${sy}px;animation-delay:${d + 380}ms">${SV(sk, 34)}<b>${lbl}</b></span></div>`;
+  return `<div class="scr purple">
+  ${ph('fl_razzia.jpg', 20, 70, 150, 170, -8, 150, 'Make a plan', 'pin', -6, 150)}
+  ${ph('p01.jpg', 196, 92, 168, 132, 7, 300, "Who's in?", 'hey', 40, 112)}
+  ${ph('p02.jpg', 214, 300, 150, 160, -5, 450, 'Split the tab', 'receipt', -30, 136)}
+  ${ph('p03.jpg', 28, 316, 160, 126, 6, 600, 'Seal the night', 'lock', 20, 106)}
+  <div style="position:absolute;left:22px;right:22px;top:520px;text-align:left;z-index:5">
+    <h2 class="hl" style="font-size:136px;color:#fff">${words('Get in.', 900)}</h2>
   </div>
   <div style="position:absolute;left:22px;right:22px;bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;z-index:25">
     <button class="btn w" data-act="next">${st8.path == 'organizer' ? 'Create organizer account' : 'Get started'}</button>
     <button class="btn t" data-act="login">I already have an account</button>
   </div>
-</div>` },
+  <style>
+  .gph{position:absolute;padding:6px 6px 22px;background:#fff;border-radius:6px;box-shadow:0 14px 30px rgba(20,0,60,.35);transform:rotate(var(--r));animation:slap .6s cubic-bezier(.2,.9,.3,1.2) both}
+  .gph img{display:block;width:100%;object-fit:cover;border-radius:3px}
+  .glb{position:absolute;display:flex;align-items:center;gap:4px;padding:4px 12px 4px 4px;border-radius:999px;background:#0B0B0A;color:#fff;font:700 13px var(--ui);white-space:nowrap;box-shadow:0 0 0 3px #fff,0 8px 18px rgba(0,0,0,.3);transform:rotate(calc(var(--r) * -1.6));animation:popIn .45s cubic-bezier(.2,.9,.3,1.3) both;z-index:3}
+  .glb b{font-weight:700}
+  </style>
+</div>`; } },
 
 name: { label: 'Your name', tag: 'old', setup: 1, render: () => setupScr({
   ill: st('hey', 104, 4, 20, -8, 200) + `<div class="pop" style="position:absolute;left:140px;top:44px;width:86px;height:86px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 32px var(--ui);animation-delay:400ms" id="initials">?</div>`,

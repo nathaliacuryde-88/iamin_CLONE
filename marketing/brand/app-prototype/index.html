@@ -1,0 +1,1108 @@
+<title>I am (IN) App Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: phone-sized prototype on the left, section list + controls on the right; full-screen prototype on phones. */
+:root{
+  --bg:#F2F1EC; --s1:#FFFFFF; --s2:#E8E7E1; --s3:#DCDBD4; --ink:#0B0B0A; --mute:#6E6D67; --line:rgba(0,0,0,.08); --line2:rgba(0,0,0,.15);
+  --p:#7C3BED; --pt:#7C3BED; --pSoft:rgba(124,59,237,.12); --page:#E2E0D9; --cream:#F6F1E4; --creamInk:#17140F; --hero:#0B0B0A; --heroInk:#F4F3EE;
+  --nav:rgba(255,255,255,.92); --sheet:#FFFFFF; --scrim:rgba(0,0,0,.35);
+  --ui:'Space Grotesk',system-ui,sans-serif; --dsp:'Anton','Impact','Arial Narrow',sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0B0B0A;--s1:#171716;--s2:#242422;--s3:#2F2F2C;--ink:#F4F3EE;--mute:#8F8E88;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.17);--pt:#B49BFF;--pSoft:rgba(124,59,237,.22);--page:#121110;--cream:#1E1B16;--creamInk:#F3EBDB;--hero:#171716;--nav:rgba(28,28,26,.92);--sheet:#151514;--scrim:rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B0B0A;--s1:#171716;--s2:#242422;--s3:#2F2F2C;--ink:#F4F3EE;--mute:#8F8E88;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.17);--pt:#B49BFF;--pSoft:rgba(124,59,237,.22);--page:#121110;--cream:#1E1B16;--creamInk:#F3EBDB;--hero:#171716;--nav:rgba(28,28,26,.92);--sheet:#151514;--scrim:rgba(0,0,0,.6);color-scheme:dark}
+html,body{height:100%}
+body{background:var(--page);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,input:focus-visible{outline:2px solid var(--pt);outline-offset:2px}
+input{font:inherit;color:inherit}
+.wrap{min-height:100%;display:flex;gap:48px;align-items:center;justify-content:center;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.device{width:390px;height:844px;border-radius:50px;overflow:hidden;position:relative;background:var(--bg);box-shadow:0 0 0 10px #111,0 30px 70px rgba(0,0,0,.35);flex:none;user-select:none;-webkit-user-select:none}
+#app{position:absolute;inset:0}
+.panel{width:360px;flex:none;display:flex;flex-direction:column;gap:16px;min-width:0;max-height:844px}
+.panel h1{font:400 44px/0.95 var(--dsp);text-transform:uppercase;letter-spacing:.01em;margin:0}
+.panel p{margin:0;color:var(--mute);font-size:14px;line-height:1.5}
+.ctl{display:flex;flex-direction:column;gap:8px}
+.ctl label{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.pseg{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px}
+.pseg button{flex:1;height:34px;border-radius:999px;font-weight:600;font-size:13px;color:var(--mute)}
+.pseg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.jump{display:flex;flex-direction:column;gap:1px;overflow:auto;background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:6px;min-height:0;flex:1}
+.jump h3{font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:10px 10px 4px}
+.jump h3:first-child{margin-top:4px}
+.jump button{display:flex;align-items:center;gap:8px;text-align:left;padding:7px 10px;border-radius:10px;font-size:13.5px;font-weight:500}
+.jump button[aria-current="true"]{background:var(--pSoft);color:var(--pt);font-weight:700}
+.tag{margin-left:auto;font:500 9.5px var(--mono);text-transform:uppercase;letter-spacing:.04em;padding:3px 6px;border-radius:5px;background:var(--s2);color:var(--mute);white-space:nowrap}
+.tag.new{background:var(--p);color:#fff}.tag.upd{background:var(--pSoft);color:var(--pt)}.tag.nat{background:var(--ink);color:var(--bg)}
+.plink{font-weight:600;font-size:13.5px;color:var(--pt);text-decoration:none}
+@media (max-width:840px){
+  .wrap{display:block;padding:0}
+  .device{width:100%;height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:640px;border-radius:0;box-shadow:none}
+  .panel{width:auto;max-height:none;padding:28px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+  .jump{max-height:none}
+}
+
+/* ---------- app ---------- */
+.scr{position:absolute;inset:0;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;animation:scrIn .22s ease-out both}
+@keyframes scrIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-bottom:120px;min-height:0}
+.scroll::-webkit-scrollbar{display:none}
+.status{height:calc(46px + env(safe-area-inset-top,0px));padding:calc(10px + env(safe-area-inset-top,0px)) 28px 0 32px;display:flex;justify-content:space-between;align-items:center;font:600 15px var(--ui);flex:none}
+.hdr{height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 20px;flex:none}
+.logo{font:700 18px var(--ui);letter-spacing:.04em;line-height:1;white-space:nowrap}
+.logo i{font-style:normal;color:var(--p)}
+.hic{display:flex;gap:2px}
+.icb{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}
+.icb.f{background:var(--s2)}
+.badge{position:absolute;top:4px;right:4px;min-width:16px;height:16px;border-radius:8px;background:var(--p);color:#fff;font:700 10px var(--ui);display:flex;align-items:center;justify-content:center;padding:0 4px}
+.ic{display:inline-block;vertical-align:middle;flex:none}
+.dsp{font-family:var(--dsp);text-transform:uppercase;line-height:.92;letter-spacing:.005em}
+.meta{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+.mute{color:var(--mute)}
+.pill{height:42px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:14.5px;padding:0 18px;white-space:nowrap}
+.pg{background:var(--s2);color:var(--ink)}
+.pp{background:var(--p);color:#fff}
+.po{border:1.5px solid var(--line2)}
+.ppt{background:var(--pSoft);color:var(--pt)}
+.av{border-radius:50%;object-fit:cover;flex:none;display:block}
+.avs{display:flex}.avs .av{border:2px solid var(--s1);margin-left:-8px}.avs .av:first-child{margin-left:0}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:24px}
+.row{display:flex;align-items:center;gap:12px}
+.sp{flex:1}
+.h2{display:flex;align-items:center;justify-content:space-between;padding:22px 20px 10px}
+.st{display:inline-block;overflow:visible;flex:none;vertical-align:middle;filter:drop-shadow(0 3px 5px rgba(0,0,0,.28))}
+.slap{animation:slap .5s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes slap{0%{transform:scale(.2) rotate(calc(var(--r,0deg) + 26deg));opacity:0}60%{transform:scale(1.12) rotate(calc(var(--r,0deg) - 4deg));opacity:1}100%{transform:scale(1) rotate(var(--r,0deg))}}
+.pop{animation:pop .4s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}
+.nav{position:absolute;left:16px;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));height:66px;border-radius:999px;background:var(--nav);border:1px solid var(--line2);display:flex;align-items:center;justify-content:space-around;z-index:40;box-shadow:0 10px 30px rgba(0,0,0,.2);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--mute);width:58px}
+.nav button[aria-current="page"]{color:var(--pt)}
+.nav .add{margin-top:-30px}
+.nav .add b{width:54px;height:54px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(124,59,237,.45);border:4px solid var(--bg)}
+.fade{position:absolute;left:0;right:0;bottom:0;height:130px;background:linear-gradient(to bottom,transparent,var(--bg) 70%);z-index:35;pointer-events:none}
+.seg{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:38px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mute)}
+.seg button[aria-pressed="true"]{background:var(--s3);color:var(--ink)}
+.seg.p button[aria-pressed="true"]{background:var(--p);color:#fff}
+.tog{width:44px;height:26px;border-radius:999px;background:var(--p);position:relative;flex:none;display:inline-block}
+.tog::after{content:"";position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:all .2s}
+.tog[aria-pressed="false"]{background:var(--s3)}.tog[aria-pressed="false"]::after{right:21px}
+/* sheets */
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:60;animation:fadeIn .2s both}
+@keyframes fadeIn{from{opacity:0}}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--sheet);border-radius:30px 30px 0 0;z-index:61;max-height:92%;display:flex;flex-direction:column;animation:up .32s cubic-bezier(.2,.9,.3,1) both;padding-bottom:env(safe-area-inset-bottom,0px)}
+@keyframes up{from{transform:translateY(100%)}}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line2);margin:10px auto 6px;flex:none}
+.sheet .sbody{overflow:auto;padding:4px 20px 24px;scrollbar-width:none}
+.toast{position:absolute;left:20px;right:20px;bottom:calc(100px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);border-radius:16px;padding:13px 16px;font-size:14px;z-index:90;animation:pop .25s both}
+.lrow{background:var(--s1);border:1px solid var(--line);border-radius:20px;min-height:68px;display:flex;align-items:center;padding:11px 14px;gap:12px}
+.thumb{width:46px;height:46px;border-radius:12px;object-fit:cover;flex:none}
+.tt{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:13px;color:var(--mute);margin-top:2px;display:flex;align-items:center;gap:6px}
+.react{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 12px 0 4px;border-radius:999px;background:var(--s1);border:1.5px solid var(--line);font:700 14px var(--ui)}
+.react.on{background:#FFE3F0;border-color:#FF5FA8;color:#0B0B0A}
+.field{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:0 14px;min-height:52px}
+.field input{flex:1;min-width:0;border:0;background:none;font:600 16px var(--ui);outline:none;height:50px}
+.flab{font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+@media (prefers-reduced-motion: reduce){#app *,#app *::before{animation-duration:.01ms!important;animation-delay:0ms!important;transition:none!important}}
+</style>
+<div class="wrap">
+  <div class="device" id="device"><div id="app"></div></div>
+  <aside class="panel" aria-label="Prototype controls">
+    <h1>App prototype</h1>
+    <p>Tap through it like the app. Every section and its sheets are listed below; tags show what exists today, what only gets a new look, and what is a new feature.</p>
+    <div class="ctl"><label>Theme</label><div class="pseg" id="themeSeg"><button data-v="system" aria-pressed="true">Phone</button><button data-v="light" aria-pressed="false">Light</button><button data-v="dark" aria-pressed="false">Dark</button></div></div>
+    <a class="plink" href="https://claude.ai/artifact/P7FtvPMCRBhRJ4TQUKUpuE" target="_blank" rel="noopener">Open the onboarding prototype ↗</a>
+    <div class="jump" id="jump"></div>
+  </aside>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="defs"></defs></svg>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<script>
+// I am (IN) sticker set. Each sticker is drawn in a 0..100 box; the white die-cut
+// outline comes from the #cut filter, so shapes need no outline of their own.
+const K = "#0B0B0A", LIME = "#D8FF3D", PINK = "#FF5FA8", ORANGE = "#FF6A13", YEL = "#FFE14D",
+  GOLD = "#FFD400", BLUE = "#3B6CFF", RED = "#F23D3D", CREAM = "#FBF7EC";
+
+const DEFS = `
+<filter id="cut" filterUnits="userSpaceOnUse" x="-12" y="-12" width="124" height="124">
+ <feMorphology in="SourceAlpha" operator="dilate" radius="4.2" result="d"/>
+ <feGaussianBlur in="d" stdDeviation="1.4" result="b"/>
+ <feComponentTransfer in="b" result="t"><feFuncA type="linear" slope="7" intercept="-2.5"/></feComponentTransfer>
+ <feFlood flood-color="#fff"/><feComposite in2="t" operator="in" result="w"/>
+ <feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<radialGradient id="silver" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#c9c9c9"/><stop offset="1" stop-color="#5d5d5d"/></radialGradient>
+<linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset=".5" stop-color="#E9B23A"/><stop offset="1" stop-color="#B57E12"/></linearGradient>
+<clipPath id="discoclip"><circle cx="50" cy="56" r="34"/></clipPath>
+<clipPath id="ballclip"><circle cx="50" cy="50" r="38"/></clipPath>
+<clipPath id="popclip"><path d="M14 88 L40 38 L64 62 Z"/></clipPath>`;
+
+const burstPath = (cx, cy, r1, r2, n) => {
+  let d = "";
+  for (let i = 0; i < n * 2; i++) {
+    const a = (Math.PI * i) / n - Math.PI / 2, r = i % 2 ? r2 : r1;
+    d += (i ? "L" : "M") + (cx + r * Math.cos(a)).toFixed(1) + " " + (cy + r * Math.sin(a)).toFixed(1);
+  }
+  return d + "Z";
+};
+const wavyCircle = (cx, cy, r, amp, n) => {
+  let d = "";
+  for (let i = 0; i <= 72; i++) {
+    const a = (Math.PI * 2 * i) / 72, rr = r + amp * Math.sin(n * a);
+    d += (i ? "L" : "M") + (cx + rr * Math.cos(a)).toFixed(1) + " " + (cy + rr * Math.sin(a)).toFixed(1);
+  }
+  return d + "Z";
+};
+const sunRays = () => {
+  let s = "";
+  for (let i = 0; i < 12; i++) {
+    const a = (Math.PI * 2 * i) / 12, b = 0.17;
+    const p = (r, t) => `${(50 + r * Math.cos(t)).toFixed(1)} ${(50 + r * Math.sin(t)).toFixed(1)}`;
+    s += `<path d="M${p(28, a - b)} L${p(45, a)} L${p(28, a + b)}Z" fill="#FF9F1C"/>`;
+  }
+  return s;
+};
+const ballPatches = () => {
+  let s = "";
+  for (let k = 0; k < 5; k++) {
+    const a = -Math.PI / 2 + (k * 2 * Math.PI) / 5, cx = 50 + 33 * Math.cos(a), cy = 50 + 33 * Math.sin(a);
+    s += `<path d="${burstPath(cx, cy, 11, 11, 5).replace(/L/g, " L")}" fill="${K}" transform="rotate(${(k * 72 + 180).toFixed(0)} ${cx.toFixed(1)} ${cy.toFixed(1)})"/>`;
+    const ix = 50 + 12 * Math.cos(a), iy = 50 + 12 * Math.sin(a), ox = 50 + 23 * Math.cos(a), oy = 50 + 23 * Math.sin(a);
+    s += `<path d="M${ix.toFixed(1)} ${iy.toFixed(1)} L${ox.toFixed(1)} ${oy.toFixed(1)}" stroke="${K}" stroke-width="2.4"/>`;
+  }
+  return s;
+};
+const pent = (cx, cy, r) => { let d = ""; for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5; d += (i ? "L" : "M") + (cx + r * Math.cos(a)).toFixed(1) + " " + (cy + r * Math.sin(a)).toFixed(1); } return d + "Z"; };
+
+const T = (txt, x, y, size, fill = K, fam = "Anton", extra = "") =>
+  `<text x="${x}" y="${y}" text-anchor="middle" font-family="${fam}" font-size="${size}" fill="${fill}" ${extra}>${txt}</text>`;
+
+const S = {
+in: `<circle cx="50" cy="50" r="42" fill="${LIME}"/>${T("I'M IN", 50, 62, 33, K, "Anton", 'transform="rotate(-12 50 50)"')}`,
+free: `<g transform="rotate(-6 50 50)"><rect x="6" y="30" width="88" height="40" rx="20" fill="${LIME}"/><circle cx="25" cy="50" r="8" fill="#17B75A"/><circle cx="25" cy="50" r="3.5" fill="#B9F5CF"/>${T("FREE", 61, 61, 28)}</g>`,
+spritz: `<path d="M26 18h48c0 30-8 44-24 46C34 62 26 48 26 18z" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/><path d="M29 30h42c-2 20-9 30-21 31-12-1-19-11-21-31z" fill="${ORANGE}"/><path d="M29 30h42" stroke="#FFD9B8" stroke-width="3"/><rect x="47" y="63" width="6" height="21" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/><ellipse cx="50" cy="86" rx="17" ry="5" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/><circle cx="72" cy="20" r="11" fill="#FFB21F"/><circle cx="72" cy="20" r="7.5" fill="#FFD36B"/><path d="M72 13v14M65 20h14M67 15l10 10M77 15l-10 10" stroke="#FFB21F" stroke-width="1.4"/><path d="M38 8l10 48" stroke="${K}" stroke-width="3" stroke-linecap="round"/><circle cx="41" cy="44" r="2" fill="#fff" opacity=".7"/><circle cx="56" cy="38" r="1.6" fill="#fff" opacity=".7"/>`,
+disco: `<rect x="48.5" y="6" width="3" height="16" fill="#8a8a8a"/><circle cx="50" cy="56" r="34" fill="url(#silver)"/><g clip-path="url(#discoclip)" stroke="rgba(0,0,0,.28)" stroke-width="1.6" fill="none"><path d="M10 34h80M10 43h80M10 52h80M10 61h80M10 70h80M10 79h80"/><ellipse cx="50" cy="56" rx="11" ry="34"/><ellipse cx="50" cy="56" rx="23" ry="34"/><path d="M50 20v74"/></g><rect x="30" y="37" width="8" height="7" fill="#fff" opacity=".9"/><rect x="40" y="46" width="6" height="6" fill="#fff" opacity=".6"/><path d="M80 14l2.5 7 7 2.5-7 2.5-2.5 7-2.5-7-7-2.5 7-2.5z" fill="${LIME}"/>`,
+sneaker: `<path d="M12 64 C12 50 18 38 28 34 L42 32 C46 42 56 48 68 50 C82 52 90 56 90 66 Z" fill="${PINK}"/><path d="M30 34 C34 44 34 54 30 64" stroke="#fff" stroke-width="3" fill="none"/><path d="M44 36l-6 6M50 40l-6 6M56 43l-6 6" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M58 58 C66 52 76 54 84 60" stroke="${LIME}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M10 64 H92 C92 72 88 78 82 78 H18 C12 78 10 72 10 64Z" fill="${CREAM}"/><path d="M10 70 H92" stroke="${K}" stroke-width="2.5"/>`,
+couch: `<rect x="22" y="28" width="56" height="30" rx="9" fill="#2F5BE6"/><rect x="16" y="50" width="68" height="22" rx="7" fill="${BLUE}"/><rect x="8" y="40" width="18" height="36" rx="9" fill="#5A84FF"/><rect x="74" y="40" width="18" height="36" rx="9" fill="#5A84FF"/><rect x="16" y="76" width="7" height="10" rx="2" fill="#1b2f7a"/><rect x="77" y="76" width="7" height="10" rx="2" fill="#1b2f7a"/><path d="M50 52v18" stroke="#2848c4" stroke-width="2"/><rect x="30" y="34" width="16" height="13" rx="4" fill="${LIME}" transform="rotate(-8 38 40)"/>`,
+sun: `${sunRays()}<circle cx="50" cy="50" r="27" fill="${YEL}"/><rect x="31" y="42" width="16" height="11" rx="5" fill="${K}"/><rect x="53" y="42" width="16" height="11" rx="5" fill="${K}"/><path d="M47 45h6" stroke="${K}" stroke-width="2.5"/>`,
+ball: `<circle cx="50" cy="50" r="38" fill="#fff" stroke="${K}" stroke-width="2.5"/><g clip-path="url(#ballclip)">${ballPatches()}</g><path d="${pent(50, 50, 12)}" fill="${K}"/><circle cx="50" cy="50" r="38" fill="none" stroke="${K}" stroke-width="2.5"/>`,
+key: `<g transform="rotate(-32 50 50)" fill="url(#brass)"><path d="M14 50a20 20 0 1 1 40 0a20 20 0 1 1-40 0zM52 45h40v10h-8v10h-8v-10h-6v8h-8v-8H52z"/></g><g transform="rotate(-32 50 50)"><circle cx="27" cy="50" r="6" fill="#fff"/><path d="M58 50h30" stroke="#9c6a08" stroke-width="1.5"/></g>`,
+moon: `<path d="M60 12a38 38 0 1 0 28 58A30 30 0 1 1 60 12z" fill="${YEL}"/><circle cx="40" cy="62" r="4" fill="#F2C916"/><circle cx="30" cy="44" r="2.6" fill="#F2C916"/><path d="M80 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${LIME}"/>`,
+battery: `<g transform="rotate(-6 50 55)"><rect x="12" y="40" width="68" height="36" rx="8" fill="#fff" stroke="${K}" stroke-width="4"/><rect x="80" y="50" width="8" height="16" rx="2" fill="${K}"/><rect x="19" y="47" width="13" height="22" rx="3" fill="#FF3B4A"/></g>${T("Z", 62, 32, 18)}${T("z", 76, 18, 12)}`,
+flame: `<path d="M50 6 C58 24 80 34 80 60 C80 80 66 94 50 94 C34 94 20 80 20 60 C20 46 28 38 35 29 C37 39 41 44 46 46 C43 31 45 17 50 6Z" fill="${ORANGE}"/><path d="M50 44 C56 54 65 58 65 71 C65 81 58 88 50 88 C42 88 35 81 35 71 C35 63 41 58 44 52 C46 56 48 58 51 58 C49 54 49 49 50 44Z" fill="${YEL}"/>`,
+eyes: `<ellipse cx="33" cy="50" rx="18" ry="25" fill="#fff" stroke="${K}" stroke-width="3"/><ellipse cx="67" cy="50" rx="18" ry="25" fill="#fff" stroke="${K}" stroke-width="3"/><circle cx="41" cy="55" r="9" fill="${K}"/><circle cx="75" cy="55" r="9" fill="${K}"/><circle cx="44" cy="51" r="3" fill="#fff"/><circle cx="78" cy="51" r="3" fill="#fff"/>`,
+skull: `<g transform="rotate(-8 50 50)"><path d="M50 10 C73 10 87 27 87 47 C87 59 81 66 74 70 V82 C74 87 70 90 66 90 H34 C30 90 26 87 26 82 V70 C19 66 13 59 13 47 C13 27 27 10 50 10Z" fill="#F4F1E6"/><ellipse cx="35" cy="49" rx="10" ry="11" fill="${K}"/><ellipse cx="65" cy="49" rx="10" ry="11" fill="${K}"/><path d="M50 60 L44 71 H56Z" fill="${K}"/><path d="M40 78v12M50 78v12M60 78v12" stroke="${K}" stroke-width="2.6"/></g>`,
+cheers: `<g transform="translate(26 16) rotate(14 9 30)"><path d="M0 0h18l-2 34c-1 6-4 9-7 9s-6-3-7-9z" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/><path d="M1.5 10h15l-1.6 24c-1 5-3 7-5.9 7s-4.9-2-5.9-7z" fill="#FFD36B"/><rect x="8" y="43" width="2.4" height="20" fill="#B9CFD3"/><ellipse cx="9.2" cy="64" rx="10" ry="3" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/></g><g transform="translate(56 16) rotate(-14 9 30)"><path d="M0 0h18l-2 34c-1 6-4 9-7 9s-6-3-7-9z" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/><path d="M1.5 10h15l-1.6 24c-1 5-3 7-5.9 7s-4.9-2-5.9-7z" fill="#FFD36B"/><rect x="8" y="43" width="2.4" height="20" fill="#B9CFD3"/><ellipse cx="9.2" cy="64" rx="10" ry="3" fill="#EAF3F5" stroke="#B9CFD3" stroke-width="1.5"/></g><path d="M50 2v8M40 6l4 6M60 6l-4 6" stroke="${LIME}" stroke-width="3.5" stroke-linecap="round"/>`,
+heart: `<path d="M50 88 C20 68 8 52 8 34 C8 20 19 11 31 11 C40 11 46 17 50 24 C54 17 60 11 69 11 C81 11 92 20 92 34 C92 52 80 68 50 88Z" fill="#FF3B4A"/><ellipse cx="27" cy="30" rx="6" ry="9" fill="#fff" opacity=".55" transform="rotate(-30 27 30)"/>`,
+popper: `<path d="M14 88 L40 38 L64 62 Z" fill="${BLUE}"/><g clip-path="url(#popclip)" fill="${LIME}"><path d="M10 70 L60 40 L64 46 L14 76Z"/><path d="M10 86 L64 54 L68 60 L14 92Z"/></g><rect x="66" y="10" width="7" height="12" rx="2" fill="${PINK}" transform="rotate(25 69 16)"/><circle cx="84" cy="36" r="4.5" fill="${LIME}"/><rect x="52" y="18" width="7" height="7" rx="1.5" fill="${YEL}" transform="rotate(15 55 21)"/><circle cx="90" cy="16" r="4" fill="${ORANGE}"/><path d="M60 40 q6 -9 12 0 t12 0" stroke="${PINK}" stroke-width="3.5" fill="none" stroke-linecap="round"/><rect x="76" y="50" width="6" height="10" rx="2" fill="${BLUE}" transform="rotate(-30 79 55)"/>`,
+meh: `<path d="M50 13 C71 11 89 27 87 49 C89 71 71 89 50 87 C28 89 11 71 13 49 C11 27 29 15 50 13Z" fill="#CFCEC7"/><circle cx="37" cy="46" r="4.5" fill="${K}"/><circle cx="63" cy="46" r="4.5" fill="${K}"/><path d="M35 64 H65" stroke="${K}" stroke-width="4.5" stroke-linecap="round"/>`,
+maybe: `<path d="M24 22h52a16 16 0 0 1 16 16v14a16 16 0 0 1-16 16H44l-16 14 3-14h-7A16 16 0 0 1 8 52V38a16 16 0 0 1 16-16z" fill="#fff" stroke="${K}" stroke-width="2.5" stroke-linejoin="round"/>${T("maybe?", 50, 53, 21, K, "Inter Tight", 'font-style="italic" font-weight="800"')}`,
+plus1: `<path d="${burstPath(50, 50, 44, 33, 12)}" fill="${PINK}"/>${T("+1", 50, 64, 34, K, "Anton", 'transform="rotate(8 50 50)"')}`,
+burst: `<path d="${burstPath(50, 50, 44, 33, 12)}" fill="${YEL}"/>${T("9.1", 50, 62, 30, K, "Anton", 'transform="rotate(-6 50 50)"')}`,
+vinyl: `<circle cx="50" cy="50" r="42" fill="${K}"/><circle cx="50" cy="50" r="36" fill="none" stroke="#333" stroke-width="1.2"/><circle cx="50" cy="50" r="30" fill="none" stroke="#333" stroke-width="1.2"/><circle cx="50" cy="50" r="24" fill="none" stroke="#333" stroke-width="1.2"/><circle cx="50" cy="50" r="15" fill="${LIME}"/><circle cx="50" cy="50" r="2.6" fill="${K}"/><path d="M20 32 A36 36 0 0 1 36 17" stroke="#fff" stroke-width="3" opacity=".35" fill="none" stroke-linecap="round"/>`,
+tent: `<path d="M50 18 V6" stroke="${K}" stroke-width="2.5"/><path d="M50 5 L65 9 L50 13Z" fill="${LIME}"/><rect x="18" y="50" width="64" height="38" fill="#fff"/><path d="M26 50h8v38h-8zM42 50h8v38h-8zM58 50h8v38h-8zM74 50h8v38h-8z" fill="${RED}"/><path d="M41 88 L50 64 L59 88Z" fill="${K}"/><path d="M8 54 L50 18 L92 54 Z" fill="${RED}"/><path d="M50 18 L30 54 H42Z M50 18 L58 54 H70Z" fill="#fff"/>${[12, 22, 32, 42, 52, 62, 72, 82].map((x, i) => `<circle cx="${x + 3}" cy="55" r="5" fill="${i % 2 ? "#fff" : RED}"/>`).join("")}`,
+cake: `<ellipse cx="50" cy="86" rx="40" ry="6" fill="#fff" stroke="#DDD" stroke-width="1.5"/><rect x="18" y="46" width="64" height="38" rx="6" fill="#FF8FC3"/><path d="M18 52 Q18 44 26 44 H74 Q82 44 82 52 V58 Q78 64 74 58 Q70 66 64 58 Q58 64 52 58 Q46 68 40 58 Q34 64 28 58 Q22 66 18 58Z" fill="#FFF6E8"/><rect x="28" y="70" width="6" height="3" rx="1.5" fill="${LIME}"/><rect x="48" y="74" width="6" height="3" rx="1.5" fill="${BLUE}" transform="rotate(30 51 75)"/><rect x="66" y="69" width="6" height="3" rx="1.5" fill="${YEL}"/><rect x="47" y="22" width="6" height="22" rx="2" fill="${LIME}"/><path d="M47 28l6-3M47 34l6-3M47 40l6-3" stroke="#9BC400" stroke-width="1.6"/><ellipse cx="50" cy="15" rx="4.5" ry="7.5" fill="#FF9F1C"/><ellipse cx="50" cy="17" rx="2.2" ry="4" fill="${YEL}"/>`,
+palette: `<path d="M50 12 C74 12 90 28 90 48 C90 60 82 64 72 62 C64 60 60 66 62 74 C64 84 58 90 48 90 C26 90 10 72 10 50 C10 28 28 12 50 12Z" fill="#EFD3A0"/><circle cx="32" cy="38" r="7" fill="${LIME}"/><circle cx="52" cy="28" r="7" fill="${PINK}"/><circle cx="72" cy="38" r="6.5" fill="${BLUE}"/><circle cx="26" cy="58" r="6.5" fill="${ORANGE}"/><circle cx="40" cy="74" r="6" fill="${K}"/><path d="M90 8 L60 50" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M62 47 L55 57" stroke="#bbb" stroke-width="7" stroke-linecap="round"/><path d="M55 57 L50 64" stroke="${PINK}" stroke-width="6" stroke-linecap="round"/>`,
+pizza: `<path d="M16 24 Q50 8 84 24 L52 92 Z" fill="#FFD36B"/><path d="M16 24 Q50 8 84 24 L80 33 Q50 18 20 33Z" fill="#D98A3A"/><circle cx="40" cy="42" r="7" fill="#E5372E"/><circle cx="62" cy="40" r="6" fill="#E5372E"/><circle cx="52" cy="62" r="6" fill="#E5372E"/><circle cx="46" cy="78" r="3" fill="#2E8B3A"/><circle cx="34" cy="56" r="2.5" fill="#2E8B3A"/>`,
+croissant: `${[[22, 62, 10, 14, -45], [78, 62, 10, 14, 45], [34, 47, 12, 17, -25], [66, 47, 12, 17, 25], [50, 40, 14, 20, 0]].map(([x, y, rx, ry, r]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#E8A54B" stroke="#B66A1F" stroke-width="2" transform="rotate(${r} ${x} ${y})"/>`).join("")}<path d="M44 30 Q50 34 56 30M42 44 Q50 48 58 44" stroke="#FFD08A" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+popcorn: `${[[30, 36, 9], [42, 27, 10], [57, 25, 10], [70, 34, 9], [36, 20, 8], [52, 14, 8], [64, 18, 7]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#FFF4D6" stroke="#E9C97A" stroke-width="1.5"/>`).join("")}<path d="M22 40 H78 L69 90 H31 Z" fill="#fff"/><path d="M22 40 H33 L38.5 90 H31Z M44.4 40 H55.6 L53.8 90 H46.2Z M67 40 H78 L69 90 H61.5Z" fill="${RED}"/><path d="M20 40 H80" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`,
+tote: `<path d="M34 42 C34 16 66 16 66 42" stroke="#CDBE9C" stroke-width="6" fill="none"/><path d="M20 38 H80 L84 90 H16 Z" fill="#EFE6D2"/><circle cx="50" cy="64" r="15" fill="${LIME}"/>${T("MARKT", 50, 68, 10)}`,
+balloon: `<ellipse cx="50" cy="40" rx="27" ry="31" fill="${PINK}"/><path d="M45 70 L55 70 L50 77Z" fill="#E0408A"/><path d="M50 77 C43 83 57 87 50 95" stroke="${K}" stroke-width="1.8" fill="none"/><ellipse cx="39" cy="27" rx="5" ry="9" fill="#fff" opacity=".6" transform="rotate(-20 39 27)"/>`,
+gift: `<ellipse cx="39" cy="28" rx="12" ry="7" fill="${LIME}" transform="rotate(-25 39 28)"/><ellipse cx="61" cy="28" rx="12" ry="7" fill="${LIME}" transform="rotate(25 61 28)"/><rect x="18" y="46" width="64" height="42" rx="3" fill="${BLUE}"/><rect x="13" y="34" width="74" height="15" rx="3" fill="#5A84FF"/><rect x="45" y="34" width="10" height="54" fill="${LIME}"/><circle cx="50" cy="32" r="5.5" fill="#B8E000"/>`,
+bottle: `<g transform="rotate(-24 50 56)"><path d="M41 42 C41 33 45 29 45 22 H55 C55 29 59 33 59 42 V90 Q59 94 55 94 H45 Q41 94 41 90Z" fill="#1F4D2B"/><path d="M44 14 H56 L55 32 H45Z" fill="#E9B23A"/><rect x="41" y="58" width="18" height="16" fill="${CREAM}"/><path d="M45 66h10" stroke="${K}" stroke-width="1.5"/><path d="M45 44 V54" stroke="#fff" stroke-width="2.5" opacity=".35" stroke-linecap="round"/></g><rect x="66" y="2" width="9" height="11" rx="3" fill="#D9A866" transform="rotate(30 70 8)"/><circle cx="58" cy="14" r="2.5" fill="${LIME}"/><circle cx="80" cy="22" r="3" fill="${YEL}"/><circle cx="70" cy="26" r="2" fill="${LIME}"/>`,
+pin: `<path d="M50 94 C50 94 18 62 18 40 A32 32 0 0 1 82 40 C82 62 50 94 50 94Z" fill="${LIME}"/><circle cx="50" cy="40" r="12" fill="${K}"/>`,
+scooter: `<path d="M22 76 H72" stroke="${K}" stroke-width="7" stroke-linecap="round"/><path d="M72 76 L64 18" stroke="${LIME}" stroke-width="7" stroke-linecap="round"/><path d="M55 18 H74" stroke="${K}" stroke-width="6" stroke-linecap="round"/><circle cx="22" cy="80" r="10" fill="${K}"/><circle cx="22" cy="80" r="3.5" fill="#999"/><circle cx="76" cy="80" r="10" fill="${K}"/><circle cx="76" cy="80" r="3.5" fill="#999"/>`,
+radar: `<circle cx="50" cy="50" r="42" fill="${K}"/><circle cx="50" cy="50" r="28" fill="none" stroke="#2f2f2c" stroke-width="1.6"/><circle cx="50" cy="50" r="14" fill="none" stroke="#2f2f2c" stroke-width="1.6"/><path d="M50 50 L50 8 A42 42 0 0 1 86 29 Z" fill="${LIME}" opacity=".85"/><circle cx="64" cy="26" r="4.5" fill="${LIME}"/><circle cx="32" cy="64" r="4" fill="${PINK}"/><circle cx="60" cy="70" r="3.5" fill="#fff"/><circle cx="50" cy="50" r="3" fill="#fff"/>`,
+seal: `<path d="${wavyCircle(50, 50, 40, 3.2, 14)}" fill="#D7263D"/><circle cx="50" cy="50" r="27" fill="#B81B30"/><circle cx="50" cy="50" r="27" fill="none" stroke="#E5455A" stroke-width="2"/>${T("IN", 50, 63, 34, "#E85468")}<path d="M24 26 Q30 20 36 22" stroke="#fff" stroke-width="3" opacity=".35" fill="none" stroke-linecap="round"/>`,
+crystal: `<path d="M28 80 H72 L66 93 H34Z" fill="#8B5A2B"/><circle cx="50" cy="46" r="33" fill="#CFE8FF"/><circle cx="50" cy="48" r="21" fill="#E9F6FF"/><path d="M50 34 C51.5 44 54 46.5 64 48 C54 49.5 51.5 52 50 62 C48.5 52 46 49.5 36 48 C46 46.5 48.5 44 50 34Z" fill="${LIME}"/><ellipse cx="36" cy="30" rx="6" ry="10" fill="#fff" opacity=".85" transform="rotate(-35 36 30)"/><path d="M28 80 H72" stroke="#6E431D" stroke-width="2"/>`,
+ghost: `<g transform="rotate(-8 50 50)"><path d="M22 90 V44 A28 28 0 0 1 78 44 V90 L68.7 82 L59.3 90 L50 82 L40.7 90 L31.3 82 Z" fill="#fff" stroke="#D6D5CF" stroke-width="2"/><path d="M70 30 A28 28 0 0 1 78 44 V90 L68.7 82 L66 84 V40Z" fill="#EDEDE8"/><ellipse cx="40" cy="46" rx="4.5" ry="6.5" fill="${K}"/><ellipse cx="60" cy="46" rx="4.5" ry="6.5" fill="${K}"/><ellipse cx="50" cy="62" rx="5" ry="6" fill="${K}"/><circle cx="32" cy="56" r="4" fill="${PINK}" opacity=".5"/><circle cx="68" cy="56" r="4" fill="${PINK}" opacity=".5"/></g>`,
+envelope: `<g transform="rotate(-8 50 50)"><rect x="10" y="26" width="80" height="54" rx="5" fill="${CREAM}" stroke="#E2D4B2" stroke-width="2"/><path d="M12 28 L50 58 L88 28" stroke="#E2D4B2" stroke-width="2.4" fill="none"/><circle cx="50" cy="56" r="12" fill="${LIME}"/>${T("IN", 50, 61, 13)}</g>`,
+hey: `<path d="M20 18h60a14 14 0 0 1 14 14v22a14 14 0 0 1-14 14H58l-10 16-6-16H20A14 14 0 0 1 6 54V32a14 14 0 0 1 14-14z" fill="${LIME}" transform="rotate(-6 50 50)"/>${T("HEY!", 50, 55, 30, K, "Anton", 'transform="rotate(-6 50 50)"')}`,
+cash: `<rect x="14" y="22" width="70" height="40" rx="4" fill="#FF9F1C" transform="rotate(-10 49 42)"/><g transform="rotate(7 50 60)"><rect x="12" y="38" width="76" height="44" rx="4" fill="#FFB84D" stroke="#E08A00" stroke-width="2"/><circle cx="50" cy="60" r="13" fill="none" stroke="#E08A00" stroke-width="2"/>${T("€50", 50, 66, 15, "#7A4A00")}${T("50", 22, 50, 10, "#7A4A00")}${T("50", 78, 78, 10, "#7A4A00")}</g>`,
+clock: `<circle cx="27" cy="22" r="11" fill="${RED}"/><circle cx="73" cy="22" r="11" fill="${RED}"/><path d="M30 84 L23 94 M70 84 L77 94" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="56" r="33" fill="${RED}"/><circle cx="50" cy="56" r="25" fill="#fff"/><path d="M50 56 V39 M50 56 L62 63" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="56" r="3" fill="${K}"/><rect x="45" y="15" width="10" height="9" rx="2" fill="${K}"/>`,
+ticket: `<g transform="rotate(-8 50 50)"><path d="M14 28 H86 A6 6 0 0 1 92 34 V43 A7 7 0 0 0 92 57 V66 A6 6 0 0 1 86 72 H14 A6 6 0 0 1 8 66 V57 A7 7 0 0 0 8 43 V34 A6 6 0 0 1 14 28Z" fill="${LIME}"/><path d="M70 32 V68" stroke="${K}" stroke-width="1.8" stroke-dasharray="3 3"/>${T("ADMIT 1", 39, 57, 16)}${T("IN", 81, 57, 15)}</g>`,
+lock: `<path d="M33 48 V34 A17 17 0 0 1 67 34 V48" stroke="#A9A9A9" stroke-width="8" fill="none"/><rect x="22" y="44" width="56" height="44" rx="9" fill="${GOLD}"/><circle cx="50" cy="61" r="6" fill="${K}"/><rect x="47.5" y="63" width="5" height="13" rx="2" fill="${K}"/>`,
+film: `<g transform="rotate(-12 50 50)"><rect x="6" y="28" width="88" height="44" rx="2" fill="${K}"/>${[10, 19, 28, 37, 46, 55, 64, 73, 82].map((x) => `<rect x="${x}" y="31" width="5" height="4" rx="1" fill="#fff"/><rect x="${x}" y="65" width="5" height="4" rx="1" fill="#fff"/>`).join("")}<rect x="12" y="39" width="22" height="22" rx="2" fill="${PINK}"/><rect x="39" y="39" width="22" height="22" rx="2" fill="#FFB84D"/><rect x="66" y="39" width="22" height="22" rx="2" fill="${BLUE}"/></g>`,
+calendar: `<g transform="rotate(6 50 50)"><rect x="16" y="16" width="68" height="72" rx="7" fill="#fff" stroke="#DDD" stroke-width="1.5"/><path d="M16 23 A7 7 0 0 1 23 16 H77 A7 7 0 0 1 84 23 V38 H16Z" fill="${RED}"/>${T("OCT", 50, 33, 13, "#fff")}${T("03", 50, 78, 36)}<circle cx="33" cy="16" r="3.5" fill="${K}"/><circle cx="67" cy="16" r="3.5" fill="${K}"/></g>`,
+crown: `<path d="M12 74 L18 30 L35 52 L50 22 L65 52 L82 30 L88 74 Z" fill="${GOLD}"/><rect x="12" y="68" width="76" height="16" rx="3" fill="#F2B705"/><circle cx="18" cy="28" r="5" fill="${GOLD}"/><circle cx="50" cy="20" r="5" fill="${GOLD}"/><circle cx="82" cy="28" r="5" fill="${GOLD}"/><circle cx="32" cy="76" r="4.5" fill="${LIME}"/><circle cx="50" cy="76" r="4.5" fill="${PINK}"/><circle cx="68" cy="76" r="4.5" fill="${BLUE}"/>`,
+brokenheart: `<path d="M48 24 C45 18 39 12 30 12 C19 12 8 20 8 34 C8 52 20 68 48 88 L44 66 L52 54 L42 42 Z" fill="#FF3B4A"/><g transform="translate(6 -2) rotate(8 70 50)"><path d="M52 24 C55 18 61 12 70 12 C81 12 92 20 92 34 C92 52 80 68 52 88 L48 66 L56 54 L46 42 Z" fill="#E42D3C"/></g>`,
+spark: `<path d="M44 14 C47 38 54 46 80 50 C54 54 47 62 44 90 C41 62 34 54 8 50 C34 46 41 38 44 14Z" fill="${LIME}"/><path d="M80 8 C81 16 83 18 92 20 C83 22 81 24 80 32 C79 24 77 22 68 20 C77 18 79 16 80 8Z" fill="${PINK}"/>`,
+dice: `<g transform="rotate(16 66 36)"><rect x="46" y="14" width="40" height="40" rx="9" fill="${PINK}"/><circle cx="56" cy="24" r="3.5" fill="#fff"/><circle cx="66" cy="34" r="3.5" fill="#fff"/><circle cx="76" cy="44" r="3.5" fill="#fff"/></g><g transform="rotate(-12 37 60)"><rect x="12" y="36" width="48" height="48" rx="10" fill="#fff" stroke="#D6D5CF" stroke-width="1.5"/><circle cx="24" cy="48" r="4" fill="${K}"/><circle cx="48" cy="48" r="4" fill="${K}"/><circle cx="36" cy="60" r="4" fill="${K}"/><circle cx="24" cy="72" r="4" fill="${K}"/><circle cx="48" cy="72" r="4" fill="${K}"/></g>`,
+cam: `<rect x="10" y="28" width="80" height="48" rx="7" fill="${GOLD}"/><rect x="10" y="28" width="80" height="13" rx="6" fill="#111"/><rect x="10" y="35" width="80" height="6" fill="#111"/><rect x="18" y="31" width="18" height="7" rx="2" fill="#EDEDED"/><rect x="72" y="31" width="11" height="7" rx="2" fill="#555"/><circle cx="58" cy="58" r="14" fill="#111"/><circle cx="58" cy="58" r="8" fill="#3a3a3a"/><circle cx="55" cy="55" r="2.6" fill="#bbb"/><text x="16" y="70" font-family="Anton" font-size="11" fill="#111">FLASH 27</text>`,
+receipt: `<g transform="rotate(6 50 50)"><path d="M24 8h52v80l-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5-6.5-5-6.5 5z" fill="#FBFAF5" stroke="#ddd" stroke-width="1"/><text x="50" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="7.5" fill="#111">THE NIGHT</text><path d="M31 32h26M31 40h20M31 48h24M31 56h16" stroke="#999" stroke-width="2.4"/><path d="M62 32h7M64 40h5M62 48h7M64 56h5" stroke="#999" stroke-width="2.4"/><path d="M31 64h38" stroke="#111" stroke-width="1" stroke-dasharray="2 2"/><text x="31" y="75" font-family="JetBrains Mono" font-size="8" font-weight="500" fill="#111">TOTAL</text><text x="69" y="75" text-anchor="end" font-family="Anton" font-size="11" fill="#111">€42</text></g>`,
+wave: `<circle cx="50" cy="50" r="39" fill="#fff"/><path d="M56.8 11.6 A39 39 0 0 1 81.9 27.6 L63.1 40.8 A16 16 0 0 0 52.8 34.2Z" fill="${PINK}"/><path d="M88.4 56.8 A39 39 0 0 1 72.4 81.9 L59.2 63.1 A16 16 0 0 0 65.8 52.8Z" fill="${PINK}"/><path d="M43.2 88.4 A39 39 0 0 1 18.1 72.4 L36.9 59.2 A16 16 0 0 0 47.2 65.8Z" fill="${PINK}"/><path d="M11.6 43.2 A39 39 0 0 1 27.6 18.1 L40.8 36.9 A16 16 0 0 0 34.2 47.2Z" fill="${PINK}"/><circle cx="50" cy="50" r="16" fill="#fff" stroke="#E5E4DE" stroke-width="2"/><circle cx="50" cy="50" r="39" fill="none" stroke="#E5E4DE" stroke-width="1.5"/><path d="M24 30 A32 32 0 0 1 40 17" stroke="#fff" stroke-width="4" opacity=".7" fill="none" stroke-linecap="round"/>`,
+};
+
+// Where each sticker goes: [id, label, replaces, used in]
+const GROUPS = [
+ ["Moods (Your mood today) & status on avatars", [
+  ["disco", "Out tonight", "🔥 🪩", "OutTonightBar vibe_out"],
+  ["spritz", "Drinks", "🍸 🍹", "vibe_drinks"],
+  ["sneaker", "Dancing", "💃", "vibe_dancing"],
+  ["couch", "Chill hang / still home", "🛋️", "vibe_chill, LiveRadar"],
+  ["sun", "Day event / sunny", "☀️", "vibe_day, CoverStudio"],
+  ["ball", "Sport", "⚡ ⚽", "vibe_sport, categories"],
+  ["key", "At mine", "🏠", "new mood"],
+  ["free", "Free tonight", "🟢", "StatusBadge available"],
+  ["moon", "Not tonight / late", "🌙", "StatusBadge, PactSection"],
+  ["battery", "Low energy", "😴", "StatusBadge, StatusSheet"],
+ ]],
+ ["Reactions, exit poll & scores", [
+  ["flame", "Fire / worth it", "🔥", "ReactionPicker, ExitPoll, EventScoreStrip"],
+  ["eyes", "Looking / are you in?", "👀", "ReactionPicker, reality check"],
+  ["skull", "Dead / flop", "💀", "ReactionPicker, ExitPoll"],
+  ["cheers", "Cheers / brunch", "🥂", "ReactionPicker, categories"],
+  ["heart", "Love", "❤️ 💖 💜", "ReactionPicker, cards"],
+  ["popper", "Party", "🎉 🥳 🎊", "ReactionPicker, categories, toasts"],
+  ["meh", "Mid", "😐", "ExitPoll, EventScoreStrip"],
+  ["burst", "Score (number on top)", "★ ⭐ 🏅", "NightReceipt, CreatorScore"],
+  ["maybe", "Maybe", "🤔 🤷", "Maybe states"],
+  ["in", "I'm in / confirmed", "✅ ✋", "RSVP, EventPulse, notifications"],
+ ]],
+ ["Event categories", [
+  ["vinyl", "Music", "🎵 🎶", "FilterSheet, EventCard, AddEvent"],
+  ["popper", "Party", "🎉", "FilterSheet"],
+  ["tent", "Festival", "🎪", "FilterSheet"],
+  ["cake", "Birthday", "🎂", "FilterSheet, birthdays"],
+  ["palette", "Art", "🎨", "FilterSheet"],
+  ["pizza", "Food", "🍽️ 🌮", "FilterSheet"],
+  ["croissant", "Brunch", "🥂 ☕", "FilterSheet"],
+  ["popcorn", "Cinema", "🎬", "FilterSheet"],
+  ["ball", "Sports", "⚡", "FilterSheet"],
+  ["tote", "Street markets", "🛍️", "FilterSheet"],
+ ]],
+ ["On the night: radar, pacts, ghosts, the line, the tab", [
+  ["pin", "I'm there / location", "📍 🎉", "LiveRadar, EventDetail"],
+  ["scooter", "On the way", "🛵 🚶", "LiveRadar"],
+  ["radar", "Live radar", "📡", "LiveRadarSection, MapSheet"],
+  ["seal", "Pact sealed", "🤝", "PactSection, notifications"],
+  ["ghost", "Ghost / let it fade / knock", "👻", "EventPulse, GhostKnock, FriendGhostCard"],
+  ["dice", "Roulette", "🎲", "Roulette sheet"],
+  ["ticket", "Walk-in / the line", "🟢 🎟️", "Line mode, notifications"],
+  ["receipt", "The tab / receipt", "🧾", "NightReceipt, expenses"],
+  ["cash", "Paid / money", "💸 💳", "payments, Onboarding"],
+ ]],
+ ["Capsule & memories", [
+  ["cam", "Capsule / photos", "📸", "TimeCapsule, AddEvent"],
+  ["film", "Recap / reel", "🎞️", "CapsuleDetail"],
+  ["crystal", "Prediction", "🔮", "RevealedPredictions, TimeCapsule"],
+  ["lock", "Sealed / private", "🔒", "EventDetail, capsules"],
+  ["calendar", "Date / plans", "🗓️ 📅", "calendar, notifications"],
+ ]],
+ ["Birthdays", [
+  ["cake", "Birthday", "🎂 🍰", "BirthdayCardComposer/Reveal"],
+  ["balloon", "Balloon", "🎈", "Birthday cards"],
+  ["gift", "Gift", "🎁", "Birthday cards, ConvertMaybes"],
+  ["bottle", "Bubbles", "🍾", "Birthday cards"],
+  ["plus1", "+1 / party", "🥳 🎊", "Birthday cards, calendar"],
+ ]],
+ ["Notifications & everything else", [
+  ["envelope", "Invite", "💌", "NotificationsBell, Calendar"],
+  ["hey", "Friend request / wave", "👋", "NotificationsBell, Welcome, Onboarding"],
+  ["clock", "Reminder", "⏰", "payment_reminder"],
+  ["spark", "New / glow", "✨ ✦ 💫 🌟", "new_follower, toasts, CoverStudio"],
+  ["crown", "Super host", "👑", "organizer SuperHostsCard"],
+  ["brokenheart", "Slipping away", "💔", "organizer SlippingAwayCard"],
+  ["wave", "Chill / pool", "🌊 🌴", "CoverStudio presets"],
+ ]],
+];
+
+if (typeof module !== "undefined") module.exports = { S, DEFS, GROUPS };
+
+const LUCIDE={"Users":"<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><path d=\"M16 3.128a4 4 0 0 1 0 7.744\"></path><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle>","Search":"<path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle>","Bell":"<path d=\"M10.268 21a2 2 0 0 0 3.464 0\"></path><path d=\"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326\"></path>","Settings":"<path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle>","Dices":"<rect width=\"12\" height=\"12\" x=\"2\" y=\"10\" rx=\"2\" ry=\"2\"></rect><path d=\"m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6\"></path><path d=\"M6 18h.01\"></path><path d=\"M10 14h.01\"></path><path d=\"M15 6h.01\"></path><path d=\"M18 9h.01\"></path>","SlidersHorizontal":"<path d=\"M10 5H3\"></path><path d=\"M12 19H3\"></path><path d=\"M14 3v4\"></path><path d=\"M16 17v4\"></path><path d=\"M21 12h-9\"></path><path d=\"M21 19h-5\"></path><path d=\"M21 5h-7\"></path><path d=\"M8 10v4\"></path><path d=\"M8 12H3\"></path>","LayoutGrid":"<rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"></rect><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"></rect>","CalendarDays":"<path d=\"M8 2v4\"></path><path d=\"M16 2v4\"></path><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M3 10h18\"></path><path d=\"M8 14h.01\"></path><path d=\"M12 14h.01\"></path><path d=\"M16 14h.01\"></path><path d=\"M8 18h.01\"></path><path d=\"M12 18h.01\"></path><path d=\"M16 18h.01\"></path>","Archive":"<rect width=\"20\" height=\"5\" x=\"2\" y=\"3\" rx=\"1\"></rect><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\"></path><path d=\"M10 12h4\"></path>","User":"<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"></path><circle cx=\"12\" cy=\"7\" r=\"4\"></circle>","Plus":"<path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path>","MapPin":"<path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"></path><circle cx=\"12\" cy=\"10\" r=\"3\"></circle>","HelpCircle":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"></path><path d=\"M12 17h.01\"></path>","Check":"<path d=\"M20 6 9 17l-5-5\"></path>","X":"<path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path>","ChevronLeft":"<path d=\"m15 18-6-6 6-6\"></path>","ChevronRight":"<path d=\"m9 18 6-6-6-6\"></path>","ChevronDown":"<path d=\"m6 9 6 6 6-6\"></path>","Share2":"<circle cx=\"18\" cy=\"5\" r=\"3\"></circle><circle cx=\"6\" cy=\"12\" r=\"3\"></circle><circle cx=\"18\" cy=\"19\" r=\"3\"></circle><line x1=\"8.59\" x2=\"15.42\" y1=\"13.51\" y2=\"17.49\"></line><line x1=\"15.41\" x2=\"8.59\" y1=\"6.51\" y2=\"10.49\"></line>","MoreHorizontal":"<circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle>","Camera":"<path d=\"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z\"></path><circle cx=\"12\" cy=\"13\" r=\"3\"></circle>","Link":"<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\"></path><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\"></path>","PenTool":"<path d=\"M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z\"></path><path d=\"m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18\"></path><path d=\"m2.3 2.3 7.286 7.286\"></path><circle cx=\"11\" cy=\"11\" r=\"2\"></circle>","ImagePlus":"<path d=\"M16 5h6\"></path><path d=\"M19 2v6\"></path><path d=\"M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5\"></path><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"></path><circle cx=\"9\" cy=\"9\" r=\"2\"></circle>","Clock":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 6v6l4 2\"></path>","Sparkles":"<path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\"></path><path d=\"M20 2v4\"></path><path d=\"M22 4h-4\"></path><circle cx=\"4\" cy=\"20\" r=\"2\"></circle>","Lock":"<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"></rect><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"></path>","Eye":"<path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle>","EyeOff":"<path d=\"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49\"></path><path d=\"M14.084 14.158a3 3 0 0 1-4.242-4.242\"></path><path d=\"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143\"></path><path d=\"m2 2 20 20\"></path>","Ghost":"<path d=\"M9 10h.01\"></path><path d=\"M15 10h.01\"></path><path d=\"M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z\"></path>","Navigation":"<polygon points=\"3 11 22 2 13 21 11 13 3 11\"></polygon>","Euro":"<path d=\"M4 10h12\"></path><path d=\"M4 14h9\"></path><path d=\"M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2\"></path>","Receipt":"<path d=\"M12 17V7\"></path><path d=\"M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8\"></path><path d=\"M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z\"></path>","ArrowUpRight":"<path d=\"M7 7h10v10\"></path><path d=\"M7 17 17 7\"></path>","ArrowDownLeft":"<path d=\"M17 7 7 17\"></path><path d=\"M17 17H7V7\"></path>","History":"<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path><path d=\"M3 3v5h5\"></path><path d=\"M12 7v5l4 2\"></path>","RefreshCcw":"<path d=\"M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path><path d=\"M3 3v5h5\"></path><path d=\"M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16\"></path><path d=\"M16 16h5v5\"></path>","Ticket":"<path d=\"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\"></path><path d=\"M13 5v2\"></path><path d=\"M13 17v2\"></path><path d=\"M13 11v2\"></path>","Music":"<path d=\"M9 18V5l12-2v13\"></path><circle cx=\"6\" cy=\"18\" r=\"3\"></circle><circle cx=\"18\" cy=\"16\" r=\"3\"></circle>","Flame":"<path d=\"M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4\"></path>","Heart":"<path d=\"M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5\"></path>","MessageCircle":"<path d=\"M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719\"></path>","Sun":"<circle cx=\"12\" cy=\"12\" r=\"4\"></circle><path d=\"M12 2v2\"></path><path d=\"M12 20v2\"></path><path d=\"m4.93 4.93 1.41 1.41\"></path><path d=\"m17.66 17.66 1.41 1.41\"></path><path d=\"M2 12h2\"></path><path d=\"M20 12h2\"></path><path d=\"m6.34 17.66-1.41 1.41\"></path><path d=\"m19.07 4.93-1.41 1.41\"></path>","Moon":"<path d=\"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\"></path>","Smile":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M8 14s1.5 2 4 2 4-2 4-2\"></path><line x1=\"9\" x2=\"9.01\" y1=\"9\" y2=\"9\"></line><line x1=\"15\" x2=\"15.01\" y1=\"9\" y2=\"9\"></line>","Type":"<path d=\"M12 4v16\"></path><path d=\"M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2\"></path><path d=\"M9 20h6\"></path>","Square":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"></rect>","Layers":"<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"></path><path d=\"M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12\"></path><path d=\"M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17\"></path>","Palette":"<path d=\"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z\"></path><circle cx=\"13.5\" cy=\"6.5\" r=\".5\" fill=\"currentColor\"></circle><circle cx=\"17.5\" cy=\"10.5\" r=\".5\" fill=\"currentColor\"></circle><circle cx=\"6.5\" cy=\"12.5\" r=\".5\" fill=\"currentColor\"></circle><circle cx=\"8.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"></circle>","Image":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\"></rect><circle cx=\"9\" cy=\"9\" r=\"2\"></circle><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"></path>","Wand2":"<path d=\"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72\"></path><path d=\"m14 7 3 3\"></path><path d=\"M5 6v4\"></path><path d=\"M19 14v4\"></path><path d=\"M10 2v2\"></path><path d=\"M7 8H3\"></path><path d=\"M21 16h-4\"></path><path d=\"M11 3H9\"></path>","CalendarPlus":"<path d=\"M16 19h6\"></path><path d=\"M16 2v4\"></path><path d=\"M19 16v6\"></path><path d=\"M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5\"></path><path d=\"M3 10h18\"></path><path d=\"M8 2v4\"></path>","Footprints":"<path d=\"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z\"></path><path d=\"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z\"></path><path d=\"M16 17h4\"></path><path d=\"M4 13h4\"></path>","Locate":"<line x1=\"2\" x2=\"5\" y1=\"12\" y2=\"12\"></line><line x1=\"19\" x2=\"22\" y1=\"12\" y2=\"12\"></line><line x1=\"12\" x2=\"12\" y1=\"2\" y2=\"5\"></line><line x1=\"12\" x2=\"12\" y1=\"19\" y2=\"22\"></line><circle cx=\"12\" cy=\"12\" r=\"7\"></circle>","Info":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 16v-4\"></path><path d=\"M12 8h.01\"></path>","Compass":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z\"></path>","Wallet":"<path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\"></path><path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\"></path>","Send":"<path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path>","ArrowRight":"<path d=\"M5 12h14\"></path><path d=\"m12 5 7 7-7 7\"></path>","Pencil":"<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\"></path><path d=\"m15 5 4 4\"></path>","Trash2":"<path d=\"M10 11v6\"></path><path d=\"M14 11v6\"></path><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\"></path><path d=\"M3 6h18\"></path><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path>","Bookmark":"<path d=\"M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z\"></path>","Repeat":"<path d=\"m17 2 4 4-4 4\"></path><path d=\"M3 11v-1a4 4 0 0 1 4-4h14\"></path><path d=\"m7 22-4-4 4-4\"></path><path d=\"M21 13v1a4 4 0 0 1-4 4H3\"></path>","Hourglass":"<path d=\"M5 22h14\"></path><path d=\"M5 2h14\"></path><path d=\"M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22\"></path><path d=\"M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2\"></path>","Download":"<path d=\"M12 15V3\"></path><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path><path d=\"m7 10 5 5 5-5\"></path>","Undo2":"<path d=\"M9 14 4 9l5-5\"></path><path d=\"M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11\"></path>","RotateCw":"<path d=\"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8\"></path><path d=\"M21 3v5h-5\"></path>","Copy":"<rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path>","Globe":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path>","BadgeCheck":"<path d=\"M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z\"></path><path d=\"m9 12 2 2 4-4\"></path>","Crown":"<path d=\"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z\"></path><path d=\"M5 21h14\"></path>","Zap":"<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"></path>","Mic":"<path d=\"M12 19v3\"></path><path d=\"M19 10v2a7 7 0 0 1-14 0v-2\"></path><rect x=\"9\" y=\"2\" width=\"6\" height=\"13\" rx=\"3\"></rect>","MapPinned":"<path d=\"M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0\"></path><circle cx=\"12\" cy=\"8\" r=\"2\"></circle><path d=\"M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712\"></path>","Radio":"<path d=\"M16.247 7.761a6 6 0 0 1 0 8.478\"></path><path d=\"M19.075 4.933a10 10 0 0 1 0 14.134\"></path><path d=\"M4.925 19.067a10 10 0 0 1 0-14.134\"></path><path d=\"M7.753 16.239a6 6 0 0 1 0-8.478\"></path><circle cx=\"12\" cy=\"12\" r=\"2\"></circle>","Scan":"<path d=\"M3 7V5a2 2 0 0 1 2-2h2\"></path><path d=\"M17 3h2a2 2 0 0 1 2 2v2\"></path><path d=\"M21 17v2a2 2 0 0 1-2 2h-2\"></path><path d=\"M7 21H5a2 2 0 0 1-2-2v-2\"></path>","Shuffle":"<path d=\"m18 14 4 4-4 4\"></path><path d=\"m18 2 4 4-4 4\"></path><path d=\"M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22\"></path><path d=\"M2 6h1.972a4 4 0 0 1 3.6 2.2\"></path><path d=\"M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45\"></path>","Gift":"<path d=\"M12 7v14\"></path><path d=\"M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8\"></path><path d=\"M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5\"></path><rect x=\"3\" y=\"7\" width=\"18\" height=\"4\" rx=\"1\"></rect>","Package":"<path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\"></path><path d=\"M12 22V12\"></path><polyline points=\"3.29 7 12 12 20.71 7\"></polyline><path d=\"m7.5 4.27 9 5.15\"></path>","Tag":"<path d=\"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z\"></path><circle cx=\"7.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"></circle>","FileText":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"></path><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"></path><path d=\"M10 9H8\"></path><path d=\"M16 13H8\"></path><path d=\"M16 17H8\"></path>","CircleDollarSign":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8\"></path><path d=\"M12 18V6\"></path>","Hand":"<path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"></path><path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"></path><path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"></path><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"></path>","Plane":"<path d=\"M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"></path>","Cake":"<path d=\"M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8\"></path><path d=\"M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1\"></path><path d=\"M2 21h20\"></path><path d=\"M7 8v3\"></path><path d=\"M12 8v3\"></path><path d=\"M17 8v3\"></path><path d=\"M7 4h.01\"></path><path d=\"M12 4h.01\"></path><path d=\"M17 4h.01\"></path>","Home":"<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"></path><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"></path>","Ban":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M4.929 4.929 19.07 19.071\"></path>","CheckCircle2":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m9 12 2 2 4-4\"></path>","BellRing":"<path d=\"M10.268 21a2 2 0 0 0 3.464 0\"></path><path d=\"M22 8c0-2.3-.8-4.3-2-6\"></path><path d=\"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326\"></path><path d=\"M4 2C2.8 3.7 2 5.7 2 8\"></path>","Star":"<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"></path>","Flag":"<path d=\"M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528\"></path>","AtSign":"<circle cx=\"12\" cy=\"12\" r=\"4\"></circle><path d=\"M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8\"></path>","Phone":"<path d=\"M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384\"></path>","Grid2x2":"<path d=\"M12 3v18\"></path><path d=\"M3 12h18\"></path><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"></rect>","LockKeyhole":"<circle cx=\"12\" cy=\"16\" r=\"1\"></circle><rect x=\"3\" y=\"10\" width=\"18\" height=\"12\" rx=\"2\"></rect><path d=\"M7 10V7a5 5 0 0 1 10 0v3\"></path>","Unlock":"<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"></rect><path d=\"M7 11V7a5 5 0 0 1 9.9-1\"></path>","Battery":"<path d=\"M 22 14 L 22 10\"></path><rect x=\"2\" y=\"6\" width=\"16\" height=\"12\" rx=\"2\"></rect>","Bike":"<circle cx=\"18.5\" cy=\"17.5\" r=\"3.5\"></circle><circle cx=\"5.5\" cy=\"17.5\" r=\"3.5\"></circle><circle cx=\"15\" cy=\"5\" r=\"1\"></circle><path d=\"M12 17.5V14l-3-3 4-3 2 3h2\"></path>","Car":"<path d=\"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2\"></path><circle cx=\"7\" cy=\"17\" r=\"2\"></circle><path d=\"M9 17h6\"></path><circle cx=\"17\" cy=\"17\" r=\"2\"></circle>","Train":"<rect width=\"16\" height=\"16\" x=\"4\" y=\"3\" rx=\"2\"></rect><path d=\"M4 11h16\"></path><path d=\"M12 3v8\"></path><path d=\"m8 19-2 3\"></path><path d=\"m18 22-2-3\"></path><path d=\"M8 15h.01\"></path><path d=\"M16 15h.01\"></path>","Coffee":"<path d=\"M10 2v2\"></path><path d=\"M14 2v2\"></path><path d=\"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1\"></path><path d=\"M6 2v2\"></path>","Wine":"<path d=\"M8 22h8\"></path><path d=\"M7 10h10\"></path><path d=\"M12 15v7\"></path><path d=\"M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z\"></path>","Beer":"<path d=\"M17 11h1a3 3 0 0 1 0 6h-1\"></path><path d=\"M9 12v6\"></path><path d=\"M13 12v6\"></path><path d=\"M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 2 11 2s2 1.5 3 1.5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z\"></path><path d=\"M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8\"></path>","PartyPopper":"<path d=\"M5.8 11.3 2 22l10.7-3.79\"></path><path d=\"M4 3h.01\"></path><path d=\"M22 8h.01\"></path><path d=\"M15 2h.01\"></path><path d=\"M22 20h.01\"></path><path d=\"m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10\"></path><path d=\"m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17\"></path><path d=\"m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7\"></path><path d=\"M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z\"></path>","Video":"<path d=\"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5\"></path><rect x=\"2\" y=\"6\" width=\"14\" height=\"12\" rx=\"2\"></rect>","Play":"<path d=\"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z\"></path>","Pause":"<rect x=\"14\" y=\"3\" width=\"5\" height=\"18\" rx=\"1\"></rect><rect x=\"5\" y=\"3\" width=\"5\" height=\"18\" rx=\"1\"></rect>","Volume2":"<path d=\"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z\"></path><path d=\"M16 9a5 5 0 0 1 0 6\"></path><path d=\"M19.364 18.364a9 9 0 0 0 0-12.728\"></path>"};
+</script>
+<script>
+(() => {
+// Core: helpers, sample data, router, nav, sheets, panel.
+document.getElementById('defs').innerHTML = DEFS;
+S.in = S.in.replace('#D8FF3D', '#7C3BED').replace('fill="#0B0B0A"', 'fill="#fff"');
+
+const A = (n) => `assets/${n}`;
+const AV = (n) => `assets/av_${n}.jpg`;
+const I = (n, s = 22, sw = 2, st = '') => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" style="${st}" aria-hidden="true">${LUCIDE[n] || ''}</svg>`;
+// sticker svg (visible size s)
+const SV = (n, s, r = 0, cls = '', st = '') => `<svg class="st ${cls}" viewBox="-10 -10 120 120" width="${s * 1.2}" height="${s * 1.2}" style="margin:${-s * .1}px;--r:${r}deg;transform:rotate(${r}deg);${st}" aria-hidden="true"><g filter="url(#cut)">${S[n]}</g></svg>`;
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const F = { marie: 'Marie Klein', jonas: 'Jonas Weber', timo: 'Timo Schulz', nina: 'Nina Ortega' };
+const EV = {
+  supper: { name: "Supperclub at Marie's", short: 'Supperclub', date: 'Today', long: 'Thu 22 Oct', day: 22, time: '20:00', venue: "Marie's place", area: 'Westend', img: 'f2.jpg', vis: 'Private', vibe: 'pizza', going: ['marie', 'nina', 'jonas'], extra: 3, count: 6, react: [['heart', 4], ['flame', 2]], spend: 14 },
+  razzia: { name: 'Razzia · 4th anniversary', short: 'Razzia', date: 'Sat, Oct 24', long: 'Sat 24 Oct', day: 24, time: '23:59', venue: 'Romantica', area: 'Mitte', img: 'fl_razzia.jpg', vis: 'Inner circle', vibe: 'disco', going: ['marie', 'timo', 'jonas'], extra: 4, count: 9, react: [['flame', 12], ['eyes', 5]], lineup: ['Keryda (live)', 'DJ Afropunk', 'Gabbanalli'], spend: 22 },
+  alles: { name: 'Alles offen 26', short: 'Alles offen', date: 'Sat, Oct 24', long: 'Sat 24 Oct', day: 24, time: '16:00', venue: 'Kunstverein Wagenhalle', area: 'Nord', img: 'fl_alles.jpg', vis: 'Public', vibe: 'palette', going: ['timo', 'nina'], extra: 2, count: 4, react: [['heart', 3]] },
+  dest: { name: 'Desterradxs festival', short: 'Desterradxs', date: 'Sun, Oct 25', long: 'Sun 25 Oct', day: 25, time: '22:00', venue: 'Utopia Kiosk', area: 'Ost', img: 'fl_desterradxs.jpg', vis: 'Public', vibe: 'tent', going: ['jonas', 'marie', 'timo'], extra: 9, count: 12, react: [['popper', 8], ['flame', 6]], price: '€18' },
+  queer: { name: 'Queerfeminist Night', short: 'Queerfeminist', date: 'Fri, Oct 30', long: 'Fri 30 Oct', day: 30, time: '20:00', venue: 'Sunny High', area: 'Süd', img: 'fl_queer.jpg', vis: 'Public', vibe: 'popper', going: ['nina'], extra: 1, count: 2, react: [['heart', 6]] },
+  midnight: { name: 'Midnight Service', short: 'Midnight', date: 'Sat, Oct 31', long: 'Sat 31 Oct', day: 31, time: '16:00', venue: 'Trude', area: 'West', img: 'fl_midnight.jpg', vis: 'Public', vibe: 'vinyl', going: ['timo', 'jonas'], extra: 5, count: 7, react: [['vinyl', 3]], price: '€12' },
+};
+const FEED = ['supper', 'razzia', 'alles', 'dest', 'queer', 'midnight'];
+const state = { screen: 'feed', params: {}, rsvp: { razzia: 'in' }, reacts: {}, sticks: { razzia: [['popper', 28, 120, -10], ['hey', 252, 150, 8]] } };
+
+/* ---------- shared chrome ---------- */
+const statusBar = (light) => `<div class="status" ${light ? 'style="color:#fff"' : ''}><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg><svg width="27" height="13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2.5" y="2.5" width="17" height="8" rx="2" fill="currentColor"/></svg></span></div>`;
+const LOGO = `<span class="logo">I am <i>(</i>IN<i>)</i></span>`;
+const header = () => `<div class="hdr">${LOGO}<span class="hic"><button class="icb" data-go="me" data-p='{"tab":"friends"}' aria-label="People">${I('Users', 20)}</button><button class="icb" data-toast="Search opens here (same as today)." aria-label="Search">${I('Search', 20)}</button><button class="icb" data-sheet="notifs" aria-label="Notifications">${I('Bell', 20)}<span class="badge">3</span></button><button class="icb" data-toast="Settings open here (same as today)." aria-label="Settings">${I('Settings', 20)}</button></span></div>`;
+const NAVI = [['feed', 'LayoutGrid', 'Feed'], ['calendar', 'CalendarDays', 'Calendar'], null, ['capsule', 'Archive', 'Capsule'], ['me', 'User', 'Profile']];
+const nav = (on) => `<div class="fade"></div><nav class="nav" aria-label="Main">${NAVI.map((x) => x ? `<button data-go="${x[0]}" ${on == x[0] ? 'aria-current="page"' : ''}>${I(x[1], 22, on == x[0] ? 2.4 : 2)}${x[2]}</button>` : `<button class="add" data-go="add">${'<b>' + I('Plus', 24, 2.6) + '</b>'}Add</button>`).join('')}</nav>`;
+const back = (label = '', to = 'feed', p = {}) => `<div class="hdr" style="padding-left:12px"><button class="icb f" data-go="${to}" data-p='${JSON.stringify(p)}' aria-label="Back">${I('ChevronLeft', 20, 2.4)}</button><span class="meta">${label}</span><span style="width:40px"></span></div>`;
+const reactPills = (id, big) => (EV[id].react || []).map(([s, n]) => { const on = state.reacts[id + s]; return `<button class="react ${on ? 'on' : ''}" data-react="${id}|${s}" style="${big ? '' : 'height:30px'}">${SV(s, big ? 30 : 24)}${n + (on ? 1 : 0)}</button>`; }).join('');
+
+/* ---------- router ---------- */
+const SCREENS = {}; const SHEETS = {};
+const app = document.getElementById('app');
+function go(id, params = {}) {
+  if (!SCREENS[id]) return;
+  if (SCREENS[id].alias) return go(SCREENS[id].alias[0], SCREENS[id].alias[1]);
+  state.screen = id; state.params = params;
+  const s = SCREENS[id];
+  app.innerHTML = `<div class="scr" id="scr">${s.render(params)}</div>`;
+  s.mount && s.mount(app.querySelector('#scr'), params);
+  updatePanel();
+}
+function openSheet(id, params = {}) {
+  const sh = SHEETS[id]; if (!sh) return;
+  closeSheet();
+  const wrap = document.createElement('div'); wrap.id = 'sheetwrap';
+  wrap.innerHTML = `<div class="scrim" data-close></div><div class="sheet" role="dialog" aria-label="${esc(sh.label)}" style="${sh.full ? 'max-height:none;top:calc(40px + env(safe-area-inset-top,0px))' : ''}"><div class="grab"></div><div class="sbody">${sh.render(params)}</div></div>`;
+  app.appendChild(wrap);
+  sh.mount && sh.mount(wrap, params);
+  state.sheet = id; updatePanel();
+}
+function closeSheet() { const w = document.getElementById('sheetwrap'); if (w) w.remove(); state.sheet = null; updatePanel(); }
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; app.appendChild(t); setTimeout(() => t.remove(), 2200); }
+
+app.addEventListener('click', (e) => {
+  const c = e.target.closest('[data-close]'); if (c) { closeSheet(); return; }
+  const g = e.target.closest('[data-go]'); if (g) { closeSheet(); go(g.dataset.go, g.dataset.p ? JSON.parse(g.dataset.p) : {}); return; }
+  const sh = e.target.closest('[data-sheet]'); if (sh) { openSheet(sh.dataset.sheet, sh.dataset.p ? JSON.parse(sh.dataset.p) : {}); return; }
+  const t = e.target.closest('[data-toast]'); if (t) { toast(t.dataset.toast); return; }
+  const r = e.target.closest('[data-react]'); if (r) { const [id, s] = r.dataset.react.split('|'); state.reacts[id + s] = !state.reacts[id + s]; const n = (EV[id].react.find((x) => x[0] == s) || [0, 0])[1] + (state.reacts[id + s] ? 1 : 0); r.classList.toggle('on', !!state.reacts[id + s]); r.lastChild.textContent = n; const svg = r.querySelector('svg'); svg.classList.remove('slap'); void svg.offsetWidth; svg.classList.add('slap'); return; }
+  const tg = e.target.closest('.tog'); if (tg) { tg.setAttribute('aria-pressed', tg.getAttribute('aria-pressed') === 'false'); return; }
+  const sg = e.target.closest('.seg button[data-seg]'); if (sg) { sg.parentElement.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b === sg)); }
+});
+
+/* ---------- panel ---------- */
+const TAGS = { new: ['new', 'New'], upd: ['upd', 'New look'], old: ['', 'Existing'], nat: ['nat', 'Native'] };
+function updatePanel() {
+  const jump = document.getElementById('jump'); if (!jump) return;
+  const groups = {};
+  Object.entries(SCREENS).forEach(([id, s]) => { (groups[s.section] = groups[s.section] || []).push(['s', id, s]); });
+  Object.entries(SHEETS).forEach(([id, s]) => { (groups[s.section] = groups[s.section] || []).push(['h', id, s]); });
+  jump.innerHTML = Object.entries(groups).map(([g, items]) => `<h3>${g}</h3>` + items.map(([k, id, s]) => {
+    const cur = k == 's' ? (state.screen == id && !state.sheet) : state.sheet == id; const t = TAGS[s.tag] || TAGS.old;
+    return `<button data-j="${k}|${id}" aria-current="${cur}">${k == 'h' ? '<span class="mute">↳</span>' : ''}${esc(s.label)}<span class="tag ${t[0]}">${t[1]}</span></button>`;
+  }).join('')).join('');
+}
+document.getElementById('jump').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-j]'); if (!b) return; const [k, id] = b.dataset.j.split('|');
+  if (k == 's') { closeSheet(); go(id, SCREENS[id].demo || {}); } else { const sh = SHEETS[id]; closeSheet(); if (state.screen != sh.base) go(sh.base, (SCREENS[sh.base] || {}).demo || {}); openSheet(id, sh.demo || {}); }
+});
+document.getElementById('themeSeg').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return; const v = b.dataset.v;
+  if (v === 'system') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = v;
+  document.querySelectorAll('#themeSeg button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+});
+
+// FEED + filter (vibe mixer board) + roulette + note + notifications
+(() => {
+const filt = { vibes: ['vinyl', 'disco'], friends: 2, dates: [1, 2], city: 'Stuttgart' };
+const VIBES = [['vinyl', 'music'], ['popper', 'party'], ['disco', 'club'], ['tent', 'festival'], ['cake', 'birthday'], ['palette', 'art'], ['pizza', 'food'], ['croissant', 'brunch'], ['popcorn', 'cinema'], ['ball', 'sports'], ['tote', 'markets']];
+const DATES = ['Tonight', 'Fri 23', 'Sat 24', 'Sun 25', 'Next week'];
+const filterCount = () => filt.vibes.length + (filt.friends ? 1 : 0) + (filt.dates.length ? 1 : 0);
+
+const bubble = (img, name, note, stk, opts = {}) => `<button class="tb" ${opts.mine ? 'data-sheet="note"' : `data-go="me" data-p='{"tab":"friends"}'`} style="width:${opts.mine ? 92 : 104}px">
+  <span class="bub ${opts.mine ? 'mine' : ''}">${stk ? `<span class="bst">${SV(stk, 30, -8)}</span>` : ''}<span>${note}</span></span>
+  <span class="tbav">${opts.mine ? `<span class="av" style="width:60px;height:60px;background:var(--s2);display:flex;align-items:center;justify-content:center;color:var(--pt)">${I('Plus', 22, 2.6)}</span>` : `<img class="av" src="${AV(img)}" alt="" width="60" height="60" style="border:2.5px solid var(--p);padding:2px;background:var(--bg)">`}</span>
+  <span class="tbn">${name}</span>${opts.sub ? `<span class="tbs">${opts.sub}</span>` : ''}
+</button>`;
+
+const card = (id) => { const e = EV[id]; const r = state.rsvp[id];
+  return `<article class="fc" data-ev="${id}">
+  <div class="fct"><span class="tt" style="font-size:16px">${e.name}</span><span class="meta" style="font-size:11.5px">${e.date}</span></div>
+  <div class="fcc"><img src="${A(e.img)}" alt="">
+    <span class="vis">${I(e.vis == 'Public' ? 'Users' : e.vis == 'Private' ? 'Lock' : 'Users', 12, 2.4)}${e.vis}</span>
+    <span class="loc">${I('MapPin', 14, 2.2)}${e.venue}</span>
+    <span class="rx">${(e.react || []).map(([s, n]) => `<span class="react" style="height:30px;padding-right:10px">${SV(s, 24)}${n}</span>`).join('')}</span>
+    ${r == 'in' ? `<span class="instk">${SV('in', 70, 12, 'slap')}</span>` : ''}
+  </div>
+  <div class="fcf"><span class="avs">${e.going.map((a) => `<img class="av" src="${AV(a)}" alt="" width="26" height="26">`).join('')}</span><span class="plusn">+${e.extra}</span><span class="meta" style="margin-left:6px">${e.count}</span><span class="sp"></span>
+    <button class="pill ${r == 'maybe' ? 'ppt' : 'pg'}" data-rsvp="${id}|maybe" style="height:38px;padding:0 14px;font-size:13.5px">${I('HelpCircle', 16)}Maybe</button>
+    <button class="pill ${r == 'in' ? 'pp' : 'pg'}" data-rsvp="${id}|in" style="height:38px;padding:0 14px;font-size:13.5px">${I('Check', 16, 2.6)}I'm in</button></div>
+</article>`; };
+
+SCREENS.feed = { label: 'Feed', section: 'Feed', tag: 'upd', nav: 'feed', render: (p) => `${statusBar()}${header()}
+  <div class="row" style="padding:2px 12px 0 20px;gap:20px;font-weight:600;font-size:15px;flex:none">
+    <button data-tab="ic" style="position:relative">Inner Circle<i class="tdot"></i></button><button data-tab="cp" class="mute">City Pulse</button><span class="sp"></span>
+    <button class="icb" data-sheet="roulette" aria-label="Roulette">${I('Dices', 20)}</button><button class="icb" data-go="filter" aria-label="Filter">${I('SlidersHorizontal', 20)}${filterCount() ? `<span class="badge">${filterCount()}</span>` : ''}</button>
+  </div>
+  <div class="today">
+    <span class="tlab">Today</span>
+    ${bubble('', 'Your note', 'Your thoughts go here…', '', { mine: 1, sub: `${I('Lock', 11, 2.4)}Location off` })}
+    ${bubble('jonas', 'Jonas', 'pre-drinks at mine', 'spritz')}
+    ${bubble('marie', 'Marie', 'ISO 2 tickets for Razzia!', 'hey')}
+    ${bubble('timo', 'Timo', 'out out, Westend', 'disco')}
+    ${bubble('nina', 'Nina', 'couch & films', 'couch')}
+  </div>
+  <div class="deck" id="deck">${FEED.map(card).join('')}</div>
+  ${nav('feed')}
+  <style>
+  .tdot{position:absolute;left:50%;bottom:-8px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--p)}
+  .today{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 6px 18px;flex:none;scrollbar-width:none;align-items:flex-end}
+  .today::-webkit-scrollbar{display:none}
+  .tlab{font-weight:600;font-size:13px;color:var(--mute);writing-mode:vertical-rl;transform:rotate(180deg);align-self:center;margin-right:4px}
+  .tb{display:flex;flex-direction:column;align-items:center;flex:none;text-align:center}
+  .bub{position:relative;display:flex;align-items:center;gap:2px;min-height:44px;max-width:100%;padding:7px 10px;border-radius:18px;background:var(--s1);border:1px solid var(--line);box-shadow:0 6px 16px rgba(0,0,0,.08);font-size:12.5px;font-weight:600;line-height:1.2;margin-bottom:10px;text-align:left}
+  .bub::after{content:"";position:absolute;left:26px;bottom:-9px;width:10px;height:10px;border-radius:50%;background:inherit;border:1px solid var(--line)}
+  .bub.mine{color:var(--mute);font-weight:500;border-style:dashed}
+  .bst{position:absolute;right:-10px;top:-16px}
+  .tbn{font-weight:600;font-size:12.5px;margin-top:6px}
+  .tbs{display:flex;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:#F0524F;margin-top:2px}
+  .deck{flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;padding:8px 0 150px;position:relative}
+  .deck::-webkit-scrollbar{display:none}
+  .fc{scroll-snap-align:center;margin:0 14px -64px;background:var(--s1);border:1px solid var(--line);border-radius:26px;position:relative;transform-origin:50% 50%;transition:transform .15s linear,filter .15s linear;box-shadow:0 18px 40px rgba(0,0,0,.18);cursor:pointer}
+  .fct{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px 11px}
+  .fcc{margin:0 10px;height:300px;border-radius:18px;overflow:hidden;position:relative;background:#000}
+  .fcc>img{width:100%;height:100%;object-fit:cover;display:block}
+  .vis{position:absolute;left:10px;top:10px;height:24px;border-radius:999px;padding:0 9px;display:flex;align-items:center;gap:5px;background:var(--p);color:#fff;font:500 10px var(--mono);text-transform:uppercase;letter-spacing:.03em}
+  .loc{position:absolute;left:10px;bottom:10px;height:28px;border-radius:999px;padding:0 11px 0 8px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:500}
+  .rx{position:absolute;right:8px;bottom:8px;display:flex;gap:5px}
+  .rx .react{background:rgba(255,255,255,.92);color:#0B0B0A;border:0}
+  .instk{position:absolute;right:10px;top:6px}
+  .fcf{display:flex;align-items:center;gap:6px;padding:11px 12px 13px 16px}
+  .plusn{height:26px;min-width:26px;border-radius:13px;background:var(--p);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;margin-left:-8px;border:2px solid var(--s1)}
+  </style>`,
+  mount: (el) => {
+    const deck = el.querySelector('#deck');
+    const paint = () => { const mid = deck.scrollTop + deck.clientHeight / 2 - 40; deck.querySelectorAll('.fc').forEach((c) => { const cm = c.offsetTop + c.offsetHeight / 2; const d = Math.max(-1.5, Math.min(1.5, (cm - mid) / (c.offsetHeight * .9))); const a = Math.abs(d); c.style.transform = `scale(${1 - .1 * Math.min(a, 1.2)})`; c.style.filter = `brightness(${1 - .4 * Math.min(a, 1)})`; c.style.zIndex = String(100 - Math.round(a * 10)); }); };
+    deck.addEventListener('scroll', () => requestAnimationFrame(paint)); setTimeout(paint, 30);
+    el.addEventListener('click', (e) => {
+      const rb = e.target.closest('[data-rsvp]');
+      if (rb) { e.stopPropagation(); const [id, v] = rb.dataset.rsvp.split('|'); state.rsvp[id] = state.rsvp[id] == v ? null : v; const c = rb.closest('.fc'); const tmp = document.createElement('div'); tmp.innerHTML = card(id); c.replaceWith(tmp.firstElementChild); paint(); if (state.rsvp[id] == 'in') toast("You're in — friends will see it."); return; }
+      const t = e.target.closest('[data-tab]'); if (t) { el.querySelectorAll('[data-tab]').forEach((b) => { b.classList.toggle('mute', b !== t); const dot = b.querySelector('.tdot'); if (dot) dot.remove(); }); t.insertAdjacentHTML('beforeend', '<i class="tdot"></i>'); return; }
+      const c = e.target.closest('.fc'); if (c && !e.target.closest('button')) go('event', { id: c.dataset.ev });
+    });
+  } };
+
+/* ---------- Filter: vibe mixer board ---------- */
+const count = () => Math.max(1, 3 + filt.vibes.length * 3 + (filt.dates.length || 5) * 2 - filt.friends * 2);
+SCREENS.filter = { label: 'Filter — vibe mixer', section: 'Feed', tag: 'new', render: () => `${statusBar()}
+  <div class="row" style="padding:6px 16px 0 20px;flex:none"><span class="dsp" style="font-size:44px">Mix your night</span><span class="sp"></span><button class="icb f" data-go="feed" aria-label="Close">${I('X', 20)}</button></div>
+  <div class="scroll" style="padding-bottom:110px">
+   <div class="row" style="padding:12px 20px 0;gap:8px"><button class="pill pg" style="height:38px;font-size:13.5px" data-toast="City search opens here.">${I('MapPin', 16)}${filt.city}${I('ChevronDown', 16)}</button><button class="pill" style="height:38px;font-size:13.5px;color:var(--pt)" data-toast="Location enabled">${I('Navigation', 15)}Near me</button></div>
+   <div class="flab" style="padding:18px 20px 8px">Tap vibes onto the board</div>
+   <div class="tray">${VIBES.map((v) => `<button class="tv ${filt.vibes.includes(v[0]) ? 'on' : ''}" data-v="${v[0]}">${SV(v[0], 38, -4)}<span>${v[1]}</span></button>`).join('')}</div>
+   <div class="board" id="board">${filt.vibes.length ? '' : '<span class="bempty">Drop vibes here — or leave it empty for everything</span>'}</div>
+   <div class="row" style="padding:16px 20px 0;align-items:stretch;gap:10px">
+     <div class="card" style="flex:1;padding:14px 16px">
+       <div class="flab">Friends going</div>
+       <div class="row" style="margin-top:8px;gap:10px"><button class="icb f" data-f="-1" aria-label="Fewer">−</button><div style="flex:1;text-align:center"><div class="dsp" id="fval" style="font-size:42px">${filt.friends ? filt.friends + '+' : 'Any'}</div></div><button class="icb f" data-f="1" aria-label="More">+</button></div>
+       <div class="dial">${Array.from({ length: 10 }, (_, k) => `<i class="${k < filt.friends ? 'on' : ''}"></i>`).join('')}</div>
+     </div>
+     <div class="card" style="width:120px;padding:14px;display:flex;flex-direction:column;justify-content:space-between"><div class="flab">With</div><div class="avs" style="margin-top:8px">${['marie', 'jonas', 'timo'].map((a) => `<img class="av" src="${AV(a)}" alt="" width="34" height="34">`).join('')}</div><div style="font-size:12.5px;color:var(--mute);margin-top:8px">Your inner circle</div></div>
+   </div>
+   <div class="flab" style="padding:18px 20px 8px">When — tap a start and an end</div>
+   <div class="tl" id="tl">${DATES.map((d, k) => `<button data-d="${k}" class="${filt.dates.includes(k) ? 'on' : ''} ${filt.dates.length == 2 && k > filt.dates[0] && k < filt.dates[1] ? 'mid' : ''}">${d}</button>`).join('')}<button data-toast="Date picker opens here.">${I('CalendarDays', 16)}</button></div>
+  </div>
+  <div class="fbar"><button class="pill po" style="height:54px;flex:1" data-reset>Reset</button><button class="pill pp" style="height:54px;flex:2;font-size:16px" data-go="feed" id="showN">Show ${count()} events</button></div>
+  <style>
+  .tray{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:0 14px}
+  .tv{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;padding:6px 0;border-radius:14px}
+  .tv.on{opacity:.35}
+  .board{margin:10px 16px 0;height:190px;border-radius:28px;border:2px dashed color-mix(in srgb,var(--p) 50%,transparent);background:var(--pSoft);position:relative;overflow:hidden}
+  .bempty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 40px;color:var(--pt);font-weight:600;font-size:14px}
+  .bs{position:absolute;display:flex;flex-direction:column;align-items:center;font:600 12px var(--ui);color:var(--pt)}
+  .dial{display:flex;gap:3px;margin-top:10px}.dial i{flex:1;height:8px;border-radius:4px;background:var(--s3)}.dial i.on{background:var(--p)}
+  .tl{display:flex;gap:6px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+  .tl button{height:44px;padding:0 14px;border-radius:14px;background:var(--s1);border:1.5px solid var(--line);font-weight:600;font-size:13.5px;white-space:nowrap;flex:none}
+  .tl button.on{background:var(--p);border-color:var(--p);color:#fff}
+  .tl button.mid{background:var(--pSoft);border-color:transparent;color:var(--pt)}
+  .fbar{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;padding:14px 16px calc(18px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);z-index:30}
+  </style>`,
+  mount: (el) => {
+    const board = el.querySelector('#board'); const POS = [[24, 22], [130, 70], [236, 24], [70, 110], [190, 116], [280, 96], [16, 120], [150, 10], [250, 140]];
+    const paintBoard = (anim) => { board.innerHTML = filt.vibes.length ? filt.vibes.map((v, k) => { const p = POS[k % POS.length]; const lab = VIBES.find((x) => x[0] == v)[1]; return `<button class="bs" data-rm="${v}" style="left:${p[0]}px;top:${p[1]}px" aria-label="Remove ${lab}">${SV(v, 52, [-8, 6, -4, 10, -6][k % 5], anim === v ? 'slap' : '')}${lab}</button>`; }).join('') : '<span class="bempty">Drop vibes here — or leave it empty for everything</span>'; el.querySelector('#showN').textContent = `Show ${count()} events`; };
+    paintBoard();
+    el.addEventListener('click', (e) => {
+      const v = e.target.closest('[data-v]'); if (v) { const k = v.dataset.v; if (!filt.vibes.includes(k)) { filt.vibes.push(k); v.classList.add('on'); paintBoard(k); } return; }
+      const rm = e.target.closest('[data-rm]'); if (rm) { filt.vibes = filt.vibes.filter((x) => x != rm.dataset.rm); el.querySelector(`[data-v="${rm.dataset.rm}"]`).classList.remove('on'); paintBoard(); return; }
+      const f = e.target.closest('[data-f]'); if (f) { filt.friends = Math.max(0, Math.min(10, filt.friends + +f.dataset.f)); el.querySelector('#fval').textContent = filt.friends ? filt.friends + '+' : 'Any'; el.querySelectorAll('.dial i').forEach((i, k) => i.classList.toggle('on', k < filt.friends)); el.querySelector('#showN').textContent = `Show ${count()} events`; return; }
+      const d = e.target.closest('[data-d]'); if (d) { const k = +d.dataset.d; if (filt.dates.length != 1) filt.dates = [k]; else filt.dates = [Math.min(filt.dates[0], k), Math.max(filt.dates[0], k)]; el.querySelectorAll('[data-d]').forEach((b) => { const j = +b.dataset.d; b.className = (filt.dates.includes(j) ? 'on ' : '') + (filt.dates.length == 2 && j > filt.dates[0] && j < filt.dates[1] ? 'mid' : ''); }); el.querySelector('#showN').textContent = `Show ${count()} events`; return; }
+      if (e.target.closest('[data-reset]')) { filt.vibes = []; filt.friends = 0; filt.dates = []; go('filter'); }
+    });
+  } };
+
+/* ---------- Roulette ---------- */
+SHEETS.roulette = { label: 'Roulette (dice)', section: 'Feed', base: 'feed', tag: 'upd', render: () => `
+  <div class="row"><div><div class="dsp" style="font-size:40px">Can't decide?</div><div class="mute" style="font-size:14px;margin-top:6px">Let the dice pick your night.</div></div><span class="sp"></span><span id="dice">${SV('dice', 80, 10)}</span></div>
+  <div id="rbox" class="card" style="margin-top:16px;min-height:300px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:16px;background:var(--bg)"><button class="pill pp" style="height:54px;padding:0 26px;font-size:16px" data-roll>${I('Dices', 20)}Roll the dice</button></div>`,
+  mount: (w) => {
+    w.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-roll]')) return;
+      const box = w.querySelector('#rbox'); const ids = FEED.slice(1); let k = 0; const dice = w.querySelector('#dice svg'); dice.style.animation = 'spin .5s linear infinite';
+      const tick = setInterval(() => { const ev = EV[ids[k++ % ids.length]]; box.innerHTML = `<img src="${A(ev.img)}" alt="" style="width:120px;height:150px;object-fit:cover;border-radius:14px"><div style="font-weight:600">${ev.short}</div><div class="meta">Rolling…</div>`; }, 110);
+      setTimeout(() => { clearInterval(tick); dice.style.animation = ''; const ev = EV.alles; box.innerHTML = `<div style="align-self:flex-start;font-weight:600;font-size:16px"><span style="color:var(--pt)">The dice say:</span> Timo is in</div><img src="${A(ev.img)}" alt="" class="pop" style="width:100%;height:210px;object-fit:cover;border-radius:18px"><div style="align-self:flex-start"><div style="font-weight:700;font-size:19px">${ev.name}</div><div class="sub">${I('CalendarDays', 15)}${ev.long} · ${ev.time} ${I('MapPin', 15)}${ev.venue}</div></div><div class="row" style="width:100%;gap:8px"><button class="pill po" style="flex:1;height:50px" data-roll>${I('RotateCw', 17)}Spin again</button><button class="pill pp" style="flex:1.2;height:50px" data-go="event" data-p='{"id":"alles"}'>${I('Check', 17, 2.6)}I am in</button></div>`; }, 1700);
+    });
+  } };
+
+/* ---------- Your note ---------- */
+SHEETS.note = { label: 'Your note (Today row)', section: 'Feed', base: 'feed', tag: 'new', render: () => `
+  <div class="dsp" style="font-size:36px">Your note</div><div class="mute" style="font-size:14px;margin-top:6px">A thought for tonight. Mutual friends see it above your face for 24 h.</div>
+  <div style="display:flex;flex-direction:column;align-items:center;margin-top:20px">
+    <div class="bub" style="position:relative;min-width:200px;min-height:56px;padding:12px 16px;border-radius:22px;background:var(--bg);border:1.5px solid var(--p);font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px"><span id="ntext">pre-drinks at mine, who's in?</span><span id="nst" style="position:absolute;right:-16px;top:-22px">${SV('spritz', 40, -8, 'slap')}</span></div>
+    <img class="av" src="${AV('nina')}" alt="" width="76" height="76" style="margin-top:14px;border:3px solid var(--p);padding:2px">
+  </div>
+  <div class="field" style="margin-top:18px"><input id="nin" value="pre-drinks at mine, who's in?" maxlength="60" aria-label="Your note"><span class="meta" id="ncount">29/60</span></div>
+  <div class="flab" style="margin:16px 0 8px">Mood</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${[['spritz', 'Drinks'], ['sneaker', 'Dancing'], ['couch', 'Chill'], ['ball', 'Sport'], ['sun', 'Day']].map((m, k) => `<button class="nm" data-m="${m[0]}" aria-pressed="${k == 0}" style="height:84px;border-radius:18px;border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:600">${SV(m[0], 34)}${m[1]}</button>`).join('')}</div>
+  <div class="row" style="margin-top:16px;padding:12px 14px;border-radius:16px;background:var(--bg)">${I('MapPin', 20)}<div style="flex:1"><div style="font-weight:600;font-size:14.5px">Where</div><div class="mute" style="font-size:12.5px">Only what you type — no GPS</div></div><button class="tog" aria-pressed="false" aria-label="Share where"></button></div>
+  <div class="row" style="margin-top:8px;padding:12px 14px;border-radius:16px;background:var(--bg)">${I('Clock', 20)}<div style="flex:1;font-weight:600;font-size:14.5px">Show until</div><span class="pill ppt" style="height:30px;font:500 12.5px var(--mono)">02:00</span></div>
+  <button class="pill pp" style="width:100%;height:54px;margin-top:16px;font-size:16px" data-close data-toast="">Share with my circle</button>
+  <style>.nm[aria-pressed="true"]{background:var(--p);border-color:var(--p)!important;color:#fff}</style>`,
+  mount: (w) => {
+    const inp = w.querySelector('#nin'); inp.addEventListener('input', () => { w.querySelector('#ntext').textContent = inp.value || 'Your thoughts go here…'; w.querySelector('#ncount').textContent = inp.value.length + '/60'; });
+    w.addEventListener('click', (e) => { const m = e.target.closest('[data-m]'); if (!m) return; w.querySelectorAll('[data-m]').forEach((b) => b.setAttribute('aria-pressed', b === m)); w.querySelector('#nst').innerHTML = SV(m.dataset.m, 40, -8, 'slap'); });
+  } };
+
+/* ---------- Notifications ---------- */
+const nrow = (img, icon, txt, time, act, unread) => `<div class="row" style="align-items:flex-start;padding:12px 4px;${unread ? '' : 'opacity:.8'}"><span style="position:relative;flex:none"><img class="av" src="${AV(img)}" alt="" width="46" height="46"><span style="position:absolute;right:-4px;bottom:-4px;width:22px;height:22px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--sheet)">${I(icon, 12, 2.4)}</span></span><div style="flex:1"><div style="font-size:14.5px;line-height:1.35">${txt}</div><div class="meta" style="margin-top:4px">${time}</div>${act ? `<div class="row" style="gap:8px;margin-top:10px">${act}</div>` : ''}</div>${unread ? '<i style="width:8px;height:8px;border-radius:50%;background:var(--p);margin-top:6px"></i>' : ''}</div>`;
+SHEETS.notifs = { label: 'Notifications', section: 'Feed', base: 'feed', tag: 'upd', render: () => `
+  <div class="row"><span class="dsp" style="font-size:34px">Notifications</span><span class="pill pp" style="height:26px;font-size:12px;padding:0 10px">3 new</span><span class="sp"></span><button class="mute" style="font-weight:600;font-size:13px" data-toast="Cleared">Clear all</button></div>
+  <div class="meta" style="margin-top:14px">New</div>
+  ${nrow('marie', 'Mail', "<b>Marie</b> invited you to <b>Supperclub at Marie's</b>", '2 min', `<button class="pill pp" style="height:34px;font-size:13px;padding:0 14px">${I('Check', 15, 2.6)}I'm in</button><button class="pill pg" style="height:34px;font-size:13px;padding:0 14px">Maybe</button>`, 1)}
+  ${nrow('timo', 'UserPlus', '<b>Timo</b> started following you', '1 h', '<button class="pill po" style="height:34px;font-size:13px;padding:0 14px">Follow back</button>', 1)}
+  ${nrow('jonas', 'Euro', '<b>Jonas</b> added <b>€12</b> to the Razzia tab', '3 h', `<button class="pill pp" style="height:34px;font-size:13px;padding:0 14px" data-go="tab">Settle up</button>`, 1)}
+  <div class="meta" style="margin-top:12px">Earlier</div>
+  ${nrow('nina', 'Archive', 'Your capsule from <b>Razzia</b> is open — 23 photos inside', 'Yesterday')}
+  ${nrow('marie', 'BellRing' in LUCIDE ? 'BellRing' : 'Bell', '<b>Marie</b> sealed a pact: “I\'ll go if you go.”', 'Mon')}` };
+})();
+
+// EVENT PAGE (ticket sections) + sticker board + live radar (compass)
+(() => {
+const ticket = (inner, st = '') => `<section class="tk" style="${st}">${inner}</section>`;
+const WORDS = [['hi there!', '#FFE14D'], ['hi Mark', '#FF5FA8'], ['same time next week', '#3B6CFF'], ['afters?', '#D8FF3D'], ['iconique', '#fff']];
+
+const stickerLayer = (id) => (state.sticks[id] || []).map(([s, x, y, r], k) => s.startsWith('w:') ? `<span class="wtag ${k == (state.sticks[id].length - 1) && state.justStuck ? 'slap' : ''}" style="left:${x}px;top:${y}px;--r:${r}deg;transform:rotate(${r}deg);background:${(WORDS.find((w) => w[0] == s.slice(2)) || [0, '#fff'])[1]}">${s.slice(2)}</span>` : `<span class="hs" style="left:${x}px;top:${y}px">${SV(s, 62, r, k == (state.sticks[id].length - 1) && state.justStuck ? 'slap' : '')}</span>`).join('');
+
+SCREENS.event = { label: 'Event page', section: 'Event', tag: 'upd', demo: { id: 'razzia' }, render: (p) => { const id = p.id || 'razzia'; const e = EV[id]; const r = state.rsvp[id];
+  return `<div class="scroll" style="padding-bottom:140px">
+  <div class="hero"><img src="${A(e.img)}" alt="">${stickerLayer(id)}
+    <div class="htop">${statusBar(1)}<div class="row" style="padding:0 14px"><button class="icb glassb" data-go="feed" aria-label="Back">${I('ChevronLeft', 20, 2.4)}</button><span class="sp"></span><button class="icb glassb" data-sheet="stick" data-p='{"id":"${id}"}' aria-label="Add a sticker">${I('Smile', 20)}</button><button class="icb glassb" data-toast="Share sheet opens (same as today)." aria-label="Share">${I('Share2', 19)}</button><button class="icb glassb" data-toast="More: edit, duplicate, delete (same as today)." aria-label="More">${I('MoreHorizontal', 20)}</button></div></div>
+    <button class="stickbtn" data-sheet="stick" data-p='{"id":"${id}"}'>${I('Plus', 15, 2.6)}Stick something</button>
+  </div>
+  ${ticket(`<div class="meta" style="color:inherit;opacity:.7;text-align:center">${e.long} · ${e.time} · ${e.venue}</div><h1 class="dsp" style="font-size:40px;text-align:center;margin:10px 0 0">${e.name}</h1><div class="row" style="justify-content:center;margin-top:14px;gap:6px"><span class="chipk">${I(e.vis == 'Public' ? 'Eye' : 'Users', 13, 2.4)}${e.vis}</span><span class="chipk">${SV(e.vibe, 22)}${({ disco: 'club', pizza: 'dinner', palette: 'art', tent: 'festival', popper: 'party', vinyl: 'music' })[e.vibe]}</span>${r == 'in' ? `<span class="chipk" style="background:#7C3BED;color:#fff;border:0">${I('Check', 13, 2.8)}You're in</span>` : ''}</div>`, 'margin-top:-34px;position:relative;z-index:2')}
+  ${ticket(`<div class="tkh">About the event</div><p class="ab">Four years of Razzia. Keryda live at midnight, then DJ Afropunk and Gabbanalli until late. Dress loud, arrive early, the line gets long after 1.</p><button class="rm">Read more</button><div class="hr"></div><div class="row"><img class="av" src="${AV('marie')}" alt="" width="40" height="40"><div style="flex:1"><div style="font-weight:700">Marie Klein</div><div style="font-size:12.5px;opacity:.7">Host · added from a screenshot</div></div><button class="fol">Follow +</button></div>`)}
+  ${ticket(`<div class="tkh">Who's in</div><div class="row" style="justify-content:space-between"><div class="avs">${[...e.going, 'nina'].map((a) => `<img class="av" src="${AV(a)}" alt="" width="44" height="44" style="border-color:var(--cream)">`).join('')}<span class="plusb">+${e.extra}</span></div><div style="text-align:right"><div class="dsp" style="font-size:34px">${e.count}</div><div style="font-size:12px;opacity:.7">going · 3 maybe</div></div></div>
+     <div class="pact">${SV('seal', 44, -8)}<div style="flex:1"><div style="font-weight:700">“I'll go if you go.”</div><div style="font-size:12.5px;opacity:.75">Pact · Jonas · 2 of 3 in</div></div><button class="pill pp" style="height:34px;font-size:13px;padding:0 14px" data-toast="Pact joined">Join</button></div>
+     <div class="row" style="gap:6px;margin-top:12px;flex-wrap:wrap">${reactPills(id, 1)}<button class="react" data-sheet="stick" data-p='{"id":"${id}"}' style="padding:0 12px">${I('Plus', 16, 2.6)}</button></div>`)}
+  ${ticket(`<div class="tkh">Where</div><div style="font-weight:700;font-size:17px">${e.venue}</div><div style="font-size:13px;opacity:.7;margin-top:2px">Tübinger Str. 22 · ${e.area}, Stuttgart</div>
+     <div class="map"><svg viewBox="0 0 320 140" width="100%" height="140" aria-hidden="true"><rect width="320" height="140" fill="#E9E3D2"/><path d="M0 92 C80 80 120 120 200 98 S300 70 320 76" stroke="#BFD7EA" stroke-width="14" fill="none"/><path d="M40 0 L70 140 M150 0 L132 140 M0 40 L320 30 M230 0 L260 140" stroke="#fff" stroke-width="7"/><path d="M0 120 L320 112" stroke="#fff" stroke-width="5"/></svg><span class="mpin">${SV('pin', 40)}</span><button class="mbtn" data-toast="Opens Maps">${I('Navigation', 14, 2.4)}Directions</button></div>
+     <div class="row" style="gap:6px;margin-top:10px">${['f3.jpg', 'p01.jpg', 'f4.jpg'].map((f) => `<img src="${A(f)}" alt="" style="flex:1;height:84px;min-width:0;object-fit:cover;border-radius:12px">`).join('')}</div>`)}
+  ${e.lineup ? ticket(`<div class="tkh">Line-up</div>${e.lineup.map((n, k) => `<div class="row" style="padding:8px 0;${k ? 'border-top:1px dashed rgba(0,0,0,.18)' : ''}"><span style="width:38px;height:38px;border-radius:50%;background:#17140F;color:#F6F1E4;display:flex;align-items:center;justify-content:center">${I('Music', 17)}</span><div style="flex:1"><div style="font-weight:700">${n}</div><div style="font-size:12px;opacity:.7">${['00:00', '01:30', '03:00'][k]}</div></div><button class="fol">Follow +</button></div>`).join('')}`) : ''}
+  ${ticket(`<div class="tkh">On the night</div>
+     <button class="nrow" data-go="radar" data-p='{"id":"${id}"}'><span class="nic" style="background:#0B0B0A;color:#D8FF3D">${I('Compass', 20)}</span><span style="flex:1;text-align:left"><b>Live radar</b><br><span style="font-size:12.5px;opacity:.7">3 there · 2 on the way</span></span>${I('ChevronRight', 18)}</button>
+     <button class="nrow" data-go="tab" data-p='{"id":"${id}"}'><span class="nic" style="background:#7C3BED;color:#fff">${I('Euro', 20)}</span><span style="flex:1;text-align:left"><b>The tab</b><br><span style="font-size:12.5px;opacity:.7">€126 so far · your share €14</span></span>${I('ChevronRight', 18)}</button>
+     <button class="nrow" data-toast="Bring list (same as today)."><span class="nic" style="background:#FFE14D;color:#17140F">${I('Package', 20)}</span><span style="flex:1;text-align:left"><b>Bring what?</b><br><span style="font-size:12.5px;opacity:.7">Speaker · Ice · Cups — 1 open</span></span>${I('ChevronRight', 18)}</button>
+     <button class="nrow" data-go="capsule"><span class="nic" style="background:#F6F1E4;border:1.5px solid #17140F">${SV('crystal', 26)}</span><span style="flex:1;text-align:left"><b>Message to the future</b><br><span style="font-size:12.5px;opacity:.7">Seal a prediction before the night</span></span>${I('ChevronRight', 18)}</button>`)}
+  ${ticket(`<div class="tkh">Next from Romantica</div><div class="row" style="gap:12px"><img src="${A('fl_midnight.jpg')}" alt="" style="width:76px;height:96px;object-fit:cover;border-radius:12px"><div style="flex:1"><div style="font-weight:700">Midnight Service</div><div style="font-size:12.5px;opacity:.75;margin-top:4px">Sat 31 Oct · Trude<br>From €12</div><button class="rm" style="margin-top:6px">Details</button></div></div>`)}
+  </div>
+  <div class="tbar"><div><div class="dsp" style="font-size:28px">${e.price || 'Free'}</div><div style="font-size:11.5px;opacity:.7">${e.price ? 'Card checkout · auto-RSVP' : e.count + ' going · 3 maybe'}</div></div><span class="sp"></span>
+    <button class="pill ${r == 'maybe' ? 'ppt' : 'pg'}" data-ersvp="maybe" style="height:50px;padding:0 16px">${I('HelpCircle', 18)}Maybe</button><button class="pill pp" data-ersvp="in" style="height:50px;padding:0 18px">${I('Check', 18, 2.6)}${r == 'in' ? "You're in" : e.price ? 'Buy & in' : "I'm in"}</button></div>
+  <style>
+  .hero{position:relative;height:430px;background:#000;overflow:hidden}
+  .hero>img{width:100%;height:100%;object-fit:cover;display:block}
+  .htop{position:absolute;left:0;right:0;top:0;background:linear-gradient(rgba(0,0,0,.45),transparent);color:#fff}
+  .glassb{background:rgba(0,0,0,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;margin-left:6px}
+  .stickbtn{position:absolute;right:14px;bottom:48px;height:34px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.9);color:#0B0B0A;font-weight:700;font-size:12.5px;display:flex;align-items:center;gap:5px}
+  .hs{position:absolute}
+  .wtag{position:absolute;font:20px var(--dsp);text-transform:uppercase;padding:6px 10px 5px;border:3px solid #fff;border-radius:8px;color:#0B0B0A;box-shadow:0 3px 8px rgba(0,0,0,.3);white-space:nowrap}
+  .tk{position:relative;margin:10px 12px 0;background:var(--cream);color:var(--creamInk);border-radius:22px;padding:20px 20px 18px;-webkit-mask:radial-gradient(circle 11px at 0 50%,transparent 10px,#000 11px) left/51% 100% no-repeat,radial-gradient(circle 11px at 100% 50%,transparent 10px,#000 11px) right/51% 100% no-repeat;mask:radial-gradient(circle 11px at 0 50%,transparent 10px,#000 11px) left/51% 100% no-repeat,radial-gradient(circle 11px at 100% 50%,transparent 10px,#000 11px) right/51% 100% no-repeat}
+  .tkh{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;opacity:.65;text-align:center;margin-bottom:12px}
+  .ab{margin:0;font-size:16.5px;line-height:1.45;font-weight:500;text-align:center;text-wrap:pretty}
+  .rm{display:block;margin:10px auto 0;font:700 12px var(--ui);text-transform:uppercase;letter-spacing:.04em;text-decoration:underline;text-underline-offset:3px}
+  .hr{border-top:1.5px dashed currentColor;opacity:.25;margin:16px -4px}
+  .fol{height:32px;padding:0 12px;border-radius:999px;border:1.5px solid currentColor;font:700 12px var(--ui);text-transform:uppercase}
+  .chipk{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 11px 0 8px;border-radius:999px;border:1.5px solid currentColor;font-size:12.5px;font-weight:600}
+  .plusb{height:44px;min-width:44px;border-radius:22px;background:#7C3BED;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:-8px;border:2px solid var(--cream)}
+  .pact{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border-radius:18px;background:rgba(124,59,237,.12)}
+  .map{position:relative;margin-top:12px;border-radius:16px;overflow:hidden}
+  .mpin{position:absolute;left:50%;top:22px;margin-left:-20px}
+  .mbtn{position:absolute;right:8px;bottom:8px;height:30px;padding:0 11px;border-radius:999px;background:#17140F;color:#F6F1E4;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px}
+  .nrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 0;border-top:1px dashed rgba(127,127,127,.35);font-size:14.5px;color:inherit}
+  .nrow:first-of-type{border-top:0}
+  .nic{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+  .tbar{position:absolute;left:10px;right:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:8px;padding:14px 12px 12px 18px;background:var(--cream);color:var(--creamInk);border-radius:20px;box-shadow:0 14px 36px rgba(0,0,0,.3);z-index:40;-webkit-mask:linear-gradient(#000,#000) 0 8px/100% calc(100% - 8px) no-repeat,conic-gradient(from -45deg at 50% 8px,#000 90deg,transparent 0) 0 0/16px 8px repeat-x;mask:linear-gradient(#000,#000) 0 8px/100% calc(100% - 8px) no-repeat,conic-gradient(from -45deg at 50% 8px,#000 90deg,transparent 0) 0 0/16px 8px repeat-x}
+  .tbar .pg{background:rgba(127,127,127,.18);color:inherit}
+  </style>`; },
+  mount: (el, p) => { const id = p.id || 'razzia'; state.justStuck = false;
+    el.addEventListener('click', (e) => { const b = e.target.closest('[data-ersvp]'); if (!b) return; const v = b.dataset.ersvp; state.rsvp[id] = state.rsvp[id] == v ? null : v; go('event', { id }); if (state.rsvp[id] == 'in') toast("You're in — friends will see it."); });
+  } };
+
+/* ---------- Sticker board ---------- */
+SHEETS.stick = { label: 'Stick something (sticker board)', section: 'Event', base: 'event', tag: 'new', demo: { id: 'razzia' }, render: () => `
+  <div class="dsp" style="font-size:34px">Stick something</div><div class="mute" style="font-size:14px;margin-top:6px">Friends going see what you stick on the flyer. Tap to place it.</div>
+  <div class="flab" style="margin:16px 0 8px">Stickers</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${['in', 'flame', 'heart', 'popper', 'disco', 'spritz', 'eyes', 'skull', 'crown', 'spark', 'moon', 'cam', 'burst', 'hey', 'plus1'].map((s) => `<button data-st="${s}" style="height:64px;border-radius:16px;background:var(--bg);display:flex;align-items:center;justify-content:center">${SV(s, 42, -4)}</button>`).join('')}</div>
+  <div class="flab" style="margin:16px 0 8px">Words</div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px">${WORDS.map((w, k) => `<button data-st="w:${w[0]}" class="wtag" style="position:static;background:${w[1]};transform:rotate(${[-4, 3, -2, 5, -3][k]}deg)">${w[0]}</button>`).join('')}</div>`,
+  mount: (w, p) => { w.addEventListener('click', (e) => { const b = e.target.closest('[data-st]'); if (!b) return; const id = (p && p.id) || state.params.id || 'razzia'; const L = state.sticks[id] = state.sticks[id] || []; L.push([b.dataset.st, 30 + Math.round(Math.random() * 230), 90 + Math.round(Math.random() * 230), Math.round(Math.random() * 24 - 12)]); state.justStuck = true; closeSheet(); go('event', { id }); state.justStuck = false; toast('Stuck — friends going can see it'); }); } };
+
+/* ---------- Live radar (compass) ---------- */
+SCREENS.radar = { label: 'Live radar — compass', section: 'Event', tag: 'upd', demo: { id: 'razzia' }, render: (p) => { const e = EV[p.id || 'razzia'];
+  const dots = [['jonas', 70, 150, 'there', '#3BD47E'], ['marie', 248, 128, 'there', '#3BD47E'], ['nina', 196, 238, 'there', '#3BD47E'], ['timo', 300, 210, 'way', '#FFB21F'], ['ben', 56, 232, 'way', '#FFB21F']];
+  return `<div style="position:absolute;inset:0;background:#0B0B0A;color:#F4F3EE;display:flex;flex-direction:column">
+  ${statusBar(1)}<div class="row" style="padding:0 14px"><button class="icb" style="background:#242422" data-go="event" data-p='{"id":"${p.id || 'razzia'}"}' aria-label="Back">${I('ChevronLeft', 20, 2.4)}</button><span class="sp"></span><span class="meta" style="color:#8F8E88">Live radar · ${e.short}</span><span class="sp"></span><button class="icb" style="background:#242422" data-toast="Only friends going see this. You can leave the radar anytime.">${I('Info', 20)}</button></div>
+  <div style="position:relative;height:400px;margin-top:6px">
+   <svg viewBox="0 0 390 400" width="390" height="400" style="position:absolute;left:50%;margin-left:-195px" aria-hidden="true">
+    <defs><radialGradient id="cone" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#7C3BED" stop-opacity=".55"/><stop offset="1" stop-color="#7C3BED" stop-opacity="0"/></radialGradient></defs>
+    ${[170, 132, 96, 62, 32].map((rx, k) => `<ellipse cx="195" cy="200" rx="${rx}" ry="${rx * .5}" fill="none" stroke="${k ? '#2F2F2C' : '#7C3BED'}" stroke-width="${k ? 1.4 : 2}"/>`).join('')}
+    ${Array.from({ length: 72 }, (_, k) => { const a = k * Math.PI / 36; const x1 = 195 + 170 * Math.cos(a), y1 = 200 + 85 * Math.sin(a), x2 = 195 + (k % 6 ? 160 : 150) * Math.cos(a), y2 = 200 + (k % 6 ? 80 : 75) * Math.sin(a); return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${k % 6 ? '#3a3a37' : '#B49BFF'}" stroke-width="${k % 6 ? 1 : 2}"/>`; }).join('')}
+    ${[['N', 195, 106], ['E', 375, 204], ['S', 195, 300], ['W', 15, 204]].map((c) => `<text x="${c[1]}" y="${c[2]}" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#B49BFF">${c[0]}</text>`).join('')}
+    <g style="transform-origin:195px 200px;animation:spin 6s linear infinite"><path d="M195 200 L150 120 A90 90 0 0 1 240 120 Z" fill="url(#cone)" transform="scale(1 .5) translate(0 200)"/></g>
+    <line x1="195" y1="200" x2="195" y2="120" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+   </svg>
+   <span style="position:absolute;left:50%;top:166px;margin-left:-22px">${SV('pin', 44)}</span>
+   ${dots.map((d, k) => `<span class="rdot pop" style="left:${d[1]}px;top:${d[2]}px;animation-delay:${200 + k * 120}ms"><span style="position:absolute;left:50%;bottom:6px;width:2px;height:${30 - (d[2] - 120) / 8}px;margin-left:-1px;background:${d[4]}"></span>${d[0] == 'ben' ? `<span class="rav" style="background:#FF5FA8;color:#0B0B0A">B</span>` : `<img class="rav" src="${AV(d[0])}" alt="">`}<i style="background:${d[4]}"></i></span>`).join('')}
+  </div>
+  <div style="text-align:center;margin-top:-10px"><div class="dsp" style="font-size:34px">Jonas · 400 m NE</div><div class="row" style="justify-content:center;gap:8px;margin-top:12px"><span class="pill" style="height:34px;background:#fff;color:#0B0B0A;font-size:13.5px">${I('MapPin', 15, 2.4)}3 there</span><span class="pill" style="height:34px;background:#242422;font-size:13.5px">${I('Footprints', 15)}2 on the way</span><span class="pill" style="height:34px;background:#242422;font-size:13.5px">1 home</span></div></div>
+  <div class="row" style="gap:8px;padding:22px 14px 0">${[['MapPin', "I'm there", 1], ['Navigation', 'On the way'], ['Home' in LUCIDE ? 'Home' : 'Moon', 'Still home']].map((b) => `<button class="pill" data-rstat style="flex:1;height:54px;flex-direction:column;gap:2px;font-size:12.5px;border-radius:18px;${b[2] ? 'background:#7C3BED;color:#fff' : 'background:#242422;color:#F4F3EE'}">${I(b[0], 18)}${b[1]}</button>`).join('')}</div>
+  <div class="mute" style="text-align:center;font-size:12px;margin-top:12px;color:#8F8E88">Shows on the inner ring · only friends going see you</div>
+  <style>.rdot{position:absolute;transform:translate(-50%,-100%)}.rav{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;object-fit:cover;border:2.5px solid #0B0B0A;box-shadow:0 0 0 2px currentColor;font-weight:700;position:relative;top:-34px}.rdot i{position:absolute;left:50%;bottom:-4px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%}</style>
+  </div>`; },
+  mount: (el) => { el.addEventListener('click', (e) => { const b = e.target.closest('[data-rstat]'); if (!b) return; el.querySelectorAll('[data-rstat]').forEach((x) => { const on = x === b; x.style.background = on ? '#7C3BED' : '#242422'; x.style.color = on ? '#fff' : '#F4F3EE'; }); }); } };
+})();
+
+// ADD: entry with fanned screenshots, the form, and the event art studio (Sleeve-style)
+(() => {
+const art = { bg: 'purple', stickers: ['pizza', 'spritz'], text: 'bold', shadow: 'subtle', light: 'spot', base: 'wood', wood: 'mahogany', photo: false };
+const BGS = { purple: 'linear-gradient(140deg,#7C3BED,#B44FE0)', pink: 'linear-gradient(140deg,#FF5FA8,#FF9F6B)', night: 'linear-gradient(140deg,#0B0B0A,#3A1C78)', lime: 'linear-gradient(140deg,#D8FF3D,#7EE787)', sky: 'linear-gradient(140deg,#3B6CFF,#7FD3FF)' };
+const WOODS = { maple: ['#F2CF95', '#D9A964'], mahogany: ['#D9824A', '#9C4A22'], walnut: ['#8A5532', '#4E2C17'] };
+
+const artFace = (size) => `<div class="artf" style="width:${size}px;height:${size}px;background:${art.photo ? `url('${A('f2.jpg')}') center/cover` : BGS[art.bg]}">
+  ${art.stickers.map((s, k) => `<span style="position:absolute;left:${[8, 52, 30][k % 3]}%;top:${[10, 22, 50][k % 3]}%">${SV(s, size * .3, [-12, 10, -4][k % 3])}</span>`).join('')}
+  ${art.text != 'none' ? `<span class="artt" style="font-family:${art.text == 'bold' ? 'var(--dsp)' : 'var(--ui)'};font-weight:${art.text == 'bold' ? 400 : 700};font-size:${size * (art.text == 'bold' ? .17 : .12)}px;text-transform:${art.text == 'bold' ? 'uppercase' : 'none'}">Supperclub</span>` : ''}
+  ${art.light == 'spot' ? '<i class="lspot"></i>' : art.light == 'glare' ? '<i class="lglare"></i>' : ''}
+</div>`;
+const STUDIO_CSS = `<style>
+  .pv{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:270px;padding-bottom:6px;border-radius:24px;background:radial-gradient(120% 90% at 20% 10%,#A98BFF 0%,transparent 55%),radial-gradient(120% 90% at 90% 90%,#D8FF3D 0%,transparent 50%),radial-gradient(100% 100% at 80% 20%,#FF5FA8 0%,transparent 55%),#3B2A7A}
+  .pvin{position:relative;z-index:2;margin-bottom:-14px}
+  .artf{position:relative;border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+  .artt{position:relative;z-index:2;color:#fff;padding:0 8px 12px;line-height:.9;text-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .lspot{position:absolute;inset:0;background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.55),transparent 45%);mix-blend-mode:screen}
+  .lglare{position:absolute;inset:-20%;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.55) 48%,transparent 56%)}
+  .base{height:30px;border-radius:5px;box-shadow:0 14px 24px rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.35)}
+  .pvwrap{margin:4px 16px 0;flex:none}
+  .pvcap{text-align:center;font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:8px 0 2px}
+  .sth{font-weight:700;font-size:15px;margin:16px 4px 8px}
+  .tl3{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:10px}
+  .ot{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .otf{width:100%;aspect-ratio:1.15;border-radius:14px;background:var(--s2);border:3px solid transparent;display:flex;align-items:center;justify-content:center;color:var(--mute)}
+  .ot[aria-pressed="true"] .otf{border-color:var(--p);background:var(--pSoft)}
+  .otl{font-size:12.5px;font-weight:600;padding:2px 8px;border-radius:999px}
+  .ot[aria-pressed="true"] .otl{background:var(--p);color:#fff}
+  .sw{width:38px;height:38px;border-radius:10px;display:block}
+  .sq{width:36px;height:36px;border-radius:9px;background:#fff;display:block}
+  </style>`;
+const SH = { none: 'none', subtle: '0 10px 22px rgba(0,0,0,.25)', regular: '0 18px 34px rgba(0,0,0,.35)', deep: '0 30px 50px rgba(0,0,0,.5)' };
+const preview = (size = 210) => { const w = WOODS[art.wood];
+  const base = art.base == 'none' ? '' : `<div class="base" style="width:${size + 40}px;background:${art.base == 'wood' ? `repeating-linear-gradient(92deg,rgba(0,0,0,.08) 0 2px,transparent 2px 9px),linear-gradient(${w[0]},${w[1]})` : art.base == 'metal' ? 'linear-gradient(#F2F2F2,#9EA3A8)' : 'linear-gradient(#FFFFFF,#E4E2DB)'}"></div>`;
+  return `<div class="pv"><div class="pvin" style="filter:drop-shadow(${SH[art.shadow] == 'none' ? '0 0 0 transparent' : SH[art.shadow].replace(/,\s*$/, '')})">${artFace(size)}</div>${base}</div>`; };
+
+/* ---------- entry ---------- */
+SCREENS.add = { label: 'Add — drop flyers', section: 'Add', tag: 'upd', nav: 'add', render: () => `${statusBar()}${header()}
+  <div class="scroll">
+  <div class="dsp" style="font-size:44px;padding:4px 20px 0">Add a plan</div>
+  <div class="seg" style="margin:14px 16px 0"><button data-seg aria-pressed="true">${I('Camera', 17)}Photo</button><button data-seg aria-pressed="false" data-toast="Paste a link — same flow as today.">${I('Link', 17)}URL</button><button data-seg aria-pressed="false" data-go="addform">${I('PenTool', 17)}Manual</button></div>
+  <div class="dz">
+    <div class="dsp" style="font-size:40px;text-align:center;color:var(--pt)">Add flyers</div>
+    <div class="fan">
+      <button class="fanc" data-go="addform" data-p='{"from":"midnight"}' style="transform:rotate(-14deg) translate(-96px,22px)"><img src="${A('fl_midnight.jpg')}" alt="Midnight Service screenshot"></button>
+      <button class="fanc" data-go="addform" data-p='{"from":"queer"}' style="transform:rotate(12deg) translate(96px,22px)"><img src="${A('fl_queer.jpg')}" alt="Queerfeminist Night screenshot"></button>
+      <button class="fanplus" data-toast="Opens your photos — pick up to 10 screenshots.">${I('Plus', 54, 2.2)}</button>
+    </div>
+  </div>
+  <p style="margin:14px 22px 0;font-size:15px;line-height:1.45"><b>Fastest way in.</b> <span class="mute">Drop a flyer or screenshot and the AI fills the event out for you — drop several and each becomes its own event.</span></p>
+  <div class="flab" style="padding:18px 20px 8px">Recent screenshots · tap to import</div>
+  <div class="row" style="gap:8px;padding:0 16px;overflow-x:auto;scrollbar-width:none">${['fl_alles.jpg', 'fl_desterradxs.jpg', 'fl_razzia.jpg', 'f3.jpg', 'f4.jpg'].map((f) => `<button data-go="addform" style="flex:none;width:76px;height:118px;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><img src="${A(f)}" alt="" style="width:100%;height:100%;object-fit:cover"></button>`).join('')}</div>
+  <div class="card" style="margin:16px 16px 0;padding:16px"><div class="flab" style="margin-bottom:10px">How it works</div>${[['Drop the flyer', 'A poster, a story screenshot, a group-chat invite — anything.'], ['AI reads it', 'Title, date, time, venue and vibe are detected automatically.'], ['Review & post', 'Tweak anything that looks off, then create — solo or in a batch.']].map((s, i) => `<div class="row" style="align-items:flex-start;padding:7px 0"><span class="dsp" style="font-size:30px;color:var(--pt);width:20px">${i + 1}</span><div><div style="font-weight:700;font-size:15px">${s[0]}</div><div class="mute" style="font-size:13px;margin-top:2px">${s[1]}</div></div></div>`).join('')}</div>
+  </div>${nav('add')}
+  <style>
+  .dz{margin:16px 16px 0;border:2.5px dashed var(--line2);border-radius:30px;padding:22px 0 0;overflow:hidden}
+  .fan{position:relative;height:200px;display:flex;justify-content:center;align-items:flex-end}
+  .fanc{position:absolute;bottom:-20px;width:136px;height:180px;border-radius:18px;overflow:hidden;border:4px solid var(--s1);box-shadow:0 14px 30px rgba(0,0,0,.25)}
+  .fanc img{width:100%;height:100%;object-fit:cover}
+  .fanplus{position:relative;z-index:2;width:140px;height:186px;margin-bottom:-24px;border-radius:24px;background:var(--s3);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px rgba(0,0,0,.25)}
+  </style>` };
+
+/* ---------- form ---------- */
+const VIB = [['popper', 'party'], ['cake', 'birthday'], ['croissant', 'brunch'], ['pizza', 'dinner'], ['spritz', 'drinks'], ['vinyl', 'concert'], ['disco', 'club'], ['tent', 'festival'], ['popcorn', 'cinema'], ['ball', 'sports'], ['sun', 'day event']];
+const sec = (icon, label, body, right = '') => `<div class="card" style="margin:10px 16px 0;padding:16px"><div class="row" style="gap:7px;margin-bottom:12px"><span style="color:var(--pt)">${I(icon, 16)}</span><span class="flab" style="color:var(--ink)">${label}</span><span class="sp"></span>${right}</div>${body}</div>`;
+const fld = (k, v, icon, ph) => `<div class="field" style="flex-direction:column;align-items:stretch;justify-content:center;gap:0;padding:8px 14px"><span class="flab">${k}</span><span class="row" style="justify-content:space-between;font-weight:600;font-size:15.5px;margin-top:2px;${ph ? 'color:var(--mute);font-weight:500' : ''}">${v}${icon ? I(icon, 17, 2, 'color:var(--mute)') : ''}</span></div>`;
+SCREENS.addform = { label: 'Add — the form', section: 'Add', tag: 'old', render: () => `${statusBar()}${back('New plan', 'add')}
+  <div class="scroll" style="padding-bottom:40px">
+  ${sec('Image', 'Event art', `<button data-go="studio" style="display:block;width:100%">${preview(170)}</button><div class="row" style="gap:8px;margin-top:12px"><button class="pill pp" style="flex:1;height:44px" data-go="studio">${I('Palette', 17)}Design the art</button><button class="pill pg" style="flex:1;height:44px" data-toast="Pick a photo (same as today).">${I('Image', 17)}Use a photo</button></div>`)}
+  ${sec('Tag', 'The basics', fld('Event name*', "Supperclub at Marie's"))}
+  ${sec('CalendarDays', 'When & where', `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${fld('Start date*', 'Oct 22, 2026', 'CalendarDays')}${fld('End date', 'Date', 'CalendarDays', 1)}${fld('Start time', '8:00 PM', 'Clock')}${fld('End time', 'End', 'Clock', 1)}</div><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${fld('Venue / address', "Marie's place, Westend")}${fld('City*', 'Stuttgart', 'MapPin')}</div>`)}
+  ${sec('Sparkles', 'Vibe', `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${VIB.map((v) => `<button class="vt" aria-pressed="${v[1] == 'dinner'}" data-vt>${SV(v[0], 34, -5)}${v[1]}</button>`).join('')}</div>`)}
+  ${sec('FileText', 'Description', `<div class="field" style="min-height:90px;align-items:flex-start;padding:12px 14px;font-size:15px;line-height:1.4">Pasta, natural wine and one long table. Bring your best story from this week.</div><div class="row" style="justify-content:flex-end;gap:8px;margin-top:10px"><button class="pill ppt" style="height:36px;font-size:13px">${I('Sparkles', 15)}Generate</button><button class="pill pg" style="height:36px;font-size:13px">${I('PenTool', 15)}Improve</button></div>`, '<span class="mute" style="font-size:12px">optional</span>')}
+  ${sec('Lock', 'Who can see it', `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${[['Eye', 'Public'], ['Users', 'Circle', 1], ['Lock', 'List'], ['EyeOff', 'Ghost']].map((x) => `<button class="vt" style="height:64px" aria-pressed="${!!x[2]}" data-vt>${I(x[0], 20)}${x[1]}</button>`).join('')}</div><div class="mute" style="font-size:13px;margin-top:10px"><b style="color:var(--ink)">Circle</b> — Visible only to your mutual friends. Won't appear on the public feed.</div>`)}
+  ${sec('Users', 'Who should be in', `${['marie', 'jonas', 'timo', 'nina'].map((a, k) => `<div class="row" style="padding:7px 0"><img class="av" src="${AV(a)}" alt="" width="36" height="36"><span style="flex:1;font-weight:600">${F[a]}</span><span style="width:24px;height:24px;border-radius:50%;${k < 2 ? 'background:var(--p);color:#fff' : 'border:2px solid var(--line2)'};display:flex;align-items:center;justify-content:center">${k < 2 ? I('Check', 14, 3) : ''}</span></div>`).join('')}`, '<span style="font-size:12.5px;color:var(--pt);font-weight:700">2 selected</span>')}
+  ${sec('Users', 'Co-host', `<div class="field" style="color:var(--mute);font-size:14px">${I('Search', 17)}Search friends to add as co-host</div>`, '<span class="mute" style="font-size:12px">optional</span>')}
+  ${sec('Package', 'Bring what?', `<div class="mute" style="font-size:13px">Let attendees claim items to bring (snacks, speaker, ball…)</div><div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px">${['Wine ×', 'Bread ×', '+ Speaker', '+ Ice'].map((x, k) => `<span class="pill ${k < 2 ? 'pp' : 'po'}" style="height:34px;font-size:13px;padding:0 12px">${x}</span>`).join('')}</div>`, '<button class="tog" aria-pressed="true" aria-label="Bring list"></button>')}
+  ${sec('Check', 'Your RSVP', `<div class="seg p"><button data-seg aria-pressed="false">${I('HelpCircle', 16)}Maybe</button><button data-seg aria-pressed="true">${I('Check', 16, 2.6)}I am in</button></div>`)}
+  <div style="margin:16px 16px 0"><button class="pill pp" style="width:100%;height:56px;font-size:17px" data-go="event" data-p='{"id":"supper"}'>Create event</button></div>
+  </div>${STUDIO_CSS}
+  <style>.vt{height:80px;border-radius:16px;background:var(--bg);border:1.5px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600}.vt[aria-pressed="true"]{background:var(--p);border-color:var(--p);color:#fff}</style>`,
+  mount: (el) => { el.addEventListener('click', (e) => { const v = e.target.closest('[data-vt]'); if (v) v.parentElement.querySelectorAll('[data-vt]').forEach((b) => b.setAttribute('aria-pressed', b === v)); }); } };
+
+/* ---------- event art studio ---------- */
+const tiles = (key, opts) => `<div class="tl3">${opts.map(([v, label, face]) => `<button class="ot" data-k="${key}" data-v="${v}" aria-pressed="${art[key] == v}"><span class="otf">${face}</span><span class="otl">${label}</span></button>`).join('')}</div>`;
+const studioBody = () => `
+  <div class="pvwrap">${preview(196)}<div class="pvcap">How it shows in the feed</div></div>
+  <div class="scroll" style="padding:4px 16px 40px">
+    <div class="sth">Background</div>${tiles('bg', [['purple', 'Purple', '<i class="sw" style="background:' + BGS.purple + '"></i>'], ['pink', 'Pink', '<i class="sw" style="background:' + BGS.pink + '"></i>'], ['night', 'Night', '<i class="sw" style="background:' + BGS.night + '"></i>'], ['lime', 'Lime', '<i class="sw" style="background:' + BGS.lime + '"></i>']])}
+    <div class="sth">Stickers</div><div class="tl3" style="grid-template-columns:repeat(5,1fr)">${['pizza', 'spritz', 'disco', 'heart', 'spark', 'flame', 'moon', 'popper', 'cake', 'vinyl'].map((s) => `<button class="ot" data-stk="${s}" aria-pressed="${art.stickers.includes(s)}"><span class="otf">${SV(s, 34)}</span></button>`).join('')}</div>
+    <div class="sth">Text</div>${tiles('text', [['none', 'None', I('Ban' in LUCIDE ? 'Ban' : 'X', 26)], ['bold', 'Poster', '<b style="font:24px var(--dsp)">AA</b>'], ['clean', 'Clean', '<b style="font:700 22px var(--ui)">Aa</b>']])}
+    <div class="sth">Frame & shadow</div>${tiles('shadow', [['none', 'None', I('X', 26)], ['subtle', 'Subtle', '<i class="sq" style="box-shadow:0 4px 8px rgba(0,0,0,.2)"></i>'], ['regular', 'Regular', '<i class="sq" style="box-shadow:0 8px 14px rgba(0,0,0,.3)"></i>'], ['deep', 'Deep', '<i class="sq" style="box-shadow:0 12px 20px rgba(0,0,0,.45)"></i>']])}
+    <div class="sth">Lighting</div>${tiles('light', [['none', 'None', I('X', 26)], ['spot', 'Spotlight', '<i class="sq" style="background:radial-gradient(circle at 35% 30%,#fff,#bbb)"></i>'], ['glare', 'Glare', '<i class="sq" style="background:linear-gradient(135deg,#ccc 40%,#fff 50%,#ccc 60%)"></i>']])}
+    <div class="sth">Base</div>${tiles('base', [['none', 'None', I('X', 26)], ['wood', 'Wood', '<i class="sq" style="background:linear-gradient(#D9824A,#9C4A22)"></i>'], ['metal', 'Metal', '<i class="sq" style="background:linear-gradient(#F2F2F2,#9EA3A8)"></i>'], ['plain', 'Plain', '<i class="sq" style="background:linear-gradient(135deg,#fff 50%,#111 50%)"></i>']])}
+    ${art.base == 'wood' ? tiles('wood', Object.entries(WOODS).map(([k, c]) => [k, k[0].toUpperCase() + k.slice(1), `<i class="sq" style="background:linear-gradient(${c[0]},${c[1]})"></i>`])) : ''}
+  </div>`;
+SCREENS.studio = { label: 'Event art studio', section: 'Add', tag: 'new', render: () => `${statusBar()}
+  <div class="row" style="padding:2px 14px 6px;flex:none"><button class="pill pg" style="height:38px;font-size:13.5px" data-go="addform">Cancel</button><span class="sp"></span><span style="font-weight:700">Event art</span><span class="sp"></span><button class="pill pp" style="height:38px;font-size:13.5px" data-go="addform">${I('Check', 15, 2.6)}Done</button></div>
+  <div id="stb" style="flex:1;min-height:0;display:flex;flex-direction:column">${studioBody()}</div>
+  ${STUDIO_CSS}`,
+  mount: (el) => { el.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-k]'); const s = e.target.closest('[data-stk]');
+    if (t) art[t.dataset.k] = t.dataset.v; else if (s) { const k = s.dataset.stk; art.stickers = art.stickers.includes(k) ? art.stickers.filter((x) => x != k) : [...art.stickers, k].slice(-3); } else return;
+    const sc = el.querySelector('#stb .scroll').scrollTop; el.querySelector('#stb').innerHTML = studioBody(); el.querySelector('#stb .scroll').scrollTop = sc;
+  }); } };
+})();
+
+// CALENDAR: Month (flyer circles + spend + stats) and Agenda (giant day numbers)
+(() => {
+const cal = { view: 'month', sel: 24 };
+const PLANS = { 3: ['fl_razzia.jpg', 22, 'in'], 10: ['fl_alles.jpg', 18, 'in'], 22: ['f2.jpg', 14, 'in'], 24: ['fl_razzia.jpg', 0, 'in'], 25: ['fl_desterradxs.jpg', 0, 'maybe'], 30: ['fl_queer.jpg', 0, 'maybe'], 31: ['fl_midnight.jpg', 0, 'in'] };
+const BDAY = { 12: 'timo', 29: 'nina' }; const AWAY = { 20: 'jonas', 21: 'jonas' }; const BLOCK = [27, 28]; const TODAY = 22;
+const head = () => `${statusBar()}${header()}
+  <div class="row" style="padding:2px 16px 0 20px;flex:none"><span class="dsp" style="font-size:46px">October</span><span class="meta" style="margin:14px 0 0 8px">2026</span><span class="sp"></span><button class="icb f" data-sheet="sync" aria-label="Sync to my calendar">${I('RefreshCcw', 19)}</button></div>
+  <div class="row" style="padding:12px 16px 0;flex:none"><div class="seg" style="width:210px"><button data-cv="month" aria-pressed="${cal.view == 'month'}">Month</button><button data-cv="agenda" aria-pressed="${cal.view == 'agenda'}">Agenda</button></div><span class="sp"></span><span class="mute" style="font-size:13px;font-weight:600;margin-right:8px">Maybes</span><button class="tog" aria-pressed="true" aria-label="Show maybes"></button></div>`;
+
+const cell = (d) => {
+  if (!d) return '<span></span>';
+  const p = PLANS[d], b = BDAY[d], a = AWAY[d], bl = BLOCK.includes(d), today = d == TODAY, sel = d == cal.sel;
+  const ring = sel ? 'box-shadow:0 0 0 3px var(--p);' : today ? 'box-shadow:0 0 0 2px var(--ink);' : '';
+  let face;
+  if (p) face = `<img src="${A(p[0])}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;${p[2] == 'maybe' ? 'opacity:.55;filter:saturate(.6)' : ''}">`;
+  else if (b) face = `<img src="${AV(b)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:2.5px solid #FF5FA8">`;
+  else face = `<span style="width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;background:${bl ? 'repeating-linear-gradient(135deg,var(--s3) 0 3px,transparent 3px 7px),var(--s2)' : 'var(--s2)'};color:${bl ? 'var(--mute)' : 'var(--ink)'}">${d}</span>`;
+  return `<button class="cd" data-day="${d}" aria-label="Oct ${d}"><span class="cdc" style="${ring}">${face}${p || b ? `<span class="cdn">${d}</span>` : ''}${b ? `<span class="cdb">${I('Cake' in LUCIDE ? 'Cake' : 'Gift', 10, 2.6)}</span>` : ''}${a ? `<img class="cda" src="${AV(a)}" alt="">` : ''}</span><span class="cds">${p && p[1] ? '€' + p[1] : p && p[2] == 'maybe' ? 'maybe' : ''}</span></button>`;
+};
+const month = () => { const days = [null, null, null, ...Array.from({ length: 31 }, (_, k) => k + 1)];
+  return `<div class="row" style="gap:8px;padding:14px 16px 0">${[['6', 'nights out'], ['€86', 'spent · the tab'], ['Romantica', 'top venue']].map((s, k) => `<div class="card" style="flex:${k == 2 ? 1.4 : 1};padding:12px;text-align:center"><div class="${k == 2 ? '' : 'dsp'}" style="font-size:${k == 2 ? 16 : 30}px;font-weight:700;${k == 2 ? 'padding-top:8px;padding-bottom:4px' : ''}">${s[0]}</div><div class="mute" style="font-size:11.5px;margin-top:4px">${s[1]}</div></div>`).join('')}</div>
+  <div class="card" style="margin:10px 16px 0;padding:14px 8px 10px">
+    <div class="cg" style="margin-bottom:4px">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d) => `<span class="meta" style="text-align:center;font-size:10.5px">${d}</span>`).join('')}</div>
+    <div class="cg">${days.map(cell).join('')}</div>
+    <div class="meta" style="text-align:center;font-size:9.5px;text-transform:none;margin-top:8px">Long-press to mark days unavailable · Tap a blocked day to edit</div>
+  </div>
+  <div class="row" style="gap:12px;padding:10px 20px 0;flex-wrap:wrap">${[[`<i style="width:12px;height:12px;border-radius:50%;background:url('${A('fl_razzia.jpg')}') center/cover"></i>`, 'Going'], [`<i style="width:12px;height:12px;border-radius:50%;background:url('${A('fl_queer.jpg')}') center/cover;opacity:.5"></i>`, 'Maybe'], ['<i style="width:12px;height:12px;border-radius:50%;border:2px solid #FF5FA8"></i>', 'Birthday'], [`<img src="${AV('jonas')}" alt="" style="width:13px;height:13px;border-radius:50%">`, 'Friend away'], ['<i style="width:12px;height:12px;border-radius:50%;background:repeating-linear-gradient(135deg,var(--mute) 0 2px,transparent 2px 4px)"></i>', 'Unavailable']].map((x) => `<span class="meta" style="display:flex;align-items:center;gap:5px;font-size:10px">${x[0]}${x[1]}</span>`).join('')}</div>
+  <div class="row" style="padding:18px 20px 8px"><span style="font-weight:600;color:var(--mute)">Saturday, Oct ${cal.sel}</span><span class="sp"></span><button style="font-weight:700;font-size:13.5px;color:var(--pt)" data-day="0">Show all</button></div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px">${dayRows(cal.sel)}</div>
+  <div class="h2" style="padding-top:26px"><span class="dsp" style="font-size:26px">Where your nights went</span></div>
+  <div style="display:flex;flex-direction:column;gap:6px;padding:0 16px">${[['fl_razzia.jpg', 'Romantica', 36, 2], ['fl_alles.jpg', 'Wagenhalle', 18, 1], ['f2.jpg', "Marie's place", 14, 1], ['fl_desterradxs.jpg', 'Utopia Kiosk', 18, 1]].map((v) => `<div style="position:relative;height:54px;border-radius:16px;overflow:hidden;background:var(--s1);border:1px solid var(--line)"><i style="position:absolute;left:0;top:0;bottom:0;width:${v[2] / 36 * 72}%;background:var(--pSoft)"></i><div class="row" style="position:relative;height:100%;padding:0 12px"><img src="${A(v[0])}" alt="" style="width:34px;height:34px;border-radius:50%;object-fit:cover"><span style="flex:1;font-weight:600">${v[1]}</span><span class="mute" style="font-size:12.5px">${v[3]} night${v[3] > 1 ? 's' : ''}</span><b style="margin-left:10px">€${v[2]}</b></div></div>`).join('')}</div>`; };
+
+const evRow = (id) => { const e = EV[id]; const r = state.rsvp[id] || (id == 'dest' || id == 'queer' ? 'maybe' : 'in'); return `<button class="lrow" data-go="event" data-p='{"id":"${id}"}' style="text-align:left;width:100%"><i style="width:10px;height:10px;border-radius:50%;flex:none;${r == 'in' ? 'background:var(--p)' : 'box-shadow:inset 0 0 0 2px var(--pt)'}"></i><img class="thumb" src="${A(e.img)}" alt=""><div style="flex:1;min-width:0"><div class="tt">${e.name}</div><div class="sub"><span class="meta" style="color:var(--pt)">${e.time}</span>· ${e.count} going</div></div>${I('ChevronRight', 18, 2, 'color:var(--mute)')}</button>`; };
+function dayRows(d) {
+  const ids = Object.keys(EV).filter((k) => EV[k].day == d);
+  let h = ids.map(evRow).join('');
+  if (BDAY[d]) h += `<button class="lrow" style="width:100%;text-align:left" data-sheet="bday" data-p='{"who":"${BDAY[d]}"}'><img class="av" src="${AV(BDAY[d])}" alt="" width="46" height="46" style="border:2.5px solid #FF5FA8"><div style="flex:1"><div class="tt">${F[BDAY[d]].split(' ')[0]}'s birthday</div><div class="sub">Tap to send a card</div></div>${SV('cake', 34, 8)}</button>`;
+  if (AWAY[d]) h += `<div class="lrow"><img class="av" src="${AV(AWAY[d])}" alt="" width="46" height="46"><div style="flex:1"><div class="tt">${F[AWAY[d]].split(' ')[0]} is away</div><div class="sub">${I('Plane', 14)}Lisbon · back Thu</div></div></div>`;
+  if (BLOCK.includes(d)) h += `<div class="lrow"><span class="thumb" style="background:repeating-linear-gradient(135deg,var(--s3) 0 3px,transparent 3px 7px),var(--s2)"></span><div style="flex:1"><div class="tt">You're unavailable</div><div class="sub">Work trip · Oct 27 → 28</div></div>${I('Pencil', 17, 2, 'color:var(--mute)')}</div>`;
+  return h || `<div class="lrow" style="justify-content:center;color:var(--mute)">No plans this day · <button style="color:var(--pt);font-weight:700" data-go="add">Add one</button></div>`;
+}
+
+const agenda = () => { let h = '';
+  for (let d = 22; d <= 32; d++) { const day = d > 31 ? d - 31 : d; const wd = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'][(d - 22) % 7];
+    const ids = d > 31 ? [] : Object.keys(EV).filter((k) => EV[k].day == day); const extra = [];
+    if (BDAY[day] && d <= 31) extra.push(`<div class="ag-ev"><img class="av" src="${AV(BDAY[day])}" alt="" width="26" height="26" style="border:2px solid #FF5FA8"><span style="flex:1">${F[BDAY[day]].split(' ')[0]}'s birthday</span>${SV('cake', 24)}</div>`);
+    if (BLOCK.includes(day) && d <= 31) extra.push(`<div class="ag-ev" style="opacity:.75"><span style="width:26px;height:26px;border-radius:50%;background:repeating-linear-gradient(135deg,var(--mute) 0 2px,transparent 2px 5px)"></span><span style="flex:1">Unavailable · work trip</span></div>`);
+    const items = ids.map((id) => `<button class="ag-ev" data-go="event" data-p='{"id":"${id}"}'><img src="${A(EV[id].img)}" alt="" style="width:26px;height:26px;border-radius:7px;object-fit:cover"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${EV[id].short}</span><span class="meta" style="font-size:11px">${EV[id].time}</span></button>`).concat(extra);
+    h += `<div class="ag ${d == 22 ? 'today' : ''}"><div class="agd"><span class="dsp" style="font-size:78px;line-height:.86">${day}</span><span class="meta" style="font-size:10.5px">${d == 22 ? 'Today' : wd}${d > 31 ? ' · Nov' : ''}</span></div><div class="agr">${items.length ? items.join('') : `<div class="ag-none"><i></i>No plans</div>`}</div></div>`; }
+  return `<div style="display:flex;flex-direction:column;gap:8px;padding:14px 12px 0">${h}</div>`; };
+
+SCREENS.calendar = { label: 'Calendar — Month & Agenda', section: 'Calendar', tag: 'upd', nav: 'calendar', render: () => `${head()}<div class="scroll" id="cbody">${cal.view == 'month' ? month() : agenda()}</div>${nav('calendar')}
+  <style>
+  .cg{display:grid;grid-template-columns:repeat(7,1fr);row-gap:4px}
+  .cd{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:58px}
+  .cdc{position:relative;width:40px;height:40px;border-radius:50%;display:block}
+  .cdn{position:absolute;left:-4px;top:-4px;min-width:17px;height:17px;border-radius:9px;background:var(--ink);color:var(--bg);font:700 9.5px var(--ui);display:flex;align-items:center;justify-content:center;padding:0 3px}
+  .cdb{position:absolute;right:-4px;top:-4px;width:17px;height:17px;border-radius:50%;background:#FF5FA8;color:#0B0B0A;display:flex;align-items:center;justify-content:center}
+  .cda{position:absolute;right:-5px;bottom:-5px;width:18px;height:18px;border-radius:50%;object-fit:cover;border:2px solid var(--s1)}
+  .cds{font:600 10.5px var(--ui);color:var(--mute);height:13px}
+  .ag{display:flex;gap:10px;background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:12px 12px 12px 16px;min-height:104px}
+  .ag.today{border-color:var(--p);box-shadow:inset 0 0 0 1px var(--p)}
+  .agd{width:100px;display:flex;flex-direction:column;justify-content:space-between}
+  .agr{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;justify-content:center}
+  .ag-ev{display:flex;align-items:center;gap:8px;height:42px;padding:0 10px 0 8px;border-radius:12px;background:var(--s2);font-weight:600;font-size:13.5px;width:100%;text-align:left}
+  .ag-none{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--mute);font-size:13.5px;height:100%}
+  .ag-none i{width:16px;height:16px;border-radius:50%;background:var(--s2)}
+  </style>`,
+  mount: (el) => { el.addEventListener('click', (e) => {
+    const v = e.target.closest('[data-cv]'); if (v) { cal.view = v.dataset.cv; go('calendar'); return; }
+    const d = e.target.closest('[data-day]'); if (d && cal.view == 'month') { const n = +d.dataset.day; if (BLOCK.includes(n)) { openSheet('block'); return; } cal.sel = n || 24; const sc = el.querySelector('#cbody').scrollTop; el.querySelector('#cbody').innerHTML = month(); el.querySelector('#cbody').scrollTop = sc; }
+  }); } };
+
+SHEETS.sync = { label: 'Sync to my calendar', section: 'Calendar', base: 'calendar', tag: 'old', render: () => `
+  <div style="text-align:center">${SV('calendar', 84, -6)}</div><div class="dsp" style="font-size:32px;text-align:center;margin-top:10px">Sync to my calendar</div>
+  <p class="mute" style="text-align:center;font-size:14px;margin:8px 10px 0">Subscribe once — your events stay up to date in Google, Apple or Outlook automatically.</p>
+  <div class="row" style="margin-top:16px;padding:12px 14px;border-radius:16px;background:var(--bg)"><div style="flex:1"><div style="font-weight:600">Include Maybe</div><div class="mute" style="font-size:12.5px">Shown as “Maybe · …” and tentative</div></div><button class="tog" aria-pressed="true" aria-label="Include maybe"></button></div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">${['Apple Calendar (iPhone / Mac)', 'Google Calendar', 'Outlook'].map((x) => `<button class="pill pg" style="height:50px" data-toast="Opens ${x}">${I('CalendarPlus', 18)}${x}</button>`).join('')}<button class="pill" style="height:44px" data-toast="Link copied">${I('Copy', 17)}Copy link for other apps</button></div>
+  <p class="mute" style="text-align:center;font-size:12px;margin:10px 6px 0">Your calendar app refreshes on its own schedule. This link is private; don't share it.</p>` };
+SHEETS.block = { label: 'Mark days unavailable', section: 'Calendar', base: 'calendar', tag: 'upd', render: () => `
+  <div class="row">${SV('moon', 60, -8)}<div><div class="dsp" style="font-size:28px">Unavailable Oct 27 → 28</div><div class="meta" style="margin-top:6px">2 days blocked</div></div></div>
+  <div class="field" style="margin-top:16px"><input value="Work trip" aria-label="Reason"></div>
+  <div class="row" style="margin-top:10px;padding:12px 14px;border-radius:16px;background:var(--bg)">${I('Plane', 20, 2, 'color:var(--pt)')}<div style="flex:1"><div style="font-weight:600">Show friends I'm away</div><div class="mute" style="font-size:12.5px">Your face shows on these days in their calendar.</div></div><button class="tog" aria-pressed="true" aria-label="Show as away"></button></div>
+  <div class="row" style="gap:8px;margin-top:14px"><button class="pill po" style="flex:1;height:48px" data-close>${I('Pencil', 16)}Edit dates</button><button class="pill" style="flex:1;height:48px;color:#F0524F" data-close>${I('Trash2', 16)}Erase</button></div>` };
+SHEETS.bday = { label: 'Birthday card', section: 'Calendar', base: 'calendar', tag: 'upd', demo: { who: 'nina' }, render: (p) => { const n = F[p.who || 'nina'].split(' ')[0]; return `
+  <div class="dsp" style="font-size:32px">Send a birthday card</div><div class="mute" style="font-size:14px;margin-top:6px">For ${n} — they'll get a confetti reveal.</div>
+  <div style="position:relative;height:270px;margin-top:14px;border-radius:26px;background:linear-gradient(150deg,#FF5FA8,#7C3BED);overflow:hidden"><span style="position:absolute;left:18px;top:18px">${SV('cake', 104, -10)}</span><span style="position:absolute;right:24px;top:8px">${SV('balloon', 84, 10)}</span><div style="position:absolute;left:16px;right:16px;bottom:16px;border-radius:18px;background:rgba(255,255,255,.22);backdrop-filter:blur(8px);padding:14px;color:#fff"><b style="font-size:19px">Happy birthday, ${n}!</b><div style="font-style:italic;margin-top:4px">“Dinner's on us this Friday.”</div></div></div>
+  <div class="row" style="gap:8px;margin-top:12px;overflow-x:auto;scrollbar-width:none">${['cake', 'balloon', 'gift', 'bottle', 'popper', 'plus1', 'heart'].map((s, k) => `<span style="flex:none;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:${k < 2 ? 'var(--pSoft)' : 'var(--bg)'}">${SV(s, 36)}</span>`).join('')}</div>
+  <div class="row" style="gap:8px;margin-top:14px"><button class="pill" style="flex:1;height:50px;color:var(--mute)" data-close>Cancel</button><button class="pill pp" style="flex:2;height:50px;opacity:.6">Wait for the day</button></div>`; } };
+})();
+
+// CAPSULE: wallet + countdown, sealed, morning after, gallery, receipt, story (v4 design)
+(() => {
+const NIGHTS = [['Flohmarkt Filderstraße', '4 photos', '#ECE9A6', '#0B0B0A'], ['Desterradxs festival', '12 photos', '#1F3A1C', '#E9F7D0'], ['Supperclub', 'empty · 31h left', '', ''], ["Marie's birthday", '18 photos', '#F48BC8', '#0B0B0A'], ['Alles offen 26', '9 photos', '#E8364F', '#fff']];
+const blurTiles = (imgs) => `<div style="display:flex;position:absolute;left:22px;top:84px">${imgs.map((p, i) => `<div style="width:96px;height:126px;border-radius:12px;border:4px solid #F4F3EE;overflow:hidden;transform:rotate(${[-8, 3, 10][i]}deg);margin-left:${i ? -20 : 0}px;box-shadow:0 8px 18px rgba(0,0,0,.4);flex:none"><img src="${A(p)}" alt="" style="width:100%;height:100%;object-fit:cover;filter:blur(9px) brightness(.85);transform:scale(1.2)"></div>`).join('')}</div>`;
+
+SCREENS.capsule = { label: 'Capsules — wallet + countdown', section: 'Capsule', tag: 'new', nav: 'capsule', render: () => `${statusBar()}${header()}
+  <div class="scroll">
+  <div class="dsp" style="font-size:50px;padding:4px 20px 0">Capsules</div>
+  <div class="mute" style="padding:6px 20px 0;font-size:15px;font-weight:500">Shared memories, one per night.</div>
+  <div style="position:relative;height:${5 * 58 + 380}px;margin-top:16px">
+   ${NIGHTS.map((c, i) => `<button data-go="opened" class="wc" style="top:${i * 58}px;${c[2] ? `background:${c[2]};color:${c[3]}` : 'background:var(--bg);border:2px dashed var(--line2);color:var(--ink)'}"><span style="font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c[0]}</span><span class="meta" style="color:inherit;opacity:.75;white-space:nowrap">${c[1]}</span></button>`).join('')}
+   <button data-go="sealed" class="wfront">
+     <img src="${A('fl_razzia.jpg')}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;filter:blur(2px)">
+     <span style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.1),rgba(10,10,10,.88))"></span>
+     <span class="row" style="position:absolute;top:16px;left:18px;right:18px;text-align:left"><span style="flex:1"><span style="display:block;font-weight:700;font-size:17px">Razzia · 4th anniversary</span><span class="meta" style="color:#bbb">Sat 24 Oct · sealed</span></span><span class="avs">${['marie', 'timo', 'jonas'].map((a) => `<img class="av" src="${AV(a)}" alt="" width="26" height="26" style="border-color:#140A10">`).join('')}</span></span>
+     ${blurTiles(['f3.jpg', 'f4.jpg', 'f1.jpg'])}
+     <span style="position:absolute;right:8px;top:86px">${SV('cam', 100, -10)}</span>
+     <span style="position:absolute;left:18px;bottom:84px;font-size:15px;font-weight:600">23 photos · 5 people · 3 predictions</span>
+     <span class="row" style="position:absolute;left:18px;right:18px;bottom:18px"><span style="text-align:left"><span class="meta" style="display:block;color:#bbb">Opens</span><b>Sun 10:12</b></span><span class="sp"></span><span class="pill pp cdn2" style="height:48px;font:24px var(--dsp);letter-spacing:.04em;padding:0 18px" id="cdown">07 : 48 : 12</span></span>
+   </button>
+  </div>
+  <div class="row" style="gap:10px;padding:14px 16px 0"><button class="pill pg" style="flex:1;height:50px" data-toast="Opens your photos — they stay sealed until 10:12.">${I('ImagePlus', 18)}Add photos</button><button class="pill pg" style="flex:1;height:50px" data-sheet="predict">${I('Hourglass', 18)}Seal a prediction</button></div>
+  <div class="mute" style="text-align:center;font-size:13px;margin-top:10px">Tap a night to open it</div>
+  </div>${nav('capsule')}
+  <style>.wc{position:absolute;left:16px;right:16px;height:200px;border-radius:26px;padding:16px 18px;display:flex;justify-content:space-between;gap:10px;box-shadow:0 -6px 16px rgba(0,0,0,.22);text-align:left}
+  .wfront{position:absolute;left:16px;right:16px;top:290px;height:380px;border-radius:28px;overflow:hidden;background:#140A10;box-shadow:0 -10px 28px rgba(0,0,0,.45);color:#fff;display:block}</style>`,
+  mount: (el) => { let s = 7 * 3600 + 48 * 60 + 12; const t = setInterval(() => { const c = el.querySelector('#cdown'); if (!c) return clearInterval(t); s--; const h = String(Math.floor(s / 3600)).padStart(2, '0'), m = String(Math.floor(s / 60) % 60).padStart(2, '0'), x = String(s % 60).padStart(2, '0'); c.textContent = `${h} : ${m} : ${x}`; }, 1000); } };
+
+SCREENS.sealed = { label: 'Sealed capsule', section: 'Capsule', tag: 'new', render: () => `${statusBar()}${back('Sealed capsule', 'capsule')}
+  <div class="scroll">
+  <div style="text-align:center;padding-top:8px">${SV('lock', 92, -8)}</div>
+  <div class="dsp" style="font-size:30px;text-align:center;padding:10px 30px 0">Razzia · 4th anniversary</div>
+  <div class="meta" style="text-align:center;margin-top:8px">Sat 24 Oct · Romantica</div>
+  <div style="margin:18px 16px 0;border-radius:28px;background:var(--hero);color:#F4F3EE;padding:22px;text-align:center"><div class="meta" style="color:#8F8E88">Opens in</div><div class="dsp" style="font-size:64px;margin-top:8px;letter-spacing:.04em">07:48:12</div><div style="font-size:14px;color:#BDBCB6;margin-top:8px">Sunday at 10:12 — the morning after</div></div>
+  <div class="card" style="margin:12px 16px 0;padding:18px"><div class="row"><b style="flex:1">23 photos inside</b><span class="meta">no peeking</span></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px">${['f3.jpg', 'f4.jpg', 'f1.jpg', 'f2.jpg', 'f5.jpg', 'p01.jpg', 'p02.jpg', 'p03.jpg'].map((p) => `<span style="aspect-ratio:1;border-radius:10px;overflow:hidden;display:block"><img src="${A(p)}" alt="" style="width:100%;height:100%;object-fit:cover;filter:blur(8px);transform:scale(1.2)"></span>`).join('')}</div><button class="pill pp" style="width:100%;height:48px;margin-top:14px">${I('ImagePlus', 18)}Add photos</button></div>
+  <div class="card" style="margin:12px 16px 0;padding:18px"><div class="row">${SV('crystal', 58, -6)}<div><b>3 predictions sealed</b><div class="mute" style="font-size:13px">Everyone can read them after the night.</div></div></div>
+   <div style="margin-top:14px;border-radius:18px;background:var(--bg);padding:14px"><div class="row"><span class="meta" style="flex:1">Yours · sealed 21:04</span><span class="row mute" style="gap:12px">${I('Pencil', 17)}${I('Trash2', 17)}</span></div><div style="font-weight:600;font-size:16px;margin-top:8px">“Timo ends up dancing on the bar.”</div></div>
+   <div class="row" style="gap:8px;margin-top:10px">${['jonas', 'marie'].map((a) => `<div class="row" style="flex:1;border-radius:16px;background:var(--bg);padding:12px;gap:8px"><img class="av" src="${AV(a)}" alt="" width="28" height="28"><span style="flex:1;height:12px;border-radius:6px;background:var(--s3)"></span>${I('Lock', 15, 2, 'color:var(--mute)')}</div>`).join('')}</div></div>
+  </div>` };
+
+SCREENS.opened = { label: 'The morning after (opened)', section: 'Capsule', tag: 'upd', render: () => `${statusBar()}${back('The morning after', 'capsule')}
+  <div class="scroll">
+  <div style="position:relative;margin:10px 19px 0"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+   ${['f3.jpg', 'f4.jpg', 'f2.jpg', 'p01.jpg', 'C', 'f1.jpg', 'p02.jpg', 'f5.jpg', 'p03.jpg'].map((p, k) => p == 'C' ? `<div class="card" style="height:148px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px"><span class="dsp" style="font-size:30px">Razzia</span><span class="meta" style="margin-top:6px">24.10.26</span><span class="meta">23 photos</span></div>` : `<button data-go="gallery" style="position:relative;height:148px;border-radius:14px;overflow:hidden"><img src="${A(p)}" alt="" style="width:100%;height:100%;object-fit:cover">${k == 1 ? `<span class="react" style="position:absolute;left:5px;bottom:5px;height:26px;padding-right:8px;background:rgba(255,255,255,.92);color:#0B0B0A;border:0">${SV('flame', 20)}9</span>` : ''}${k == 6 ? `<span style="position:absolute;right:-4px;top:-2px">${SV('heart', 36, 10)}</span>` : ''}</button>`).join('')}
+  </div><span style="position:absolute;right:-12px;top:-24px">${SV('burst', 82, -10)}</span><span style="position:absolute;left:-14px;bottom:-28px">${SV('receipt', 90, -14)}</span></div>
+  <div class="card" style="margin:26px 16px 0;padding:16px"><div class="row"><span class="meta" style="flex:1">Sealed 21:04 · Jonas</span><span class="pill pp" style="height:26px;font-size:12px;padding:0 10px">Came true</span></div><div style="font-weight:600;font-size:19px;margin-top:8px">“Timo ends up dancing on the bar.”</div></div>
+  <div class="row" style="padding:22px 20px 8px">${SV('crystal', 44, -6)}<span class="dsp" style="font-size:28px">Revealed</span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px">${[['marie', 'Marie Klein', 'Jonas loses his jacket. Again.'], ['nina', 'You', 'Home before 4. Lol.']].map((r) => `<div class="card" style="padding:14px 16px;border-radius:20px"><div style="font-weight:600;font-size:15.5px">“${r[2]}”</div><div class="row" style="gap:8px;margin-top:10px"><img class="av" src="${AV(r[0])}" alt="" width="24" height="24"><b style="font-size:13px">${r[1]}</b><span class="mute" style="font-size:12.5px">· sealed before the night</span></div></div>`).join('')}</div>
+  <div class="card" style="margin:12px 16px 0;padding:16px"><b>Exit poll</b><div class="meta">12 votes</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">${[['flame', 'Worth it', 9], ['meh', 'Mid', 2], ['skull', 'Flop', 1]].map((v, i) => `<div style="height:108px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--bg);border:1.5px solid ${i ? 'var(--line)' : 'var(--p)'}">${SV(v[0], 44, -6)}<span><b class="dsp" style="font-size:22px">${v[2]}</b> <span class="mute" style="font-size:12.5px">${v[1]}</span></span></div>`).join('')}</div></div>
+  <div class="row" style="gap:10px;padding:16px 16px 0"><button class="pill pg" style="flex:1;height:54px" data-sheet="receipt">${I('Receipt', 18)}Receipt</button><button class="pill pp" style="flex:1.4;height:54px" data-sheet="story">${I('Share2', 18)}Post to story</button></div>
+  </div>` };
+
+SCREENS.gallery = { label: 'Photo gallery', section: 'Capsule', tag: 'upd', render: () => `<div style="position:absolute;inset:0;background:#000;color:#fff">${statusBar(1)}
+  <div class="row" style="padding:0 14px"><span class="meta" style="color:#fff">3 / 23</span><span class="sp"></span>${['Download', 'Trash2'].map((i) => `<button class="icb" style="background:rgba(255,255,255,.14);margin-left:6px" data-toast="${i == 'Download' ? 'Saved to photos' : 'Only your own photos can be deleted'}">${I(i, 19)}</button>`).join('')}<button class="icb" style="background:rgba(255,255,255,.14);margin-left:6px" data-go="opened" aria-label="Close">${I('X', 19)}</button></div>
+  <div style="position:absolute;left:0;right:0;top:120px;height:520px"><img src="${A('f4.jpg')}" alt="" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;right:16px;top:20px">${SV('heart', 60, 12)}</span><span style="position:absolute;left:14px;bottom:60px">${SV('hey', 64, -10)}</span></div>
+  <div class="row" style="position:absolute;left:14px;right:14px;bottom:110px;gap:6px">${[['flame', 9], ['heart', 4], ['eyes', 2]].map(([s, n]) => `<span class="react" style="background:rgba(255,255,255,.14);border-color:transparent;color:#fff">${SV(s, 26)}${n}</span>`).join('')}<span class="react" style="background:rgba(255,255,255,.14);border-color:transparent;color:#fff;padding:0 12px">${I('Smile', 17)}</span></div>
+  <div class="row" style="position:absolute;left:0;right:0;bottom:30px;justify-content:center;gap:8px">${['f3.jpg', 'f1.jpg', 'f4.jpg', 'f2.jpg', 'f5.jpg'].map((p, i) => `<img src="${A(p)}" alt="" style="width:${i == 2 ? 62 : 52}px;height:${i == 2 ? 62 : 52}px;border-radius:12px;object-fit:cover;${i == 2 ? 'box-shadow:0 0 0 3px #7C3BED' : 'opacity:.55'}">`).join('')}</div></div>` };
+
+SHEETS.receipt = { label: 'Morning-after receipt', section: 'Capsule', base: 'opened', tag: 'old', render: () => `
+  <div class="row"><span class="dsp" style="font-size:26px;flex:1">Morning-after receipt</span><button class="icb f">${I('Download', 18)}</button><button class="icb f" style="margin-left:6px">${I('Share2', 18)}</button></div>
+  <div style="position:relative;margin:20px auto 0;width:300px"><span style="position:absolute;right:-28px;top:-26px;z-index:2">${SV('flame', 60, 12)}</span>
+  <div style="background:#F6F3EA;color:#111;font:12px var(--mono);padding:22px 20px;clip-path:polygon(0 8px,5% 0,10% 8px,15% 0,20% 8px,25% 0,30% 8px,35% 0,40% 8px,45% 0,50% 8px,55% 0,60% 8px,65% 0,70% 8px,75% 0,80% 8px,85% 0,90% 8px,95% 0,100% 8px,100% calc(100% - 8px),95% 100%,90% calc(100% - 8px),85% 100%,80% calc(100% - 8px),75% 100%,70% calc(100% - 8px),65% 100%,60% calc(100% - 8px),55% 100%,50% calc(100% - 8px),45% 100%,40% calc(100% - 8px),35% 100%,30% calc(100% - 8px),25% 100%,20% calc(100% - 8px),15% 100%,10% calc(100% - 8px),5% 100%,0 calc(100% - 8px))">
+   <div style="text-align:center;font-weight:500;font-size:15px">I AM (IN)</div><div style="text-align:center;margin-top:4px">★ MORNING-AFTER RECEIPT ★</div><div style="text-align:center;margin-top:12px;font-weight:500">RAZZIA · 4TH ANNIVERSARY</div><div style="text-align:center">SAT 24 OCT 2026 · STUTTGART</div>
+   <div style="border-top:1px dashed #999;margin:12px 0"></div>${[['People going', '9'], ['Photos in capsule', '23']].map((r) => `<div style="display:flex;justify-content:space-between;margin:4px 0"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+   <div style="border-top:1px dashed #999;margin:12px 0"></div><div>SEALED PREDICTION</div><div style="font-style:italic;margin-top:4px">“Timo ends up dancing on the bar.”</div>
+   <div style="border-top:1px dashed #999;margin:12px 0"></div>${[['Table total', '€126.00'], ['Your share', '€14.00']].map((r, i) => `<div style="display:flex;justify-content:space-between;margin:4px 0;${i ? 'font-size:15px;font-weight:500' : ''}"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+   <div style="border-top:1px dashed #999;margin:12px 0"></div><div style="display:flex;justify-content:space-between"><span>Verdict</span><span>WORTH IT</span></div><div style="text-align:center;margin-top:12px">THANK YOU · COME AGAIN · #8F3A1C</div></div></div>` };
+SHEETS.story = { label: 'Story recap', section: 'Capsule', base: 'opened', tag: 'old', render: () => `
+  <div class="dsp" style="font-size:30px">Story recap</div>
+  <div style="margin:14px auto 0;width:236px;height:420px;border-radius:22px;overflow:hidden;position:relative;background:linear-gradient(170deg,#2A1458,#0B0B0A 70%);color:#fff">
+   <div class="meta" style="position:absolute;left:16px;top:16px;color:#C9B3FF">Recap</div><div class="dsp" style="position:absolute;left:14px;top:34px;font-size:42px;transform:rotate(-2deg)">Razzia<br>4th<br>anniversary</div>
+   ${['f3.jpg', 'f4.jpg', 'f1.jpg'].map((p, i) => `<img src="${A(p)}" alt="" style="position:absolute;width:100px;height:128px;object-fit:cover;border-radius:8px;border:4px solid #fff;left:${[18, 112, 60][i]}px;top:${[180, 196, 244][i]}px;transform:rotate(${[-8, 7, -2][i]}deg)">`).join('')}
+   <span style="position:absolute;right:8px;top:140px">${SV('burst', 50, 10)}</span><div style="position:absolute;left:0;right:0;bottom:14px;text-align:center;font:700 14px var(--ui);letter-spacing:.04em">I am <span style="color:#C9B3FF">(</span>IN<span style="color:#C9B3FF">)</span></div></div>
+  <div class="row" style="margin-top:14px;padding:12px 14px;border-radius:16px;background:var(--bg)"><span style="flex:1;font-weight:600">Show capsule photos</span><button class="tog" aria-pressed="true" aria-label="Show capsule photos"></button></div>
+  <button class="pill pp" style="width:100%;height:52px;margin-top:12px">${I('Share2', 18)}Share to story</button>` };
+SHEETS.predict = { label: 'Seal a prediction', section: 'Capsule', base: 'capsule', tag: 'old', render: () => `
+  <div class="row">${SV('crystal', 64, -6)}<div><div class="dsp" style="font-size:30px">Message to the future</div><div class="mute" style="font-size:13px;margin-top:4px">Your prediction or note — shared with everyone after the event ends.</div></div></div>
+  <div class="field" style="margin-top:16px;min-height:100px;align-items:flex-start;padding:12px 14px;font-size:16px">Calling it now — we close the place down.</div>
+  <div class="row" style="margin-top:10px"><span class="meta" style="flex:1">42 / 500</span><button class="pill pp" style="height:46px" data-close>${I('Lock', 16)}Seal it</button></div>` };
+})();
+
+// PROFILE: Me (Bio look + widget grid) · Calendar · Friends
+(() => {
+const tabs = (on) => `<div class="row" style="gap:16px;padding:2px 20px 0;align-items:baseline;flex:none">${[['me', 'Me'], ['calendar', 'Calendar'], ['friends', 'Friends']].map(([k, l]) => `<button data-ptab="${k}" class="dsp" style="font-size:${k == on ? 44 : 30}px;${k == on ? '' : 'color:var(--mute);opacity:.55'}">${l}</button>`).join('')}<span class="sp"></span>${on == 'me' ? `<button class="icb f" data-sheet="status" aria-label="Status">${I('Smile', 19)}</button>` : ''}</div>`;
+const W = (inner, st = '', attrs = '') => `<button class="wg" style="${st}" ${attrs}>${inner}</button>`;
+
+const meTab = () => `
+  <div class="card" style="margin:12px 16px 0;padding:18px 16px 16px;text-align:center;position:relative;border-radius:30px">
+    <div style="font:italic 500 13px var(--ui);color:var(--mute)">About me</div>
+    <div style="font-weight:700;font-size:19px;line-height:1.25;text-transform:uppercase;margin:8px 8px 0">Hi, I'm Marie. Dinner that turns into a night? Always in.</div>
+    <div style="position:relative;display:inline-block;margin-top:16px"><img class="av" src="${AV('marie')}" alt="" width="168" height="168" style="border:4px solid var(--p);padding:4px;background:var(--s1)"><span style="position:absolute;left:-14px;top:-26px">${SV('crown', 64, -14)}</span><span style="position:absolute;right:-22px;bottom:-12px">${SV('disco', 58, 8)}</span></div>
+    <button class="icb f" style="position:absolute;left:14px;bottom:14px" data-toast="Edit profile (same as today)" aria-label="Edit">${I('Pencil', 18)}</button><button class="icb f" style="position:absolute;right:14px;bottom:14px" data-toast="Profile link copied" aria-label="Share">${I('Link', 18)}</button>
+    <div class="row" style="justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap"><span class="meta">@marie</span><span class="meta row" style="gap:3px">${I('MapPin', 12, 2.4)}Stuttgart</span><span class="meta row" style="gap:3px">${I('Cake', 12, 2.4)}22 March</span></div>
+  </div>
+  <div class="row" style="gap:8px;padding:12px 16px 0;overflow-x:auto;scrollbar-width:none">${[['spark', "You're iconique!", 'jonas'], ['moon', 'Last one out, again', 'timo'], ['cake', 'Libra season baby', 'nina']].map((x) => `<span class="spill">${SV(x[0], 30, -8)}<span>${x[1]}</span><img class="av" src="${AV(x[2])}" alt="" width="24" height="24"></span>`).join('')}</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px 0">${[['Events', '23'], ['Followers', '7'], ['Following', '7']].map((s) => `<div class="card" style="height:104px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;text-align:center;border-radius:22px"><span style="font:italic 500 12.5px var(--ui);color:var(--mute)">${s[0]}</span><span class="dsp" style="font-size:44px">${s[1]}</span></div>`).join('')}</div>
+  <div class="wgrid">
+    ${W(`<div class="row" style="gap:6px;font-weight:600;font-size:14px">${I('Flame', 16)}Going out</div><div class="row" style="align-items:flex-end;gap:6px;margin-top:8px"><span class="dsp" style="font-size:60px;color:#FF6A13">6</span><span style="font-size:13px;line-height:1.15;margin-bottom:6px">weekends<br>in a row</span></div><div class="dots">${Array.from({ length: 24 }, (_, k) => `<i style="background:${k < 6 ? '#FF6A13' : k < 8 ? '#5a2a10' : '#2a2a27'}"></i>`).join('')}</div>`, 'background:#0B0B0A;color:#F4F3EE')}
+    ${W(`<div class="row" style="gap:6px"><span class="pill" style="height:30px;padding:0 10px;font-size:12.5px;background:#0B0B0A;color:#fff">in 2 d</span><span class="sp"></span>${I('ArrowUpRight', 18)}</div><img src="${A('fl_razzia.jpg')}" alt="" style="width:96px;height:96px;object-fit:cover;border-radius:12px;margin:12px auto 0;display:block;transform:rotate(-6deg);box-shadow:0 12px 20px rgba(0,0,0,.3)"><div style="font-weight:700;font-size:13.5px;margin-top:10px;text-align:center">Next: Razzia</div>`, '', `data-go="event" data-p='{"id":"razzia"}'`)}
+    ${W(`<div class="row" style="justify-content:space-between">${SV('receipt', 30, -8)}${I('ArrowUpRight', 18)}</div><div class="dsp" style="font-size:40px;margin-top:10px">€18.00</div><div style="font-size:13px;color:#3BD47E;font-weight:600">owed to you</div><div class="row" style="margin-top:12px;border-top:1px solid rgba(255,255,255,.12);padding-top:10px;gap:0;font-size:13px;font-weight:600"><span style="flex:1;display:flex;gap:5px;align-items:center">${I('Repeat', 15)}Remind</span><span style="flex:1;display:flex;gap:5px;align-items:center;justify-content:flex-end">${I('Send', 15)}Settle</span></div>`, 'background:#242422;color:#F4F3EE', `data-go="tab"`)}
+    ${W(`<div class="row" style="justify-content:space-between;color:var(--pt)">${I('Users', 20)}${I('Bookmark', 18)}</div><div style="font-weight:600;font-size:15px;margin-top:14px">Your people</div><div class="avs" style="margin-top:8px">${['jonas', 'marie', 'timo', 'nina'].map((a) => `<img class="av" src="${AV(a)}" alt="" width="34" height="34">`).join('')}<span class="plusn" style="height:34px;min-width:34px;border-radius:17px;margin-left:-8px">+8</span></div><div class="row" style="gap:6px;margin-top:12px">${['MessageCircle', 'Search', 'Hand'].map((i) => `<span style="flex:1;height:36px;border-radius:12px;background:var(--pSoft);color:var(--pt);display:flex;align-items:center;justify-content:center">${I(i, 17)}</span>`).join('')}</div>`, '', `data-ptab="friends"`)}
+    ${W(`<div class="row" style="justify-content:space-between">${SV('flame', 40, -8)}<span class="meta">12 rated</span></div><div class="dsp" style="font-size:44px;margin-top:10px">87%</div><div class="mute" style="font-size:13px">of your nights were worth it</div>`, '')}
+    ${W(`<div class="row" style="gap:6px;font-weight:600;font-size:14px">${I('Sparkles', 16)}Stickers earned<span class="sp"></span><span class="meta">8</span></div><div class="fanst">${['disco', 'seal', 'cam', 'crystal'].map((s, k) => `<span style="left:${k * 30}px;transform:rotate(${[-10, -2, 6, 12][k]}deg)">${SV(s, 46)}</span>`).join('')}</div>`, '')}
+  </div>
+  <div class="row" style="gap:14px;padding:18px 20px 0;overflow-x:auto;scrollbar-width:none"><div style="text-align:center;flex:none;width:66px"><div style="width:64px;height:64px;border-radius:50%;border:2px dashed var(--line2);display:flex;align-items:center;justify-content:center;color:var(--pt)">${I('Plus', 22, 2.6)}</div><div style="font-size:12px;font-weight:600;margin-top:6px">Edit</div></div>${[['f4.jpg', 'Razzia'], ['f2.jpg', 'Supper'], ['f5.jpg', 'Desterradxs'], ['p01.jpg', 'Birthday']].map((h) => `<div style="text-align:center;flex:none;width:66px"><div style="width:64px;height:64px;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,#7C3BED,#C4A6FF)"><img src="${A(h[0])}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2.5px solid var(--bg)"></div><div style="font-size:12px;font-weight:600;margin-top:6px">${h[1]}</div></div>`).join('')}</div>
+  <div style="padding:16px 16px 0"><button class="pill po" style="width:100%;height:48px">${I('Sparkles', 17, 2, 'color:var(--pt)')}Rate past events (3)</button></div>
+  <div style="margin:12px 16px 0;border-radius:28px;background:var(--hero);color:#F4F3EE;padding:18px"><div class="meta row" style="gap:6px;color:#8F8E88">${I('Lock', 12, 2.4)}Your going-out DNA</div><div class="row" style="margin-top:10px">${SV('moon', 76, -8)}<div><div class="dsp" style="font-size:34px">The Closer</div><div style="font-size:13px;color:#BDBCB6;margin-top:4px">Last one out, first one in the group chat the next day.</div></div></div></div>
+  <div class="h2"><span class="dsp" style="font-size:26px">Your events · 2026</span><span class="meta row" style="gap:4px">${I('ArrowDownLeft', 13)}Newest</span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px">${['supper', 'razzia', 'alles'].map((id) => `<button class="lrow" style="width:100%;text-align:left" data-go="event" data-p='{"id":"${id}"}'><div style="width:34px;text-align:center"><span class="meta" style="font-size:10px">${EV[id].long.slice(0, 3)}</span><b style="display:block;font-size:22px">${EV[id].day}</b></div><img class="thumb" src="${A(EV[id].img)}" alt=""><div style="flex:1;min-width:0"><div class="tt">${EV[id].name}</div><div class="sub">${EV[id].venue}</div></div>${I('ChevronRight', 18, 2, 'color:var(--mute)')}</button>`).join('')}</div>`;
+
+const calTab = () => `
+  <div class="row" style="margin:14px 16px 0;padding:12px 14px;border-radius:18px;background:var(--pSoft);gap:10px">${I('Eye', 19, 2, 'color:var(--pt)')}<span style="font-size:13.5px">This is what your friends see. Ghost plans stay blurred.</span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:12px 12px 0">${[[22, 'Today', 'supper'], [24, 'Sat', 'razzia'], [25, 'Sun', 'dest'], [27, 'Tue', 'away']].map(([d, wd, id]) => `<div class="ag" style="display:flex;gap:10px;background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:12px 12px 12px 16px;min-height:96px"><div style="width:88px;display:flex;flex-direction:column;justify-content:space-between"><span class="dsp" style="font-size:66px;line-height:.86">${d}</span><span class="meta" style="font-size:10.5px">${wd}</span></div><div style="flex:1;display:flex;align-items:center">${id == 'away' ? `<div class="row" style="width:100%;height:46px;border-radius:12px;padding:0 10px;background:var(--pSoft);color:var(--pt);font-weight:600;font-size:13.5px;gap:8px">${I('Plane', 17)}Away · work trip → 28</div>` : `<div class="row" style="width:100%;height:46px;border-radius:12px;padding:0 10px 0 8px;background:var(--s2);font-weight:600;font-size:13.5px;gap:8px"><img src="${A(EV[id].img)}" alt="" style="width:30px;height:30px;border-radius:8px;object-fit:cover"><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${EV[id].short}</span><span class="meta">${EV[id].time}</span></div>`}</div></div>`).join('')}</div>
+  <div class="row" style="margin:12px 16px 0;padding:14px 16px;border-radius:22px;background:var(--s1);border:1px solid var(--line)">${SV('free', 48, -6)}<div style="flex:1"><b>Open for events</b><div class="mute" style="font-size:12.5px">Friends can pull you into plans this week.</div></div><button style="color:var(--pt);font-weight:700" data-sheet="status">Change</button></div>`;
+
+const fr = (a, st, stk, icon) => `<div class="lrow"><img class="av" src="${AV(a)}" alt="" width="46" height="46"><div style="flex:1;min-width:0"><div class="tt">${F[a]}</div><div class="sub">${icon ? I(icon, 14, 2, 'color:var(--pt)') : ''}${st}</div></div>${stk ? SV(stk, 38, -8) : ''}${I('ChevronRight', 17, 2, 'color:var(--mute)')}</div>`;
+const friendsTab = () => `
+  <div class="field" style="margin:14px 16px 0;color:var(--mute);font-size:14.5px;background:var(--s1)">${I('Search', 18)}Search by name or @username</div>
+  <div class="meta" style="padding:18px 20px 8px">Requests · 1</div>
+  <div class="lrow" style="margin:0 16px"><img class="av" src="${AV('nina')}" alt="" width="46" height="46"><div style="flex:1"><div class="tt">Lea Fontaine</div><div class="sub">3 mutual friends</div></div><button class="pill pp" style="height:36px;font-size:13px;padding:0 12px">${I('Check', 15, 2.6)}Accept</button><button class="icb f" style="width:36px;height:36px">${I('X', 16)}</button></div>
+  <div class="h2"><span class="dsp" style="font-size:24px">Who you actually go out with</span></div>
+  <div class="row" style="gap:8px;padding:0 16px">${[['jonas', '14 shared', 'Real ones'], ['marie', '11 shared', 'Real ones'], ['timo', '6 shared', 'Building history']].map((f) => `<div class="card" style="flex:1;padding:14px 8px;text-align:center"><img class="av" src="${AV(f[0])}" alt="" width="62" height="62" style="margin:0 auto;border:2.5px solid var(--p);padding:2px"><b style="display:block;margin-top:8px">${F[f[0]].split(' ')[0]}</b><span class="meta" style="font-size:10px">${f[1]}</span><div style="font-size:11.5px;color:var(--pt);font-weight:700;margin-top:6px">${f[2]}</div></div>`).join('')}</div>
+  <div class="row" style="padding:20px 20px 8px"><span class="meta" style="flex:1">All friends · 12</span><span class="mute" style="font-size:13px;font-weight:600">7 followers · 7 following</span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px">${fr('marie', 'Out tonight · Westend', 'sneaker')}${fr('jonas', 'Drinks · until 01:00', 'spritz')}${fr('timo', 'Away · Lisbon until Fri', '', 'Plane')}${fr('nina', 'Not tonight', 'moon')}</div>
+  <div class="row" style="margin:12px 16px 0;padding:18px;border-radius:26px;background:var(--hero);color:#F4F3EE;gap:14px">${SV('hey', 70, -8)}<div style="flex:1"><b>Plans are better with friends</b><div style="font-size:13px;color:#BDBCB6;margin-top:3px">Share your profile link.</div><button class="pill pp" style="height:38px;font-size:13px;margin-top:10px">${I('UserPlus', 16)}Invite a friend</button></div></div>`;
+
+SCREENS.me = { label: 'Profile — Me (widgets)', section: 'Profile', tag: 'upd', nav: 'me', demo: { tab: 'me' }, render: (p) => { const t = p.tab || 'me'; return `${statusBar()}${header()}${tabs(t)}<div class="scroll">${t == 'me' ? meTab() : t == 'calendar' ? calTab() : friendsTab()}</div>${nav('me')}
+  <style>
+  .spill{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 6px 0 4px;border-radius:999px;border:1.5px solid var(--line2);background:var(--s1);font-weight:600;font-size:13.5px;white-space:nowrap;flex:none}
+  .wgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px 0}
+  .wg{border-radius:26px;background:var(--s1);border:1px solid var(--line);padding:16px;text-align:left;min-height:170px;display:flex;flex-direction:column;overflow:hidden}
+  .dots{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:auto}.dots i{aspect-ratio:1;border-radius:50%}
+  .fanst{position:relative;height:86px;margin-top:14px}.fanst span{position:absolute;top:0}
+  .plusn{background:var(--p);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--s1)}
+  </style>`; },
+  mount: (el) => { el.addEventListener('click', (e) => { const b = e.target.closest('[data-ptab]'); if (b) go('me', { tab: b.dataset.ptab }); }); } };
+SCREENS.meCal = { label: 'Profile — Calendar', section: 'Profile', tag: 'new', render: () => '', alias: ['me', { tab: 'calendar' }] };
+SCREENS.meFriends = { label: 'Profile — Friends', section: 'Profile', tag: 'new', render: () => '', alias: ['me', { tab: 'friends' }] };
+
+SHEETS.status = { label: 'How are you feeling?', section: 'Profile', base: 'me', tag: 'upd', render: () => `
+  <div class="dsp" style="font-size:32px">How are you feeling?</div>
+  <button class="row" style="width:100%;text-align:left;margin-top:14px;padding:14px 16px;border-radius:22px;background:var(--pSoft);border:1.5px solid var(--p)" data-sheet="note">${SV('spritz', 50, -6)}<div style="flex:1"><b>Your mood today</b><div class="mute" style="font-size:12.5px">Drinks, dancing, chill… tell your circle.</div></div>${I('ChevronRight', 18, 2.4, 'color:var(--pt)')}</button>
+  ${[['free', 'Up for anything', 'Default. No badge shown.', 1], ['moon', 'Not tonight', 'Auto-clears in 24h. Friends see a moon on your avatar.'], ['battery', 'Low energy week', 'Stays for a week. Friends see it on your avatar.']].map((o) => `<div class="row" style="margin-top:8px;padding:14px 16px;border-radius:22px;background:var(--bg);border:1.5px solid ${o[3] ? 'var(--p)' : 'var(--line)'}">${SV(o[0], 50, -6)}<div style="flex:1"><b>${o[1]}</b><div class="mute" style="font-size:12.5px">${o[2]}</div></div>${o[3] ? `<span style="width:26px;height:26px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center">${I('Check', 14, 3)}</span>` : ''}</div>`).join('')}
+  <div class="row mute" style="margin-top:14px;font-size:13px;align-items:flex-start">${I('Plane', 17, 2, 'color:var(--pt)')}Travelling? Block those days on your calendar — friends will see you're away.</div>` };
+})();
+
+// THE TAB (split the bill) + add expense
+(() => {
+const person = (a, n, txt, amt, act, done) => `<div class="row" style="padding:10px 0;border-top:1px solid var(--line)"><img class="av" src="${AV(a)}" alt="" width="38" height="38"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14.5px">${n}</div><div class="mute" style="font-size:12.5px">${txt}</div></div><span style="font-weight:700;font-size:15px;${done ? 'color:var(--mute);text-decoration:line-through' : ''}">${amt}</span>${act}</div>`;
+SCREENS.tab = { label: 'The tab (split the bill)', section: 'Event', tag: 'upd', demo: { id: 'razzia' }, render: (p) => `
+  <div style="position:relative;flex:none;height:178px;background:#120a14 url('${A('fl_razzia.jpg')}') center 35%/cover;color:#fff">
+    <div style="position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.25))"></div>
+    <div style="position:relative">${statusBar(1)}<div class="row" style="padding:0 14px"><button class="icb" style="background:rgba(0,0,0,.4);color:#fff" data-go="event" data-p='{"id":"${p.id || 'razzia'}"}' aria-label="Back">${I('ChevronLeft', 20, 2.4)}</button><span style="font-weight:700;font-size:20px;margin-left:6px">The tab</span><span class="sp"></span><img class="av" src="${AV('nina')}" alt="" width="38" height="38"></div>
+    <div class="row" style="padding:12px 20px 0;font-size:13px;opacity:.85">${I('Receipt', 15)}Razzia · 4th anniversary · Sat 24 Oct</div></div>
+  </div>
+  <div class="scroll" style="margin-top:-26px;border-radius:28px 28px 0 0;background:var(--bg);position:relative;padding:20px 16px 170px">
+    <div class="row" style="gap:6px">${I('ArrowDownLeft', 16, 2.4)}<span style="font-weight:600;font-size:14px">You're owed</span>${I('ChevronRight', 16)}</div>
+    <div class="dsp" style="font-size:76px;margin-top:6px;letter-spacing:.01em">€18.00</div>
+    <div class="row" style="gap:8px;margin-top:16px"><button class="pill pg" style="flex:1;height:52px;font-size:15.5px" data-sheet="expense">${I('Plus', 18, 2.6)}Add expense</button><button class="pill pp" style="flex:1;height:52px;font-size:15.5px" data-toast="Opens PayPal / Revolut / N26 with your handle filled in.">Settle up</button></div>
+    <div class="card" style="margin-top:14px;padding:16px">
+      <div class="row"><span style="width:12px;height:18px;border-radius:3px;border:2px solid var(--p)"></span><span style="font-weight:700;font-size:15px">Table total</span><span class="sp"></span><span style="font-weight:700">€126.00 · 9 people</span></div>
+      <div style="height:6px;border-radius:3px;background:var(--s2);margin:12px 0 4px;overflow:hidden"><i style="display:block;width:57%;height:100%;background:var(--p);border-radius:3px"></i></div>
+      <div class="mute" style="font-size:12.5px">4 of 7 settled · your share €14.00</div>
+    </div>
+    <div class="card" style="margin-top:10px;padding:6px 16px 8px">
+      <div class="row" style="padding:10px 0"><span style="font-weight:700;font-size:15px">Owe you</span><span class="sp"></span><span class="meta">3 people</span></div>
+      ${person('jonas', 'Jonas Weber', 'Drinks round · 01:20', '€12.00', '<button class="pill po" style="height:32px;font-size:12.5px;padding:0 12px" data-toast="Reminder sent with your PayPal link">Remind</button>')}
+      ${person('timo', 'Timo Schulz', 'Taxi home', '€6.00', '<button class="pill po" style="height:32px;font-size:12.5px;padding:0 12px" data-toast="Reminder sent">Remind</button>')}
+      ${person('marie', 'Marie Klein', 'Paid you back · Revolut', '€14.00', `<span style="color:#3BD47E">${I('CheckCircle2' in LUCIDE ? 'CheckCircle2' : 'Check', 20, 2.4)}</span>`, 1)}
+    </div>
+    <div class="card" style="margin-top:10px;padding:14px 16px">
+      <div class="row"><img class="av" src="${AV('nina')}" alt="" width="42" height="42"><div style="flex:1"><div style="font-weight:700;font-size:15px">You owe Nina</div><div class="mute" style="font-size:12.5px">Entry · she paid for 2</div></div><span class="dsp" style="font-size:28px">€4.00</span></div>
+      <div class="row" style="gap:6px;margin-top:12px">${['PayPal', 'Revolut', 'N26'].map((x) => `<button class="pill pg" style="flex:1;height:40px;font-size:13px" data-toast="Opens ${x} with @nina.o">${x}</button>`).join('')}</div>
+    </div>
+    <div class="card" style="margin-top:10px;padding:14px 16px;display:flex;align-items:center;gap:14px">${SV('receipt', 48, -8)}<div style="flex:1"><div style="font-weight:700;font-size:15px">Morning-after receipt</div><div class="mute" style="font-size:12.5px">The tab prints on the receipt after the night.</div></div>${I('ChevronRight', 18)}</div>
+  </div>
+  <div class="tswitch"><button aria-pressed="true">€18 owed</button><button aria-pressed="false">€4 you owe</button><button aria-pressed="false" aria-label="History">${I('History', 18)}</button></div>
+  <style>.tswitch{position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;gap:2px;padding:5px;border-radius:999px;background:var(--nav);border:1px solid var(--line2);box-shadow:0 12px 30px rgba(0,0,0,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:40}.tswitch button{white-space:nowrap;height:44px;padding:0 14px;border-radius:999px;font-weight:700;font-size:14px;color:var(--mute);display:flex;align-items:center}.tswitch button[aria-pressed="true"]{background:var(--s2);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.12)}</style>`,
+  mount: (el) => { el.addEventListener('click', (e) => { const b = e.target.closest('.tswitch button'); if (b) el.querySelectorAll('.tswitch button').forEach((x) => x.setAttribute('aria-pressed', x === b)); }); } };
+
+SHEETS.expense = { label: 'Add expense', section: 'Event', base: 'tab', tag: 'upd', demo: {}, render: () => `
+  <div class="dsp" style="font-size:34px">Add expense</div>
+  <div style="text-align:center;margin-top:16px"><div class="dsp" style="font-size:72px" id="amt">€36.00</div><div class="mute" style="font-size:13px">Drinks round · split 3 ways = €12.00 each</div></div>
+  <div class="field" style="margin-top:16px"><input value="Drinks round" aria-label="What for"></div>
+  <div class="flab" style="margin:14px 0 8px">Paid by</div>
+  <div class="row" style="gap:8px">${['nina', 'marie', 'jonas', 'timo'].map((a, k) => `<button class="pchip" aria-pressed="${k == 0}"><img class="av" src="${AV(a)}" alt="" width="30" height="30">${k ? F[a].split(' ')[0] : 'You'}</button>`).join('')}</div>
+  <div class="flab" style="margin:14px 0 8px">Split between</div>
+  <div class="row" style="gap:8px;flex-wrap:wrap">${['nina', 'marie', 'jonas', 'timo'].map((a, k) => `<button class="pchip" aria-pressed="${k < 3}"><img class="av" src="${AV(a)}" alt="" width="30" height="30">${k ? F[a].split(' ')[0] : 'You'}</button>`).join('')}</div>
+  <div class="row" style="margin-top:14px;padding:12px 14px;border-radius:16px;background:var(--bg)"><span style="flex:1;font-weight:600;font-size:14.5px">Split equally</span><button class="tog" aria-pressed="true" aria-label="Split equally"></button></div>
+  <button class="pill pp" style="width:100%;height:54px;margin-top:16px;font-size:16px" data-close>Add to the tab</button>
+  <style>.pchip{display:flex;align-items:center;gap:6px;height:42px;padding:0 12px 0 5px;border-radius:999px;border:1.5px solid var(--line2);font-weight:600;font-size:13.5px}.pchip[aria-pressed="true"]{background:var(--p);border-color:var(--p);color:#fff}</style>`,
+  mount: (w) => { w.addEventListener('click', (e) => { const b = e.target.closest('.pchip'); if (b) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); }); } };
+})();
+
+// HOME SCREEN: widgets + app icon quick actions (native iOS/Android work)
+(() => {
+const appIcon = (big) => `<span style="width:${big ? 66 : 62}px;height:${big ? 66 : 62}px;border-radius:16px;background:#0B0B0A;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.35)"><span style="font:700 12px var(--ui);color:#fff;letter-spacing:.03em">I am<br><span style="color:#B49BFF">(</span>IN<span style="color:#B49BFF">)</span></span></span>`;
+const icons = (n) => Array.from({ length: n }, (_, k) => `<span class="hi"><span style="background:${['#F2F2F7', '#34C759', '#0A84FF', '#FF9F0A', '#FF375F', '#5E5CE6', '#64D2FF', '#FFD60A'][k % 8]}"></span><i>${['Photos', 'Maps', 'Mail', 'Notes', 'Music', 'Camera', 'Weather', 'Wallet'][k % 8]}</i></span>`).join('');
+const wall = `background:radial-gradient(120% 80% at 10% 0%,#6C3BD8 0%,transparent 60%),radial-gradient(120% 90% at 100% 100%,#FF5FA8 0%,transparent 55%),#1B1036`;
+const widgets = `
+  <div class="hw2">
+    <div class="wsm" style="background:#0B0B0A;color:#fff"><div class="row" style="gap:6px;font:700 11px var(--ui);color:#B49BFF">I am (IN)<span class="sp"></span><span style="color:#8F8E88">in 2 d</span></div><img src="${A('fl_razzia.jpg')}" alt="" style="width:64px;height:64px;border-radius:12px;object-fit:cover;margin-top:10px;transform:rotate(-6deg)"><div style="font-weight:700;font-size:13px;margin-top:10px">Razzia</div><div style="font-size:11px;color:#BDBCB6">Sat 23:59 · 9 going</div></div>
+    <div class="wsm" style="background:#7C3BED;color:#fff;position:relative;overflow:hidden"><div style="font:700 11px var(--ui);opacity:.85">Capsule opens</div><div class="dsp" style="font-size:36px;margin-top:8px">07:48</div><div style="font-size:11px;opacity:.85">Sun 10:12 · 23 photos</div><span style="position:absolute;right:-8px;bottom:-10px">${SV('cam', 56, -12)}</span></div>
+  </div>
+  <div class="wmd"><div class="row" style="font:700 11px var(--ui);color:#B49BFF">WHO'S OUT TONIGHT<span class="sp"></span><span style="color:#8F8E88">4 friends</span></div><div class="row" style="gap:10px;margin-top:10px">${[['jonas', 'spritz', 'drinks'], ['marie', 'sneaker', 'dancing'], ['timo', 'disco', 'out out'], ['nina', 'couch', 'chill']].map((f) => `<div style="flex:1;text-align:center;position:relative"><img class="av" src="${AV(f[0])}" alt="" width="46" height="46" style="margin:0 auto;border:2px solid #7C3BED"><span style="position:absolute;right:2px;top:-8px">${SV(f[1], 24, 8)}</span><div style="font-size:11px;font-weight:600;margin-top:4px">${f[2]}</div></div>`).join('')}</div></div>`;
+SCREENS.home = { label: 'Home screen — widgets', section: 'Home screen', tag: 'nat', render: () => `<div style="position:absolute;inset:0;${wall};color:#fff">${statusBar(1)}
+  <div style="padding:8px 18px 0">${widgets}</div>
+  <div class="hg">${icons(7)}<button class="hi" data-go="homeqa">${appIcon()}<i>I am (IN)</i></button></div>
+  <div class="hdock">${['#34C759', '#0A84FF', '#F2F2F7', '#FF375F'].map((c) => `<span style="background:${c}"></span>`).join('')}</div>
+  <div style="position:absolute;left:0;right:0;bottom:118px;text-align:center;font-size:12px;opacity:.75">Tap the I am (IN) icon to see the long-press menu</div>
+  <style>
+  .hw2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .wsm{height:158px;border-radius:24px;padding:14px;display:flex;flex-direction:column}
+  .wmd{margin-top:14px;border-radius:24px;padding:14px;background:rgba(20,16,30,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .hg{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 0;padding:22px 18px 0}
+  .hi{display:flex;flex-direction:column;align-items:center;gap:5px;color:#fff}
+  .hi>span{width:62px;height:62px;border-radius:16px;display:block}
+  .hi i{font-style:normal;font-size:11.5px}
+  .hdock{position:absolute;left:14px;right:14px;bottom:calc(20px + env(safe-area-inset-bottom,0px));height:86px;border-radius:30px;background:rgba(255,255,255,.18);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-around}
+  .hdock span{width:60px;height:60px;border-radius:16px;display:block}
+  </style></div>` };
+SCREENS.homeqa = { label: 'Home screen — quick actions', section: 'Home screen', tag: 'nat', render: () => `<div style="position:absolute;inset:0;${wall};color:#fff">${statusBar(1)}
+  <div style="padding:8px 18px 0;filter:blur(10px);opacity:.6">${widgets}</div>
+  <div style="position:absolute;inset:0;background:rgba(10,8,20,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)" data-go="home"></div>
+  <div style="position:absolute;left:24px;top:612px">${appIcon(1)}</div>
+  <div class="qam">
+    ${[['Add from screenshot', 'Pick a flyer — we fill it in', 'ImagePlus', 'add'], ["Who's out tonight", '4 friends', 'Users', 'feed'], ['Open my capsule', 'Opens 10:12', 'Archive', 'capsule'], ['New plan', '', 'Plus', 'addform']].map((q, k) => `<button class="qa" data-go="${q[3]}" style="${k == 3 ? 'border-top:8px solid rgba(0,0,0,.08)' : ''}"><span style="flex:1;text-align:left"><span style="display:block;font-size:16.5px">${q[0]}</span>${q[1] ? `<span style="display:block;font-size:14px;color:#6b6b70;margin-top:2px">${q[1]}</span>` : ''}</span>${I(q[2], 22)}</button>`).join('')}
+    <button class="qa" style="border-top:8px solid rgba(0,0,0,.08)" data-toast="Opens the feedback form"><span style="flex:1;text-align:left"><span style="display:block;font-size:16.5px">Something wrong?</span><span style="display:block;font-size:14px;color:#6b6b70;margin-top:2px">Tell us before deleting</span></span>${I('Heart', 22)}</button>
+  </div>
+  <style>.qam{position:absolute;left:24px;right:24px;top:252px;border-radius:24px;background:rgba(240,240,245,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:#0B0B0A;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.4);animation:pop .25s both;transform-origin:20% 100%}.qa{display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;border-top:1px solid rgba(0,0,0,.1)}.qa:first-child{border-top:0}</style></div>` };
+})();
+
+go("feed");
+})();
+</script>
