@@ -1,0 +1,195 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,800&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D9D8D3;padding:40px}
+.row{display:flex;gap:26px;align-items:flex-start;padding:28px;background:#D9D8D3;width:max-content}
+.lbl{font:600 16px 'Inter Tight';color:#333;margin:0 0 -8px 28px}
+/* themes */
+.ph{--bg:#0B0B0A;--s1:#171716;--s2:#242422;--s3:#2E2E2B;--ink:#F4F3EE;--mute:#8C8B85;--line:rgba(255,255,255,.08);--p:#7C3BED;--p2:#A98BFF;--pInk:#fff;
+ width:390px;height:844px;border-radius:46px;overflow:hidden;position:relative;background:var(--bg);color:var(--ink);flex:none;box-shadow:0 30px 60px rgba(0,0,0,.25);font-family:var(--ui)}
+.t1{--ui:'Space Grotesk',sans-serif;--dsp:'Space Grotesk',sans-serif;--mono:'Space Grotesk',sans-serif}
+.t2{--ui:'Inter Tight',sans-serif;--dsp:'Anton',sans-serif;--mono:'JetBrains Mono',monospace}
+.dsp{font-family:var(--dsp)}
+.t1 .dsp{font-weight:700;letter-spacing:-.045em;line-height:.95}
+.t2 .dsp{text-transform:uppercase;letter-spacing:.005em;line-height:.95}
+.meta{font-family:var(--mono);color:var(--mute)}
+.t1 .meta{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
+.t2 .meta{font-size:12px;text-transform:uppercase;letter-spacing:.02em}
+.abs{position:absolute}
+.status{position:absolute;top:16px;left:34px;right:28px;display:flex;justify-content:space-between;font:600 16px 'Inter Tight';z-index:20}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.circ{width:42px;height:42px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center}
+.circ .ic{width:20px;height:20px}
+.av{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--s1);margin-left:-8px}
+.av:first-child{margin-left:0}
+.pill{height:44px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;font-size:15px;padding:0 18px;white-space:nowrap}
+.pg{background:var(--s2);color:var(--ink)}
+.pp{background:var(--p);color:var(--pInk)}
+.tag{display:inline-flex;align-items:center;gap:6px;height:32px;border:1.5px solid rgba(255,255,255,.18);border-radius:999px;padding:0 12px;font-size:13px;font-weight:500;white-space:nowrap}
+.t2 .tag{font-family:'JetBrains Mono';font-size:12px;text-transform:uppercase}
+.tag.on{background:var(--p);border-color:var(--p);color:#fff}
+.card{position:absolute;left:16px;width:358px;background:var(--s1);border-radius:28px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.st{display:block;overflow:visible;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));flex:none}
+.nav{position:absolute;left:50%;transform:translateX(-50%);bottom:24px;width:300px;height:64px;border-radius:999px;background:#1A1A19;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-around;color:#8C8B85;z-index:15}
+.nav .on{color:#F4F3EE;position:relative}
+.nav .on:after{content:"";position:absolute;left:50%;bottom:-9px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--p2)}
+.nav .plus{width:48px;height:48px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center}
+.fade{position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(to bottom,transparent,var(--bg) 70%);z-index:14}
+.wm{display:flex;align-items:center;gap:6px}
+.t1 .wm{font:700 26px 'Space Grotesk';letter-spacing:-.03em}
+.t2 .wm{font:30px Anton}
+.inpill{background:var(--p);color:#fff;border-radius:999px;padding:3px 10px 3px;line-height:1}
+.t1 .inpill{font-size:19px;font-weight:700}
+.t2 .inpill{font-size:22px}
+.field{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:12px 16px}
+.field .k{font-size:12.5px;color:var(--mute);font-weight:500}
+.field .v{font-size:16px;font-weight:600;margin-top:3px}
+.seg{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:999px;padding:4px}
+.seg span{flex:1;text-align:center;height:36px;line-height:36px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mute)}
+.seg span.on{background:var(--s3);color:var(--ink)}
+.tog{width:46px;height:28px;border-radius:999px;background:var(--p);position:relative;flex:none}
+.tog:after{content:"";position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff}
+.tog.off{background:var(--s3)}.tog.off:after{right:auto;left:3px}
+</style></head><body>
+
+<svg width="0" height="0" style="position:absolute"><defs id="defs"></defs><defs>
+ <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+ <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></symbol>
+ <symbol id="i-feed" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="13" rx="3"/><path d="M7 4.5h10"/></symbol>
+ <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+ <symbol id="i-cap" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M6 12h12"/></symbol>
+ <symbol id="i-me" viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.6"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+ <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+ <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 4v11M7.5 8.5L12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+ <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></symbol>
+ <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></symbol>
+ <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></symbol>
+ <symbol id="i-sync" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></symbol>
+ <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+ <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+ <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/></symbol>
+ <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c1-3 3-4.5 5.5-4.5s4.5 1.5 5.5 4.5"/><circle cx="17" cy="8" r="2.6"/><path d="M16 13.5c2.4 0 4 1.3 4.8 3.8"/></symbol>
+ <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+ <symbol id="i-cl" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+</defs></svg>
+
+<div class="lbl">Variation 1 · Direction B layout + current purple (#7C3BED) + current font (Space Grotesk)</div>
+<div class="row" id="r1"></div>
+<div class="lbl">Variation 2 · Direction B layout + fonts (Anton, Inter Tight, JetBrains Mono) — only the purple kept</div>
+<div class="row" id="r2"></div>
+
+<script src="stickers/stickers.js"></script>
+<script>
+document.getElementById('defs').innerHTML=DEFS;
+S.in=S.in.replace('#D8FF3D','#7C3BED').replace('fill="#0B0B0A"','fill="#fff"');
+const I=(n,s=24,st='')=>`<svg class="ic" style="width:${s}px;height:${s}px;${st}"><use href="#i-${n}"/></svg>`;
+const ST=(n,s=60,r=0,st='')=>`<svg class="st" viewBox="-10 -10 120 120" style="width:${s*1.2}px;height:${s*1.2}px;margin:${-s*.1}px;transform:rotate(${r}deg);${st}"><g filter="url(#cut)">${S[n]}</g></svg>`;
+const status=`<div class="status"><span>9:41</span><span style="display:flex;gap:6px;align-items:center"><svg width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="10" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg><svg width="27" height="13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2.5" y="2.5" width="17" height="8" rx="2" fill="currentColor"/></svg></span></div>`;
+const nav=(on)=>`<div class="fade"></div><div class="nav">${['feed','cal'].map(n=>`<span class="${on==n?'on':''}">${I(n)}</span>`).join('')}<span class="plus">${I('plus',24)}</span>${['cap','me'].map(n=>`<span class="${on==n?'on':''}">${I(n)}</span>`).join('')}</div>`;
+const avs=(a,s=28)=>`<span style="display:flex">${a.map(x=>`<img class="av" style="width:${s}px;height:${s}px" src="a/av_${x}.jpg">`).join('')}</span>`;
+const wm=(t)=>`<div class="wm">${t=='t2'?'I AM':'I am'} <span class="inpill">IN</span></div>`;
+
+function feed(t){
+ const story=(img,name,mood,st,ring)=>`<div style="width:74px;text-align:center;flex:none"><div style="position:relative;width:64px;height:64px;margin:0 auto"><img src="a/av_${img}.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2.5px solid ${ring?'var(--p)':'var(--s2)'};padding:2px;background:var(--bg)"><div class="abs" style="right:-10px;bottom:-6px">${ST(st,30,-8)}</div></div><div style="font-weight:600;font-size:13px;margin-top:8px">${name}</div><div class="meta" style="font-size:11px;margin-top:1px">${mood}</div></div>`;
+ return `<div class="ph ${t}">${status}
+ <div class="abs" style="top:58px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center">${wm(t)}<div style="display:flex;gap:18px;align-items:center">${I('users')}${I('search')}<span style="position:relative">${I('bell')}<i style="position:absolute;right:1px;top:1px;width:8px;height:8px;border-radius:50%;background:#FF5FA8"></i></span></div></div>
+ <div class="abs" style="top:108px;left:20px;right:20px;display:flex;align-items:center;gap:22px;font-weight:600;font-size:17px"><span>Inner Circle</span><span style="color:var(--mute)">City Pulse</span><span style="flex:1"></span><span class="meta">1 / 6</span>${I('filter',22,'color:var(--mute)')}</div>
+ <div class="abs" style="top:150px;left:12px;display:flex;gap:4px">
+   <div style="width:74px;text-align:center;flex:none"><div style="width:64px;height:64px;margin:0 auto;border-radius:50%;border:2px dashed rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;color:var(--mute)">${I('plus')}</div><div style="font-weight:600;font-size:13px;margin-top:8px">Your mood</div><div class="meta" style="font-size:11px;margin-top:1px">tonight?</div></div>
+   ${story('jonas','Jonas','drinks','spritz',1)}${story('timo','Timo','dancing','disco',1)}${story('marie','Marie','at mine','key',1)}${story('nina','Nina','chill','couch',0)}
+ </div>
+ <div class="card" style="top:712px;left:34px;width:322px;opacity:.6;transform:scale(.96)"><div style="height:60px"></div></div>
+ <div class="card" style="top:668px;left:24px;width:342px;z-index:2"><div style="display:flex;justify-content:space-between;padding:16px 18px;font-weight:600;font-size:16px"><span>Alles offen 26</span><span class="meta">Sat 10 Oct</span></div></div>
+ <div class="card" style="top:268px;height:416px;z-index:3">
+   <div style="display:flex;justify-content:space-between;align-items:baseline;padding:16px 18px 12px"><span style="font-weight:600;font-size:17px">Razzia · 4th anniversary</span><span class="meta">Tonight</span></div>
+   <div style="margin:0 12px;height:290px;border-radius:20px;overflow:hidden;position:relative;background:#000"><img src="a/fl_razzia_clean.png" style="width:100%;height:100%;object-fit:cover;object-position:50% 35%"><span class="abs" style="left:10px;bottom:10px;height:30px;border-radius:999px;padding:0 12px 0 8px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);color:#fff;font-size:13px;font-weight:500">${I('pin',16)}Romantica</span><span class="abs" style="right:10px;top:10px;height:28px;border-radius:999px;padding:0 10px;display:flex;align-items:center;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);color:#fff;font-size:12px;font-weight:600">Inner circle</span></div>
+   <div style="display:flex;align-items:center;padding:12px 12px 0 18px;gap:8px">${avs(['marie','timo','jonas'])}<span class="meta" style="margin-left:4px">+4</span><span style="flex:1"></span><span class="pill pg" style="height:40px;padding:0 16px">Maybe</span><span class="pill pp" style="height:40px;padding:0 16px">${I('check',18)}I'm in</span></div>
+ </div>
+ ${nav('feed')}</div>`;
+}
+
+function add(t){
+ return `<div class="ph ${t}">${status}
+ <div class="abs" style="top:56px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center"><span class="dsp" style="font-size:${t=='t2'?42:36}px">New plan</span><span class="circ">${I('close')}</span></div>
+ <div class="abs seg" style="top:112px;left:16px;right:16px"><span class="on">Photo</span><span>Link</span><span>Manual</span></div>
+ <div class="abs" style="top:168px;left:16px;right:16px;background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:12px;display:flex;gap:12px;align-items:center">
+   <img src="a/fl_midnight.png" style="width:62px;height:78px;border-radius:12px;object-fit:cover">
+   <div style="flex:1"><div style="font-weight:600;font-size:15px">Read from your screenshot</div><div class="meta" style="margin-top:3px">Check the details below</div></div>
+   <span class="pill pg" style="height:36px;font-size:13px;padding:0 14px">Replace</span>
+ </div>
+ <div class="abs" style="top:276px;left:16px;right:16px;display:flex;flex-direction:column;gap:8px">
+   <div class="field"><div class="k">Name</div><div class="v" style="font-size:19px">Midnight Service · Summer Rave</div></div>
+   <div style="display:flex;gap:8px"><div class="field" style="flex:1"><div class="k">Starts</div><div class="v">Sat 10 Oct · 16:00</div></div><div class="field" style="flex:.8"><div class="k">Ends</div><div class="v">22:00</div></div></div>
+   <div style="display:flex;gap:8px"><div class="field" style="flex:1"><div class="k">Venue</div><div class="v">Trude</div></div><div class="field" style="flex:1"><div class="k">City</div><div class="v">Stuttgart</div></div></div>
+ </div>
+ <div class="abs" style="top:500px;left:20px;font-weight:600;font-size:14px;color:var(--mute)">Vibe</div>
+ <div class="abs" style="top:526px;left:16px;right:0;display:flex;gap:8px;overflow:hidden">${[['vinyl','Music',1],['popper','Party'],['tent','Festival'],['palette','Art']].map(c=>`<span class="tag ${c[2]?'on':''}" style="height:40px;padding:0 14px 0 8px">${ST(c[0],22,-6)}${c[1]}</span>`).join('')}</div>
+ <div class="abs" style="top:584px;left:20px;font-weight:600;font-size:14px;color:var(--mute)">Who can see it</div>
+ <div class="abs seg" style="top:610px;left:16px;right:16px"><span class="on" style="background:var(--p);color:#fff">Public</span><span>Circle</span><span>List</span><span>Ghost</span></div>
+ <div class="abs" style="top:668px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;padding:0 4px"><span style="font-weight:600;font-size:15px">You're going?</span><span style="display:flex;gap:8px"><span class="pill pg" style="height:36px;font-size:14px">Maybe</span><span class="pill pp" style="height:36px;font-size:14px">${I('check',16)}I'm in</span></span></div>
+ <div class="abs" style="left:16px;right:16px;bottom:28px;z-index:16"><span class="pill pp" style="width:100%;height:58px;font-size:17px">Post plan</span></div>
+ <div class="abs" style="left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,var(--bg) 50%);z-index:15"></div>
+ </div>`;
+}
+
+function calendar(t){
+ const days=Array.from({length:14},(_,i)=>i+2);
+ return `<div class="ph ${t}">${status}
+ <div class="abs" style="top:58px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center"><span class="dsp" style="font-size:${t=='t2'?46:40}px">October</span><span style="display:flex;gap:8px;align-items:center"><span class="circ">${I('sync')}</span></span></div>
+ <div class="abs seg" style="top:114px;left:16px;width:220px"><span>Month</span><span class="on">Week</span><span>Day</span></div>
+ <div class="abs" style="top:118px;right:20px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--mute)">Maybes<span class="tog"></span></div>
+ <div class="abs" style="top:170px;left:16px;right:16px;height:226px;background:var(--s1);border:1px solid var(--line);border-radius:28px;padding:18px 18px">
+   <div style="display:flex;justify-content:space-between;align-items:baseline"><div><div style="font-weight:600;font-size:21px">Upcoming</div><div style="font-weight:600;font-size:21px;color:#5E5D58">Next 2 weeks</div></div><span style="display:flex;gap:6px;color:var(--mute)">${I('cl',20)}${I('chev',20)}</span></div>
+   <div style="display:grid;grid-template-columns:repeat(7,38px);justify-content:space-between;margin-top:14px">${['M','T','W','T','F','S','S'].map(d=>`<div class="meta" style="text-align:center;font-size:11px">${d}</div>`).join('')}</div>
+   <div style="display:grid;grid-template-columns:repeat(7,38px);justify-content:space-between;gap:8px 0;margin-top:6px">${days.map(d=>{const plan=[3,10,11].includes(d),may=d==9,today=d==2,away=[14,15].includes(d),bday=d==12;return `<div style="position:relative;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;background:${plan?'var(--p)':away?'transparent':'var(--s2)'};color:${plan?'#fff':away?'var(--mute)':'var(--ink)'};${today?'box-shadow:0 0 0 2px var(--ink)':''};${may?'box-shadow:inset 0 0 0 2px var(--p)':''};${away?'border:1.5px dashed rgba(255,255,255,.25)':''}">${d}${bday?`<span class="abs" style="right:-8px;top:-10px">${ST('cake',22,10)}</span>`:''}</div>`}).join('')}</div>
+ </div>
+ <div class="abs" style="top:408px;left:20px;display:flex;gap:14px" class="meta"><span class="meta" style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:50%;background:var(--p)"></i>In</span><span class="meta" style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--p)"></i>Maybe</span><span class="meta" style="display:flex;align-items:center;gap:6px"><i style="width:10px;height:10px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.35)"></i>Away</span></div>
+ <div class="abs" style="top:438px;left:16px;right:16px;display:flex;flex-direction:column;gap:8px">
+ ${[['Sat','03','fl_razzia_clean.png','Razzia · 4th anniversary','Romantica · 7 friends','in'],['Fri','09','fl_queer.png','Queerfeminist Night','Sunny High · 2 friends','maybe'],['Sat','10','fl_alles.png','Alles offen 26','Wagenhalle · 4 friends','in'],['Mon','12','','Timo\'s birthday','Turns 29 · send a card','bday']].map(r=>`<div style="background:var(--s1);border:1px solid var(--line);border-radius:20px;height:72px;display:flex;align-items:center;padding:0 14px 0 14px;gap:12px"><div style="width:34px;text-align:center"><div class="meta" style="font-size:11px">${r[0]}</div><div style="font-weight:600;font-size:23px;line-height:1.1">${r[1]}</div></div><div style="width:1px;height:40px;background:var(--line)"></div>${r[2]?`<img src="a/${r[2]}" style="width:46px;height:46px;border-radius:12px;object-fit:cover">`:`<div style="width:46px;height:46px;border-radius:12px;background:#2A1F14;display:flex;align-items:center;justify-content:center">${ST('cake',34,6)}</div>`}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r[3]}</div><div style="font-size:13px;color:var(--mute);margin-top:2px">${r[4]}</div></div>${r[5]=='in'?`<span class="pill pp" style="height:30px;padding:0 12px;font-size:13px">In</span>`:r[5]=='maybe'?`<span class="tag" style="height:30px">Maybe</span>`:`<span class="pill pg" style="height:30px;padding:0 12px;font-size:13px">Card</span>`}</div>`).join('')}
+ </div>
+ ${nav('cal')}</div>`;
+}
+
+function capsule(t){
+ const cards=[['Flohmarkt Filderstraße','03.10','#ECE9A6','#0B0B0A','4 photos'],['Desterradxs','17.09','#1F3A1C','#E9F7D0','12 photos'],['Marie\'s birthday','02.10','#F48BC8','#0B0B0A','9 photos'],['Supperclub','03.10','#E8364F','#fff','5 photos']];
+ return `<div class="ph ${t}">${status}
+ <div class="abs dsp" style="top:60px;left:22px;font-size:${t=='t2'?52:44}px">Capsules</div>
+ <div class="abs" style="top:${t=='t2'?122:114}px;left:22px;color:var(--mute);font-size:15px;font-weight:500">Shared memories, one per night.</div>
+ ${cards.map((c,i)=>`<div class="abs" style="top:${168+i*56}px;left:16px;width:358px;height:200px;border-radius:24px;background:${c[2]};color:${c[3]};padding:16px 18px;display:flex;justify-content:space-between;box-shadow:0 -6px 16px rgba(0,0,0,.25)"><span style="font-weight:600;font-size:16px">${c[0]}</span><span style="font-size:13px;font-weight:500;opacity:.8">${c[1]} · ${c[4]}</span></div>`).join('')}
+ <div class="abs" style="top:392px;left:16px;width:358px;height:344px;border-radius:26px;overflow:hidden;background:#140A10;box-shadow:0 -8px 24px rgba(0,0,0,.45)">
+   <img src="a/fl_razzia_clean.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;filter:blur(2px)">
+   <div class="abs" style="inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.1),rgba(10,10,10,.85))"></div>
+   <div class="abs" style="top:16px;left:18px;right:18px;display:flex;justify-content:space-between;color:#fff;align-items:center"><span style="font-weight:600;font-size:16px">Razzia · 4th anniversary</span>${avs(['marie','timo','jonas'],24)}</div>
+   <div class="abs" style="top:60px;left:30px;display:flex">${['f3','f4','01'].map((p,i)=>`<div style="width:92px;height:122px;border-radius:10px;border:4px solid #F4F3EE;overflow:hidden;transform:rotate(${[-8,3,10][i]}deg);margin-left:${i?-18:0}px;box-shadow:0 8px 18px rgba(0,0,0,.4)"><img src="a/${p}.jpg" style="width:100%;height:100%;object-fit:cover;filter:blur(9px) brightness(.85);transform:scale(1.2)"></div>`).join('')}</div>
+   <div class="abs" style="top:78px;left:246px">${ST('cam',86,-10)}</div>
+   <div class="abs" style="left:18px;bottom:80px;color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px">23 photos · 3 predictions ${ST('crystal',22,0)}</div>
+   <div class="abs" style="left:18px;right:18px;bottom:16px;display:flex;align-items:center;justify-content:space-between"><span class="meta" style="color:#bbb">Opens 10:12</span><span class="pill pp" style="height:48px;font-size:${t=='t2'?24:22}px;font-family:var(--dsp);${t=='t1'?'font-weight:700;':''}letter-spacing:.03em">07 : 48 : 12</span></div>
+ </div>
+ ${nav('cap')}</div>`;
+}
+
+function profile(t){
+ return `<div class="ph ${t}">${status}
+ <div class="abs" style="top:58px;left:22px;right:22px;display:flex;align-items:center;gap:16px;font-size:${t=='t2'?30:28}px;font-weight:600;letter-spacing:-.03em"><span>Me</span><span style="color:#55544F">Calendar</span><span style="color:#55544F">Friends</span><span style="flex:1"></span>${I('gear',24)}</div>
+ <div class="abs" style="top:110px;left:16px;right:16px;height:372px;background:var(--s1);border:1px solid var(--line);border-radius:30px;text-align:center;padding-top:20px">
+   <img src="a/av_marie.jpg" style="width:150px;height:150px;border-radius:50%;object-fit:cover">
+   <div class="abs" style="left:216px;top:120px">${ST('disco',52,8)}</div>
+   <div class="dsp" style="font-size:${t=='t2'?40:32}px;margin-top:14px">Marie Klein</div>
+   <div class="meta" style="margin-top:8px">@marie · Stuttgart</div>
+   <div style="font-size:15px;line-height:1.4;color:#CFCEC8;margin:12px 20px 0">Dinner that turns into a night? Always in.</div>
+   <div style="display:flex;gap:8px;justify-content:center;margin-top:16px"><span class="pill pg" style="height:40px;font-size:14px">${I('pen',16)}Edit profile</span><span class="pill pg" style="height:40px;font-size:14px">${I('share',16)}Share</span></div>
+ </div>
+ <div class="abs" style="top:492px;left:16px;right:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[['Events','23'],['Followers','7'],['Following','7']].map(s=>`<div style="background:var(--s1);border:1px solid var(--line);border-radius:22px;height:108px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;text-align:center"><span style="color:var(--mute);font-size:13px;font-weight:500">${s[0]}</span><span class="dsp" style="font-size:${t=='t2'?44:40}px;line-height:1">${s[1]}</span></div>`).join('')}</div>
+ <div class="abs" style="top:620px;left:22px;right:22px;display:flex;justify-content:space-between;font-size:15px;font-weight:600"><span>Stickers you earned</span><span style="color:var(--mute)">See all</span></div>
+ <div class="abs" style="top:652px;left:16px;display:flex;gap:8px">${[['disco','10 nights'],['spritz','host'],['cam','capsule'],['seal','3 pacts']].map((s,i)=>`<div style="width:84px;text-align:center"><div style="display:flex;justify-content:center">${ST(s[0],52,[-6,5,-4,8][i])}</div><div class="meta" style="font-size:11px;margin-top:6px">${s[1]}</div></div>`).join('')}</div>
+ ${nav('me')}</div>`;
+}
+
+for (const [t,id] of [['t1','r1'],['t2','r2']]) document.getElementById(id).innerHTML=feed(t)+add(t)+calendar(t)+capsule(t)+profile(t);
+</script>
+</body></html>
