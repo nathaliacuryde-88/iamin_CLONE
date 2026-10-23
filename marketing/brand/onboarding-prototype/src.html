@@ -175,22 +175,37 @@ splash: { label: 'Logo intro', tag: 'new', auto: 2800, render: () => `<div class
   <style>@keyframes brL{from{transform:translateX(-80px);opacity:0}to{transform:none;opacity:1}}@keyframes brR{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}</style>
 </div>` },
 
-choose: { label: 'Person or organizer', tag: 'upd', render: () => `<div class="scr setup">
-  <div class="shead">${logo}</div>
-  <h2 class="hl" style="font-size:54px;margin-top:22px">${words("Who's behind the *screen?*", 100)}</h2>
-  <p class="sub" style="margin:12px 0 0;--d:600ms">Pick the experience that fits. You can switch later in settings.</p>
-  <div style="display:flex;flex-direction:column;gap:12px;margin-top:22px;flex:1">
-    ${[['person', 'f4.jpg', 'Person', 'Go to events with friends. Save plans, split tabs, share photos.', 'in', 300], ['organizer', 'fl_razzia.jpg', 'Organizer', 'Create events for others. Get analytics, build a following, grow your record.', 'crown', 450]].map((o) => `<button class="card pop" data-pick="${o[0]}" style="animation-delay:${o[5]}ms;display:flex;align-items:stretch;overflow:visible;position:relative;text-align:left;padding:0;min-height:150px">
-      <span style="width:128px;flex:none;border-radius:22px 0 0 22px;overflow:hidden"><img src="${A(o[1])}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></span>
-      <span style="padding:16px;display:flex;flex-direction:column;justify-content:center;gap:6px"><span class="hl" style="font-size:30px">${o[2]}</span><span style="font-size:13.5px;color:var(--mute);line-height:1.4">${o[3]}</span></span>
-      ${st(o[4], 58, 84, -18, -10, o[5] + 350)}
+choose: { label: 'Welcome — pick your path', tag: 'upd', render: () => `<div class="scr setup">
+  <div class="shead">${logo}<span style="flex:1"></span><button class="skip" data-act="login">Log in</button></div>
+  <h2 class="hl" style="font-size:54px;margin-top:18px">${words("Who's behind the *screen?*", 100)}</h2>
+  <p class="sub" style="margin:10px 0 0;--d:600ms">Pick the experience that fits. You can switch later in settings.</p>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;flex:1">
+    ${[['person', 'f4.jpg', 'Going out with friends', 'Person', ['Save plans from screenshots & links', "See who's in", 'Split expenses', '24h photo Capsules'], 'in', 300],
+       ['organizer', 'fl_razzia.jpg', 'Hosting events', 'Organizer', ['Guest lists', 'Ticket payouts', 'Line Mode wait times', 'Host track record'], 'crown', 450]].map((o) => `<button class="pick pop" data-pick="${o[0]}" style="animation-delay:${o[6]}ms">
+      <img src="${A(o[1])}" alt="">
+      <span class="pickshade"></span>
+      <span class="pickin">
+        <span class="mono" style="font-size:10.5px;opacity:.8">${o[3]}</span>
+        <span class="hl" style="font-size:34px;margin-top:4px">${o[2]}</span>
+        <span class="pickl">${o[4].map((x) => `<span>${x}</span>`).join('')}</span>
+      </span>
+      <span class="pickgo">${I('ArrowRight', 20, 2.4)}</span>
+      ${st(o[5], 62, 262, -20, 10, o[6] + 350)}
     </button>`).join('')}
   </div>
-  <button class="btn t" data-act="login">I already have an account</button>
+  <style>
+  .pick{position:relative;display:block;width:100%;min-height:208px;border-radius:26px;overflow:visible;text-align:left;color:#fff;padding:0}
+  .pick>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:26px}
+  .pickshade{position:absolute;inset:0;border-radius:26px;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.78))}
+  .pickin{position:absolute;left:18px;right:60px;bottom:16px;display:flex;flex-direction:column}
+  .pickl{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .pickl span{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px)}
+  .pickgo{position:absolute;right:14px;bottom:16px;width:40px;height:40px;border-radius:50%;background:#7C3BED;display:flex;align-items:center;justify-content:center}
+  </style>
 </div>` },
 
-p1: { label: 'Plans in one place', tag: 'upd', story: 1, render: () => `<div class="scr" style="background:var(--bg)">
-  <div style="position:absolute;left:22px;right:22px;top:92px"><h2 class="hl" style="font-size:52px">${words('Screenshot it. It\'s a *plan.*', 150)}</h2></div>
+p1: { label: 'Your plans, in one place', tag: 'upd', story: 1, render: () => `<div class="scr" style="background:var(--bg)">
+  <div style="position:absolute;left:22px;right:22px;top:92px"><h2 class="hl" style="font-size:54px">${words('Your plans, in one *place.*', 150)}</h2></div>
   <div style="position:absolute;left:96px;top:300px;width:196px;height:272px;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.35);animation:dropIn .7s cubic-bezier(.2,.9,.3,1.2) .35s both;--r:-6deg">
     <img src="${A('fl_midnight.jpg')}" alt="" style="width:100%;height:100%;object-fit:cover">
     <i style="position:absolute;left:0;right:0;height:4px;background:#7C3BED;box-shadow:0 0 18px 6px rgba(124,59,237,.7);animation:scan 1.1s ease-in-out 1s both"></i>
@@ -201,11 +216,11 @@ p1: { label: 'Plans in one place', tag: 'upd', story: 1, render: () => `<div cla
     <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:15.5px">Midnight Service</div><div style="font-size:12.5px;color:var(--mute);margin-top:2px">Sat 10 Oct · 16:00 · Trude</div><div style="display:flex;gap:6px;margin-top:8px"><span class="mono" style="font-size:10px;padding:3px 7px;border-radius:6px;background:var(--pSoft);color:var(--pt)">festival</span><span class="mono" style="font-size:10px;padding:3px 7px;border-radius:6px;background:var(--s2)">read ✓</span></div></div>
   </div>
   <div class="chip pop" style="position:absolute;left:30px;top:640px;height:36px;padding:0 14px;background:var(--s1);border:1px solid var(--line);animation-delay:2.7s">${I('Link', 16)}or paste a link</div>
-  <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;--d:1.4s">Import any event from a screenshot or link — or create one from scratch.</p>
+  <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;--d:1.4s">Brunch, sports, birthdays, concerts or weekend trips — every plan belongs here. Import an event from a screenshot or link, or create your own.</p>
   <style>@keyframes dropIn{from{transform:translateY(-140%) rotate(14deg);opacity:0}to{transform:rotate(var(--r));opacity:1}}@keyframes scan{from{top:0;opacity:1}to{top:100%;opacity:.2}}@keyframes cardUp{from{transform:translateY(80px);opacity:0}to{transform:none;opacity:1}}</style>
 </div>` },
 
-p2: { label: "See who's really in", tag: 'upd', story: 1, render: () => `<div class="scr photo">
+p2: { label: "See who's in", tag: 'upd', story: 1, render: () => `<div class="scr photo">
   <img class="bg" src="${A('f4.jpg')}" alt=""><div class="shade"></div>
   <div style="position:absolute;left:20px;right:20px;top:110px;display:flex;flex-direction:column;gap:8px">
     ${[['marie', 'Marie', "I'm in"], ['jonas', 'Jonas', "I'm in"], ['timo', 'Timo', 'Maybe'], ['nina', 'Nina', "I'm in"]].map((f, i) => `<div class="chip glass pop" style="height:46px;padding:0 16px 0 5px;align-self:flex-start;animation-delay:${400 + i * 170}ms"><img class="av" src="${A('av_' + f[0] + '.jpg')}" alt="" width="36" height="36">${f[1]}<span class="mono" style="font-size:10px;padding:3px 7px;border-radius:6px;${f[2] == 'Maybe' ? 'border:1px solid rgba(255,255,255,.6)' : 'background:#7C3BED'}">${f[2]}</span></div>`).join('')}
@@ -214,38 +229,37 @@ p2: { label: "See who's really in", tag: 'upd', story: 1, render: () => `<div cl
   <div class="chip glass pop" style="position:absolute;right:20px;top:372px;height:42px;padding:0 16px;animation-delay:2.4s">“I'll go if you go.”</div>
   ${st('seal', 64, 300, 400, -8, 2200)}
   <div style="position:absolute;left:20px;right:20px;bottom:calc(44px + env(safe-area-inset-bottom,0px))">
-    <h2 class="hl" style="font-size:64px">${words("Who's really *in?*", 500)}</h2>
-    <p class="sub" style="margin:14px 0 0;--d:1.1s">Say you're going, drop a maybe, or make a pact — you both commit, or neither does.</p>
+    <h2 class="hl" style="font-size:64px">${words("See who's *in.*", 500)}</h2>
+    <p class="sub" style="margin:14px 0 0;--d:1.1s">Say you're going, drop a maybe, or make a pact with a friend — you both commit at the same time or neither of you does.</p>
   </div>
 </div>` },
 
-p3: { label: 'The night itself', tag: 'upd', story: 1, render: () => `<div class="scr photo">
+p3: { label: 'Split it, find each other', tag: 'upd', story: 1, render: () => `<div class="scr photo">
   <img class="bg" src="${A('f3.jpg')}" alt=""><div class="shade"></div>
   <div style="position:absolute;right:18px;top:120px;display:flex;flex-direction:column;align-items:flex-end;gap:14px">
-    ${[['scooter', 'Jonas · 4 min away', 500], ['ticket', 'Line · short wait', 1200], ['receipt', 'The tab · €14 each', 1900]].map((r) => `<div class="row slideR" style="animation-delay:${r[2]}ms"><div class="chip glass" style="height:44px;padding:0 16px;background:rgba(0,0,0,.55)">${r[1]}</div><span style="display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))">${SV(r[0], 64)}</span></div>`).join('')}
+    ${[['receipt', 'The tab · €14 each', 500], ['cash', 'Nina paid you back', 1200], ['scooter', 'Jonas · 4 min away', 1900]].map((r) => `<div class="row slideR" style="animation-delay:${r[2]}ms"><div class="chip glass" style="height:44px;padding:0 16px;background:rgba(0,0,0,.55)">${r[1]}</div><span style="display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))">${SV(r[0], 64)}</span></div>`).join('')}
   </div>
   <div style="position:absolute;left:20px;right:20px;bottom:calc(44px + env(safe-area-inset-bottom,0px))">
-    <h2 class="hl" style="font-size:66px">${words('The night, *sorted.*', 400)}</h2>
-    <p class="sub" style="margin:14px 0 0;--d:1s">Split the tab, see who's on the way and how the line looks.</p>
+    <h2 class="hl" style="font-size:66px">${words('Split the *tab.*', 400)}</h2>
+    <p class="sub" style="margin:14px 0 0;--d:1s">Split costs and see who's on the way. Friends pay you back in one tap with PayPal, Revolut or N26.</p>
   </div>
 </div>` },
 
-p4: { label: 'The morning after', tag: 'upd', story: 1, render: () => {
+p4: { label: 'From the plan to the memory', tag: 'upd', story: 1, render: () => {
   const imgs = ['f3.jpg', 'f4.jpg', 'f2.jpg', 'p01.jpg', 'C', 'f1.jpg', 'p02.jpg', 'f5.jpg', 'p03.jpg'];
   const off = [[-160, -220, -24], [10, -300, 18], [180, -240, -14], [-220, 20, 20], [0, 0, 0], [220, 40, -18], [-180, 260, 16], [0, 320, -12], [190, 280, 22]];
   return `<div class="scr">
-  <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:62px">${words('The morning *after.*', 100)}</h2></div>
-  <div style="position:absolute;left:50%;top:268px;width:318px;margin-left:-159px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
+  <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:56px">${words('From the plan to the *memory.*', 100)}</h2></div>
+  <div style="position:absolute;left:50%;top:300px;width:318px;margin-left:-159px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
     ${imgs.map((p, i) => p == 'C' ? `<div class="card pop" style="height:132px;display:flex;flex-direction:column;align-items:center;justify-content:center;animation-delay:1.5s"><span class="hl" style="font-size:28px">Razzia</span><span class="mono" style="color:var(--mute);margin-top:6px;font-size:10px">23 photos</span></div>` : `<img src="${A(p)}" alt="" style="width:100%;height:132px;object-fit:cover;border-radius:14px;box-shadow:0 8px 18px rgba(0,0,0,.2);--x:${off[i][0]}px;--y:${off[i][1]}px;--rot:${off[i][2]}deg;animation:settle .9s cubic-bezier(.2,.9,.3,1.1) ${300 + i * 90}ms both">`).join('')}
   </div>
-  ${st('burst', 86, 290, 236, -10, 2100)}
-  ${st('crystal', 66, 6, 590, -8, 2600)}
-  <div class="chip pop" style="position:absolute;left:84px;top:640px;height:38px;padding:0 14px;background:var(--p);color:#fff;animation-delay:2.8s">3 predictions opened</div>
-  <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;--d:1.2s">Everyone's photos land in one capsule. Predictions open. The receipt prints.</p>
+  ${st('lock', 70, 296, 262, -10, 2100)}
+  <div class="chip pop" style="position:absolute;left:24px;top:680px;height:38px;padding:0 14px;background:var(--p);color:#fff;animation-delay:2.6s">${I('Clock', 15)}24h to drop photos · opens the morning after</div>
+  <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;--d:1.2s">Everyone's photos go into one Capsule during the night. It stays sealed and opens for everyone the morning after.</p>
   <style>@keyframes settle{from{transform:translate(var(--x),var(--y)) rotate(var(--rot)) scale(1.15);opacity:0}35%{opacity:1}to{transform:none;opacity:1}}</style>
 </div>`; } },
 
-o1: { label: 'Your audience', tag: 'upd', story: 1, render: () => `<div class="scr">
+o1: { label: 'Your audience, yours to grow', tag: 'upd', story: 1, render: () => `<div class="scr">
   <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:58px">${words('Your audience, yours to *grow.*', 100)}</h2></div>
   <div class="card pop" style="position:absolute;left:24px;right:24px;top:330px;padding:18px;animation-delay:500ms">
     <div class="row"><img class="av" src="${A('fl_razzia.jpg')}" alt="" width="58" height="58"><div style="flex:1"><div style="font-weight:700;font-size:18px;display:flex;align-items:center;gap:6px">Romantica <span style="width:20px;height:20px;border-radius:50%;background:#7C3BED;color:#fff;display:inline-flex;align-items:center;justify-content:center">${I('Check', 12, 3)}</span></div><div class="mono" style="color:var(--mute);margin-top:4px;font-size:10.5px">Club · Stuttgart</div></div><span class="follow" style="display:inline-flex;align-items:center;animation:pulse 1.6s ease-in-out 1.8s infinite">Follow</span></div>
@@ -257,8 +271,29 @@ o1: { label: 'Your audience', tag: 'upd', story: 1, render: () => `<div class="s
   <style>@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}</style>
 </div>` },
 
-o2: { label: 'Your track record', tag: 'upd', story: 1, render: () => `<div class="scr">
-  <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:56px">${words('A track record that builds *itself.*', 100)}</h2></div>
+o2: { label: 'Guest lists & ticket payouts', tag: 'new', story: 1, render: () => `<div class="scr">
+  <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:56px">${words('Guest lists & ticket *payouts.*', 100)}</h2></div>
+  <div class="card pop" style="position:absolute;left:24px;right:24px;top:300px;padding:16px;animation-delay:400ms">
+    <div class="row"><span class="mono" style="flex:1;color:var(--mute);font-size:10.5px">Guest list · Razzia</span><span class="mono" style="font-size:10.5px;color:var(--pt)">186 / 220</span></div>
+    ${[['marie', 'Marie Klein', 'Ticket · paid'], ['jonas', 'Jonas Weber', 'Ticket · paid'], ['nina', 'Nina Ortega', '+1 · guest list'], ['timo', 'Timo Schulz', 'Ticket · paid']].map((g, i) => `<div class="row slideR" style="padding:9px 0;border-top:1px solid var(--line);margin-top:${i ? 0 : 10}px;animation-delay:${700 + i * 160}ms"><img class="av" src="${A('av_' + g[0] + '.jpg')}" alt="" width="34" height="34"><span style="flex:1;font-weight:600;font-size:14.5px">${g[1]}</span><span style="font-size:12px;color:var(--mute)">${g[2]}</span><span style="color:var(--pt)">${I('Check', 16, 2.6)}</span></div>`).join('')}
+  </div>
+  <div class="card pop" style="position:absolute;left:24px;top:610px;padding:14px 16px;background:var(--p);color:#fff;border:0;animation-delay:1.8s"><div class="mono" style="opacity:.8;font-size:10px">Payout · Stripe</div><div class="hl" style="font-size:40px;margin-top:4px">€<span data-count="2480">0</span></div></div>
+  ${st('ticket', 84, 254, 590, 10, 1500)}${st('cash', 70, 300, 250, -8, 2100)}
+  <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;--d:1.2s">See who's coming, sell tickets in the app and get paid out to your account.</p>
+</div>` },
+
+o3: { label: 'Line Mode', tag: 'new', story: 1, render: () => `<div class="scr" style="background:#0B0B0A;color:#F4F3EE">
+  <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:58px;color:#F4F3EE">${words('Line Mode: wait times, *live.*', 100)}</h2></div>
+  <div style="position:absolute;left:24px;right:24px;top:320px;display:flex;flex-direction:column;gap:8px">
+    ${[['#17B75A', 'Walk in', 4], ['#FFD400', 'Short wait', 31], ['#F23D3D', 'Long wait', 9], ['#888888', 'Closed', 0]].map((l, i) => `<div class="slideR" style="display:flex;align-items:center;gap:12px;height:54px;padding:0 16px;border-radius:18px;background:${i == 1 ? '#242422' : '#171716'};border:1.5px solid ${i == 1 ? l[0] : 'transparent'};animation-delay:${500 + i * 160}ms"><i style="width:12px;height:12px;border-radius:50%;background:${l[0]}"></i><span style="flex:1;font-weight:600">${l[1]}</span><span class="mono" style="font-size:11px;color:#8F8E88">${l[2]} votes</span></div>`).join('')}
+  </div>
+  <div class="pop" style="position:absolute;left:24px;top:584px;animation-delay:1.6s"><div class="mono" style="color:#8F8E88;font-size:10.5px">At the door · 23:40</div><div class="hl" style="font-size:52px;color:#FFD400;margin-top:4px">Short wait</div></div>
+  ${st('clock', 74, 286, 560, 10, 1900)}
+  <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;color:#BDBCB6;--d:1.2s">Guests at the door report the line, so everyone knows before they leave home.</p>
+</div>` },
+
+o4: { label: 'Your track record', tag: 'upd', story: 1, render: () => `<div class="scr">
+  <div style="position:absolute;left:22px;right:22px;top:88px"><h2 class="hl" style="font-size:56px">${words('Your track record, built *automatically.*', 100)}</h2></div>
   <div class="card" style="position:absolute;left:24px;right:24px;top:350px;padding:18px;display:flex;flex-direction:column;gap:14px">
     ${[['flame', 'Worth it', 78], ['meh', 'Mid', 16], ['skull', 'Flop', 6]].map((r, i) => `<div class="row"><span style="display:block;width:48px">${SV(r[0], 40)}</span><div style="flex:1"><div style="display:flex;justify-content:space-between;font-weight:600;font-size:14px"><span>${r[1]}</span><span class="mono">${r[2]}%</span></div><div style="height:10px;border-radius:5px;background:var(--s2);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;border-radius:5px;background:${i ? 'var(--s3)' : '#7C3BED'};width:${r[2]}%;transform-origin:left;animation:grow .9s cubic-bezier(.2,.9,.3,1) ${700 + i * 200}ms both"></i></div></div></div>`).join('')}
   </div>
@@ -270,16 +305,17 @@ o2: { label: 'Your track record', tag: 'upd', story: 1, render: () => `<div clas
 
 getin: { label: 'Get in', tag: 'upd', story: 1, hold: 1, render: (st8) => {
   const ph = (img, x, y, w, h, r, d, lbl, sk, sx, sy) => `<div class="gph" style="left:${x}px;top:${y}px;width:${w}px;--r:${r}deg;animation-delay:${d}ms"><img src="${A(img)}" alt="" style="height:${h}px"><span class="glb" style="left:${sx}px;top:${sy}px;animation-delay:${d + 380}ms">${SV(sk, 34)}<b>${lbl}</b></span></div>`;
+  const L = st8.path == 'organizer' ? [['Grow your crowd', 'crown'], ['Guest list', 'ticket'], ['Get paid out', 'cash'], ['Line Mode', 'clock']] : [['Make a plan', 'pin'], ["Who's in?", 'hey'], ['Split the tab', 'receipt'], ['Seal the night', 'lock']];
   return `<div class="scr purple">
-  ${ph('fl_razzia.jpg', 20, 70, 150, 170, -8, 150, 'Make a plan', 'pin', -6, 150)}
-  ${ph('p01.jpg', 196, 92, 168, 132, 7, 300, "Who's in?", 'hey', 40, 112)}
-  ${ph('p02.jpg', 214, 300, 150, 160, -5, 450, 'Split the tab', 'receipt', -30, 136)}
-  ${ph('p03.jpg', 28, 316, 160, 126, 6, 600, 'Seal the night', 'lock', 20, 106)}
+  ${ph('fl_razzia.jpg', 20, 70, 150, 170, -8, 150, L[0][0], L[0][1], -6, 150)}
+  ${ph('p01.jpg', 196, 92, 168, 132, 7, 300, L[1][0], L[1][1], 40, 112)}
+  ${ph('p02.jpg', 214, 300, 150, 160, -5, 450, L[2][0], L[2][1], -30, 136)}
+  ${ph('p03.jpg', 28, 316, 160, 126, 6, 600, L[3][0], L[3][1], 20, 106)}
   <div style="position:absolute;left:22px;right:22px;top:520px;text-align:left;z-index:5">
     <h2 class="hl" style="font-size:136px;color:#fff">${words('Get in.', 900)}</h2>
   </div>
   <div style="position:absolute;left:22px;right:22px;bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;z-index:25">
-    <button class="btn w" data-act="next">${st8.path == 'organizer' ? 'Create organizer account' : 'Get started'}</button>
+    <button class="btn w" data-act="next">${st8.path == 'organizer' ? 'Create organizer account' : 'Get started'} →</button>
     <button class="btn t" data-act="login">I already have an account</button>
   </div>
   <style>
@@ -290,10 +326,34 @@ getin: { label: 'Get in', tag: 'upd', story: 1, hold: 1, render: (st8) => {
   </style>
 </div>`; } },
 
+auth: { label: 'Sign up / log in', tag: 'upd', render: (st8) => `<div class="scr setup">
+  <div class="shead"><button class="icb" style="background:var(--s2)" data-act="back" aria-label="Back">${I('ChevronLeft', 20, 2.4)}</button><span style="flex:1"></span>${logo}<span style="flex:1"></span><span style="width:40px"></span></div>
+  <div class="ill" style="height:120px">${st(st8.path == 'organizer' ? 'crown' : 'in', 92, 20, 10, -10, 200)}${st('hey', 70, 250, 30, 8, 380)}</div>
+  <h2 class="hl" style="font-size:50px">${words(st8.path == 'organizer' ? 'Create your organizer *account.*' : 'Create your *account.*', 100)}</h2>
+  <p class="sub" style="margin:8px 0 14px;--d:500ms">Discover events. Share with friends.</p>
+  <div class="seg2" role="tablist"><button aria-pressed="true" data-authtab>Sign up</button><button aria-pressed="false" data-authtab>Log in</button></div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+    <button class="btn" style="background:var(--ink);color:var(--bg)" data-act="next"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Sign in with Apple</button>
+    <button class="btn g" data-act="next"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>Continue with Google</button>
+  </div>
+  <div class="orline"><span></span>or<span></span></div>
+  <div class="field">${I('Mail', 20)}<input placeholder="Email" type="email" autocomplete="email"></div>
+  <div class="field" style="margin-top:8px">${I('Lock', 20)}<input placeholder="Password (min 6 chars)" type="password"></div>
+  <span style="flex:1"></span>
+  <button class="btn p" data-act="next">Create account</button>
+  <button class="btn t" data-act="forgot">Forgot password?</button>
+  <style>
+  .seg2{display:flex;padding:4px;border-radius:999px;background:var(--s1);border:1px solid var(--line)}
+  .seg2 button{flex:1;height:40px;border-radius:999px;font-weight:600;font-size:14.5px;color:var(--mute)}
+  .seg2 button[aria-pressed="true"]{background:var(--s3);color:var(--ink)}
+  .orline{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mute);font-size:13px}.orline span{flex:1;height:1px;background:var(--line2)}
+  </style>
+</div>` },
+
 name: { label: 'Your name', tag: 'old', setup: 1, render: () => setupScr({
   ill: st('hey', 104, 4, 20, -8, 200) + `<div class="pop" style="position:absolute;left:140px;top:44px;width:86px;height:86px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 32px var(--ui);animation-delay:400ms" id="initials">?</div>`,
   title: 'What should we *call you?*', desc: 'This is the name friends will see on your profile and on events.',
-  body: `<div class="field"><input id="ob-name" placeholder="Your name" autocomplete="name"></div>`, cta: 'Continue', needs: 'ob-name' }) },
+  body: `<div class="field"><input id="ob-name" placeholder="Your name" autocomplete="name"></div><div class="flab">Username</div><div class="field"><span class="pre">@</span><input placeholder="yourname" autocomplete="username"><span style="color:#17B75A">${I('Check', 18, 2.6)}</span></div>`, cta: 'Continue', needs: 'ob-name' }) },
 
 photo: { label: 'Photo + first mood', tag: 'new', setup: 1, skip: 1, render: () => setupScr({
   ill: `<div style="position:absolute;left:50%;top:6px;margin-left:-70px"><div id="avbox" style="width:140px;height:140px;border-radius:50%;border:2.5px dashed var(--line2);display:flex;align-items:center;justify-content:center;color:var(--mute);position:relative;overflow:visible">${I('Camera', 34, 1.8)}</div></div>`,
@@ -304,7 +364,7 @@ photo: { label: 'Photo + first mood', tag: 'new', setup: 1, skip: 1, render: () 
 
 birthday: { label: 'Birthday', tag: 'old', setup: 1, skip: 1, render: () => setupScr({
   ill: st('cake', 108, 30, 20, -8, 200) + st('balloon', 84, 210, 0, 10, 400) + st('spark', 40, 170, 100, 0, 600),
-  title: "When's your *birthday?*", desc: 'Your friends get it on their calendar automatically — no more forgetting.',
+  title: "When's your *birthday?*", desc: 'Your friends get it on their calendar automatically — no more forgetting. We also use it to show your age range.',
   body: `<div class="wheel"><span class="sel"></span><div><span>20</span><span>21</span><b>22</b><span>23</span><span>24</span></div><div><span>January</span><span>February</span><b>March</b><span>April</span><span>May</span></div><div><span>1994</span><span>1995</span><b>1996</b><span>1997</span><span>1998</span></div></div>`, cta: 'Continue' }) },
 
 city: { label: 'Home city', tag: 'old', setup: 1, skip: 1, render: () => setupScr({
@@ -315,11 +375,11 @@ city: { label: 'Home city', tag: 'old', setup: 1, skip: 1, render: () => setupSc
 
 friends: { label: 'Find your people', tag: 'new', setup: 1, skip: 1, render: () => setupScr({
   ill: `<div style="position:absolute;left:24px;top:30px;display:flex">${['marie', 'jonas', 'timo', 'nina'].map((a, i) => `<img class="av pop" src="${A('av_' + a + '.jpg')}" alt="" width="76" height="76" style="border:4px solid var(--bg);margin-left:${i ? -20 : 0}px;animation-delay:${200 + i * 130}ms">`).join('')}</div>` + st('plus1', 70, 270, 30, 10, 800),
-  title: 'Find your *people.*', desc: 'Plans show up when your friends are here. Invite them or follow people you know.',
+  title: 'Find your *people.*', desc: 'Plans show up when your friends are here. Add people from Stuttgart and friends of friends.',
   body: `<div class="card" style="padding:14px 16px;background:var(--p);color:#fff;border:0"><div class="mono" style="opacity:.8">Your invite link</div><div class="row" style="margin-top:6px"><b style="flex:1;font-size:16px">i-am-in.app/u/marie</b><button class="icb" style="background:rgba(255,255,255,.2)" data-act="copy" aria-label="Copy link">${I('Copy', 18)}</button><button class="icb" style="background:#fff;color:#7C3BED" aria-label="Share link">${I('Share2', 18)}</button></div></div>
    <button class="card row" style="padding:14px 16px;text-align:left;width:100%">${I('BookUser', 22)}<span style="flex:1;font-weight:600">Find friends from contacts</span><span class="newtag">new</span></button>
-   <div class="flab">People you may know</div>
-   <div class="card" style="overflow:hidden">${[['nina', 'Lea Fontaine', '3 mutual friends'], ['jonas', 'Ben Krüger', 'was at Razzia'], ['timo', 'Sam Okafor', 'follows you'], ['marie', 'Ida Novak', 'new in Stuttgart']].map((p, i) => `<div class="row" style="padding:12px 14px;${i ? 'border-top:1px solid var(--line)' : ''}"><img class="av" src="${A('av_' + p[0] + '.jpg')}" alt="" width="42" height="42"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:15px">${p[1]}</div><div style="font-size:12.5px;color:var(--mute)">${p[2]}</div></div><button class="follow" aria-pressed="false" data-follow>Follow</button></div>`).join('')}</div>`, cta: 'Continue' }) },
+   <div class="flab">Friends of friends · in Stuttgart</div>
+   <div class="card" style="overflow:hidden">${[['nina', 'Lea Fontaine', '3 mutual friends · Jonas, Marie'], ['jonas', 'Ben Krüger', 'In Stuttgart · going to Razzia'], ['timo', 'Sam Okafor', '2 mutual friends · Timo'], ['marie', 'Ida Novak', 'New in Stuttgart']].map((p, i) => `<div class="row" style="padding:12px 14px;${i ? 'border-top:1px solid var(--line)' : ''}"><img class="av" src="${A('av_' + p[0] + '.jpg')}" alt="" width="42" height="42"><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:15px">${p[1]}</div><div style="font-size:12.5px;color:var(--mute)">${p[2]}</div></div><button class="follow" aria-pressed="false" data-follow>Add</button></div>`).join('')}</div>`, cta: 'Continue' }) },
 
 handles: { label: 'Settle-up handles', tag: 'old', setup: 1, skip: 1, render: () => setupScr({
   ill: st('receipt', 100, 30, 14, -10, 200) + st('cash', 92, 190, 36, 8, 420),
@@ -333,10 +393,10 @@ notif: { label: 'Notifications', tag: 'new', setup: 1, render: () => setupScr({
   cta: 'Turn on notifications', alt: 'Not now' }) },
 
 done: { label: "You're in", tag: 'new', render: (st8) => `<div class="scr setup" style="align-items:center;text-align:center;justify-content:center">
-  ${st('popper', 74, 30, 150, -10, 500)}${st('disco', 70, 286, 130, 10, 650)}${st('spark', 44, 70, 610, 0, 800)}${st('heart', 56, 280, 600, 8, 950)}
-  <div class="pop" style="position:relative;animation-delay:150ms">${st8.photo ? `<img class="av" src="${A('av_marie.jpg')}" alt="" width="150" height="150" style="border:4px solid var(--p);padding:4px;background:var(--bg)">` : `<div style="width:150px;height:150px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 52px var(--ui)">${(st8.name || '?').trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</div>`}${st8.mood ? `<span style="position:absolute;right:-26px;bottom:-14px">${SV(st8.mood, 64)}</span>` : ''}</div>
+  ${st('popper', 74, 30, 150, -10, 500)}${st(st8.path == 'organizer' ? 'ticket' : 'disco', 70, 286, 130, 10, 650)}${st('spark', 44, 40, 690, 0, 800)}${st('heart', 56, 300, 680, 8, 950)}
+  <div class="pop" style="position:relative;animation-delay:150ms">${st8.path == 'organizer' ? `<div style="width:150px;height:150px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 52px var(--ui)">${(st8.oname || '?').trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</div><span style="position:absolute;right:-24px;top:-30px">${SV('crown', 64)}</span>` : st8.photo ? `<img class="av" src="${A('av_marie.jpg')}" alt="" width="150" height="150" style="border:4px solid var(--p);padding:4px;background:var(--bg)">` : `<div style="width:150px;height:150px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font:700 52px var(--ui)">${(st8.name || '?').trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase()}</div>`}${st8.mood ? `<span style="position:absolute;right:-26px;bottom:-14px">${SV(st8.mood, 64)}</span>` : ''}</div>
   <h2 class="hl" style="font-size:96px;margin-top:26px">${words("You're *in.*", 400)}</h2>
-  <p class="sub" style="margin:12px 10px 0;--d:900ms">${st8.path == 'organizer' ? 'Your organizer profile is ready. Create your first event.' : "Your feed is ready. Your friends' plans show up here first."}</p>
+  <p class="sub" style="margin:12px 10px 0;--d:900ms">${st8.path == 'organizer' ? 'Your organizer profile is live. Create your first event and start your guest list.' : "Your feed is ready. Your friends' plans show up here first."}</p>
   <div style="position:absolute;left:20px;right:20px;bottom:calc(30px + env(safe-area-inset-bottom,0px))"><button class="btn p" data-act="restart">${st8.path == 'organizer' ? 'Create my first event' : 'Go to my feed'}</button></div>
 </div>` },
 
@@ -345,23 +405,24 @@ oname: { label: 'Organizer name', tag: 'old', setup: 1, render: () => setupScr({
   title: "What's your organizer *name?*", desc: 'The brand or venue name that appears on your events.',
   body: `<div class="field"><input id="ob-oname" placeholder="Your brand or venue"></div>`, cta: 'Continue', needs: 'ob-oname' }) },
 
-ohandles: { label: 'Where to find you', tag: 'old', setup: 1, skip: 1, render: () => setupScr({
+ohandles: { label: 'Organizer web presence', tag: 'old', setup: 1, skip: 1, render: () => setupScr({
   ill: st('pin', 92, 30, 20, -8, 200) + st('envelope', 84, 190, 40, 8, 420),
   title: 'Where can people *find you?*', desc: 'Your Instagram and website show up on your organizer profile.',
   body: `<div class="flab">Instagram</div><div class="field"><span class="pre">@</span><input placeholder="yourbrand"></div><div class="flab">Website</div><div class="field">${I('Globe', 20)}<input placeholder="yourvenue.com"></div>`, cta: 'Continue' }) },
 
-stripe: { label: 'Stripe payments', tag: 'old', setup: 1, skip: 1, render: () => setupScr({
+stripe: { label: 'Payout setup (Stripe Express)', tag: 'upd', setup: 1, skip: 1, render: () => setupScr({
   ill: st('ticket', 100, 30, 24, -10, 200) + st('cash', 90, 196, 30, 8, 420),
-  title: 'Connect Stripe for *payments*', desc: 'Sell tickets and accept payments directly from your events. You can do this later from settings.',
-  body: `<button class="btn g" data-act="stripe">${I('CreditCard', 20)}Connect Stripe</button>`, cta: 'Continue' }) },
+  title: 'Get paid out for *tickets.*', desc: 'Connect Stripe Express to sell tickets in the app and receive payouts to your bank account. Takes about 2 minutes.',
+  body: `<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px">${[['Ticket', 'Sell tickets on your event page'], ['Wallet', 'Payouts straight to your bank'], ['ListChecks', 'Buyers land on your guest list']].map((r) => `<div class="row" style="gap:12px"><span style="width:40px;height:40px;border-radius:12px;background:var(--pSoft);color:var(--pt);display:flex;align-items:center;justify-content:center">${I(r[0], 20)}</span><span style="font-weight:600;font-size:14.5px">${r[1]}</span></div>`).join('')}</div>`,
+  cta: 'Connect Stripe Express', alt: 'Skip for now' }) },
 };
 
 const FLOWS = {
-  person: ['splash', 'choose', 'p1', 'p2', 'p3', 'p4', 'getin', 'name', 'photo', 'birthday', 'city', 'friends', 'handles', 'notif', 'done'],
-  organizer: ['splash', 'choose', 'o1', 'o2', 'getin', 'oname', 'ohandles', 'stripe', 'notif', 'done'],
+  person: ['splash', 'choose', 'p1', 'p2', 'p3', 'p4', 'getin', 'auth', 'name', 'birthday', 'city', 'handles', 'photo', 'friends', 'notif', 'done'],
+  organizer: ['splash', 'choose', 'o1', 'o2', 'o3', 'o4', 'getin', 'auth', 'oname', 'ohandles', 'stripe', 'done'],
 };
 const STORY_MS = 5600;
-const state = { path: 'person', i: 0, name: '', mood: '', photo: false };
+const state = { path: 'person', i: 0, name: '', oname: '', mood: '', photo: false };
 let timer = null;
 
 function setupScr(o) {
@@ -386,7 +447,7 @@ function render() {
   const id = FLOWS[state.path][state.i]; const s = SCREENS[id];
   let html = s.render(state);
   if (s.story) {
-    const ids = storyIds(); const k = ids.indexOf(id); const dark = stage && (id === 'p2' || id === 'p3' || id === 'getin');
+    const ids = storyIds(); const k = ids.indexOf(id); const dark = stage && (id === 'p2' || id === 'p3' || id === 'o3' || id === 'getin');
     const bars = `<div class="bars" style="color:${dark ? '#fff' : 'var(--ink)'}">${ids.map((x, j) => `<span class="${j < k ? 'done' : j == k ? (s.hold ? 'done' : 'on') : ''}"><i style="--dur:${STORY_MS}ms"></i></span>`).join('')}</div>`;
     const top = `<div class="topline" style="color:${dark ? '#fff' : 'var(--ink)'}">${logo}<button class="icb" data-act="skipstory" aria-label="Skip the story">${I('X', 22)}</button></div>`;
     html = html.replace(/^<div class="scr([^"]*)"([^>]*)>/, (m) => m + bars + top + (s.hold ? '' : '<div class="tapzone" data-tap></div>'));
@@ -401,6 +462,7 @@ function render() {
   if (cnt) { const to = +cnt.dataset.count; const t0 = performance.now() + 700; const tick = (t) => { const p = Math.min(1, Math.max(0, (t - t0) / 1400)); cnt.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US'); if (p < 1 && cnt.isConnected) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
   const nm = stage.querySelector('#ob-name'); if (nm) { nm.value = state.name; syncNeeds(); nm.addEventListener('input', () => { state.name = nm.value; const ini = stage.querySelector('#initials'); if (ini) ini.textContent = (nm.value.trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2) || '?').toUpperCase(); syncNeeds(); }); }
   stage.querySelectorAll('input[id]').forEach((el) => el.addEventListener('input', syncNeeds));
+  const on = stage.querySelector('#ob-oname'); if (on) { on.value = state.oname; syncNeeds(); on.addEventListener('input', () => { state.oname = on.value; }); }
   if (id === 'photo') paintAvatar();
   updatePanel();
 }
@@ -433,10 +495,12 @@ stage.addEventListener('pointercancel', () => { clearTimeout(holdT); downAt = 0;
 stage.addEventListener('click', (e) => {
   const pick = e.target.closest('[data-pick]');
   if (pick) { setPath(pick.dataset.pick, false); state.i = 2; render(); return; }
+  const at = e.target.closest('[data-authtab]');
+  if (at) { stage.querySelectorAll('[data-authtab]').forEach((b) => b.setAttribute('aria-pressed', b === at)); return; }
   const mood = e.target.closest('[data-mood]');
   if (mood) { state.mood = state.mood === mood.dataset.mood ? '' : mood.dataset.mood; paintAvatar(); return; }
   const f = e.target.closest('[data-follow]');
-  if (f) { const on = f.getAttribute('aria-pressed') !== 'true'; f.setAttribute('aria-pressed', on); f.textContent = on ? 'Following' : 'Follow'; return; }
+  if (f) { const on = f.getAttribute('aria-pressed') !== 'true'; f.setAttribute('aria-pressed', on); f.textContent = on ? 'Requested' : 'Add'; return; }
   if (e.target.closest('[data-city]')) { const c = stage.querySelector('#ob-city'); if (c) c.value = 'Stuttgart'; return; }
   const a = e.target.closest('[data-act]'); if (!a || a.disabled) return;
   const act = a.dataset.act;
@@ -448,6 +512,7 @@ stage.addEventListener('click', (e) => {
   else if (act === 'pickphoto') { state.photo = true; paintAvatar(); }
   else if (act === 'copy') { try { navigator.clipboard.writeText('https://i-am-in.app/u/marie').catch(() => {}); } catch (_) {} toast('Link copied'); }
   else if (act === 'stripe') toast('Stripe connection will be available shortly.');
+  else if (act === 'forgot') toast('We sent you a password reset link.');
 });
 document.addEventListener('keydown', (e) => { if (e.target.closest('input')) return; if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
 
