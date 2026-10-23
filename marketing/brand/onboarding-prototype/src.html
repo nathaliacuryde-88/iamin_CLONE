@@ -180,7 +180,7 @@ choose: { label: 'Welcome — pick your path', tag: 'upd', render: () => `<div c
   <h2 class="hl" style="font-size:54px;margin-top:18px">${words("Who's behind the *screen?*", 100)}</h2>
   <p class="sub" style="margin:10px 0 0;--d:600ms">Pick the experience that fits. You can switch later in settings.</p>
   <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;flex:1">
-    ${[['person', 'f4.jpg', 'Going out with friends', 'Person', ['Save plans from screenshots & links', "See who's in", 'Split expenses', '24h photo Capsules'], 'in', 300],
+    ${[['person', 'f4.jpg', 'Going out with friends', 'Person', ['Save plans from screenshots & links', "See who's in", 'Split expenses', '48h photo Capsules'], 'in', 300],
        ['organizer', 'fl_razzia.jpg', 'Hosting events', 'Organizer', ['Guest lists', 'Ticket payouts', 'Line Mode wait times', 'Host track record'], 'crown', 450]].map((o) => `<button class="pick pop" data-pick="${o[0]}" style="animation-delay:${o[6]}ms">
       <img src="${A(o[1])}" alt="">
       <span class="pickshade"></span>
@@ -254,7 +254,7 @@ p4: { label: 'From the plan to the memory', tag: 'upd', story: 1, render: () => 
     ${imgs.map((p, i) => p == 'C' ? `<div class="card pop" style="height:132px;display:flex;flex-direction:column;align-items:center;justify-content:center;animation-delay:1.5s"><span class="hl" style="font-size:28px">Razzia</span><span class="mono" style="color:var(--mute);margin-top:6px;font-size:10px">23 photos</span></div>` : `<img src="${A(p)}" alt="" style="width:100%;height:132px;object-fit:cover;border-radius:14px;box-shadow:0 8px 18px rgba(0,0,0,.2);--x:${off[i][0]}px;--y:${off[i][1]}px;--rot:${off[i][2]}deg;animation:settle .9s cubic-bezier(.2,.9,.3,1.1) ${300 + i * 90}ms both">`).join('')}
   </div>
   ${st('lock', 70, 296, 262, -10, 2100)}
-  <div class="chip pop" style="position:absolute;left:24px;top:680px;height:38px;padding:0 14px;background:var(--p);color:#fff;animation-delay:2.6s">${I('Clock', 15)}24h to drop photos · opens the morning after</div>
+  <div class="chip pop" style="position:absolute;left:24px;top:680px;height:38px;padding:0 14px;background:var(--p);color:#fff;animation-delay:2.6s">${I('Clock', 15)}48h to drop photos · opens the morning after</div>
   <p class="sub" style="position:absolute;left:22px;right:22px;bottom:calc(46px + env(safe-area-inset-bottom,0px));margin:0;--d:1.2s">Everyone's photos go into one Capsule during the night. It stays sealed and opens for everyone the morning after.</p>
   <style>@keyframes settle{from{transform:translate(var(--x),var(--y)) rotate(var(--rot)) scale(1.15);opacity:0}35%{opacity:1}to{transform:none;opacity:1}}</style>
 </div>`; } },
